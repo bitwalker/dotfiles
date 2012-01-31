@@ -1,5 +1,5 @@
 # Set the key mapping style to 'emacs' or 'vi'.
-zstyle ':omz:editor' keymap 'emacs'
+zstyle ':omz:editor' keymap 'vi'
 
 # Auto convert .... to ../..
 zstyle ':omz:editor' dot-expansion 'no'
@@ -25,4 +25,6 @@ zstyle ':omz:prompt' theme 'sorin'
 source "$HOME/.oh-my-zsh/init.zsh"
 
 # Customize to your needs...
+
+PATH=$PATH:/usr/local/bin:/usr/bin:/usr/sbin:/usr/local/sbin
 
