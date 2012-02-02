@@ -1,6 +1,12 @@
 [user]
-	name = Paul Schoenfelder
+	name  = Paul Schoenfelder
 	email = paulschoenfelder@gmail.com
+
+[core]
+  editor = subl
+
+[github]
+  user = bitwalker
 
 [alias]
   ll           = log --pretty=oneline --abbrev-commit --max-count=15
@@ -12,16 +18,16 @@
 [color "diff"]
   meta = blue bold
   frag = magenta bold
-  old = red bold
-  new = green bold
+  old  = red bold
+  new  = green bold
 
 [color "branch"]
   current = yellow reverse
-  local = yellow bold
-  remote = green bold
-  plain = red bold
+  local   = yellow bold
+  remote  = green bold
+  plain   = red bold
 
 [color "status"]
-  added = yellow
-  changed = green bold
+  added     = yellow
+  changed   = green bold
   untracked = blue bold
