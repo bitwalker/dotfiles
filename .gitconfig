@@ -1,3 +1,27 @@
 [user]
 	name = Paul Schoenfelder
 	email = paulschoenfelder@gmail.com
+
+[alias]
+  ll        = log --pretty=oneline --abbrev-commit --max-count=15
+  incoming  = !git-incoming
+
+[color]
+  ui = auto
+
+[color "diff"]
+  meta = blue bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+
+[color "branch"]
+  current = yellow reverse
+  local = yellow bold
+  remote = green bold
+  plain = red bold
+
+[color "status"]
+  added = yellow
+  changed = green bold
+  untracked = blue bold
