@@ -3,8 +3,8 @@
 	email = paulschoenfelder@gmail.com
 
 [alias]
-  ll        = log --pretty=oneline --abbrev-commit --max-count=15
-  incoming  = !git-incoming
+  ll           = log --pretty=oneline --abbrev-commit --max-count=15
+  rmdead       = !git-ls-files --deleted | xargs git rm
 
 [color]
   ui = auto
