@@ -3,7 +3,7 @@
 	email = paulschoenfelder@gmail.com
 
 [core]
-  editor = subl
+  editor = vim
 
 [github]
   user = bitwalker
