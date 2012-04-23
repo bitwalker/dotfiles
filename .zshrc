@@ -26,5 +26,13 @@ source "$HOME/.oh-my-zsh/init.zsh"
 
 # Customize to your needs...
 
-PATH=$PATH:/usr/local/bin:/usr/bin:/usr/sbin:/usr/local/sbin
+ANDROID=$HOME/Development/android-sdk-macosx/platform-tools
+PATH=$PATH:/usr/local/bin:/usr/bin:/usr/sbin:/usr/local/sbin:$ANDROID
 
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+
+__rvm_project_rvmrc
+
+. ~/.nvm/nvm.sh
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
