@@ -52,12 +52,17 @@ set novisualbell
 set t_vb=
 set tm=500
 
+" statusline
+:set statusline==%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [ASCII=\%03.3b]\ [HEX=\%02.2B]\ [POS=%04l,%04v][%p%%]\ [LEN=%L]
+:set laststatus=2
+
 "=================
 " Theme
 "=================
 
 " OS-specific fonts
 set gfn=Monospace\ 10
+let g:Powerline_symbols = 'fancy'
 set shell=/bin/zsh
 
 if has("gui_running")
@@ -114,3 +119,33 @@ noremap <leader>y :CommandTFlush<cr>
 " Remove ^M when encoding gets jacked
 noremap <leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
+" Yank text to the OS X clipboard
+noremap <leader>y "*y
+noremap <leader>yy "*Y
+
+" Preserve indentation while pasting text from the OS X clipboard
+noremap <leader>p :set paste<CR>:put  *<CR>:set nopaste<CR>
+
+" Fix keybindings for command-t
+set ttimeoutlen=50
+
+if !has('gui_running')
+  let g:CommandTCancelMap     = ['<ESC>', '<C-c>']
+  let g:CommandTSelectNextMap = ['<C-n>', '<C-j>', '<ESC>OB']
+  let g:CommandTSelectPrevMap = ['<C-p>', '<C-k>', '<ESC>OA']
+endif
+
+" Fix mousing in terminal
+if has('mouse')
+  set mouse=a
+  if !has('gui_running')
+    " for some reason, doing this directly with 'set ttymouse=xterm2'
+    " doesn't work -- 'set ttymouse?' returns xterm2 but the mouse
+    " makes tmux enter copy mode instead of selecting or scrolling
+    " inside Vim -- but luckily, setting it up from within autocmds
+    " works                   
+    autocmd VimEnter * set ttymouse=xterm2
+    autocmd FocusGained * set ttymouse=xterm2
+    autocmd BufEnter * set ttymouse=xterm2
+  endif
+endif
