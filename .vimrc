@@ -5,7 +5,7 @@ call pathogen#infect()
 " GENERAL
 "=================
 
-set number                  " line numbers
+set nu                      " line numbers
 syntax on                   " enable syntax highlighting
 
 filetype plugin indent on   " enable filetype plugin
@@ -68,13 +68,10 @@ set shell=/bin/zsh
 if has("gui_running")
 	set guioptions-=T
 	set background=dark
-	colorscheme solarized
-	set nonu
+	colorscheme rdark
 else
-	colorscheme solarized
-	let g:solarized_termtrans=1 " enable transparent background
 	set background=dark
-	set nonu
+	colorscheme desertEx
 endif
 
 

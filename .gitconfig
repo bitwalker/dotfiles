@@ -1,9 +1,10 @@
 [user]
-	name  = Paul Schoenfelder
+  name = Paul Schoenfelder
 	email = paulschoenfelder@gmail.com
 
 [core]
   editor = vim
+	excludesfile = ~/.gitignore_global
 
 [github]
   user = bitwalker
@@ -11,6 +12,7 @@
 [alias]
   ll           = log --pretty=oneline --abbrev-commit --max-count=15
   rmdead       = !git-ls-files --deleted | xargs git rm
+  s            = status
 
 [color]
   ui = auto
@@ -31,3 +33,10 @@
   added     = yellow
   changed   = green bold
   untracked = blue bold
+
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
