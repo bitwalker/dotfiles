@@ -71,7 +71,7 @@ if has("gui_running")
 	colorscheme rdark
 else
 	set background=dark
-	colorscheme desertEx
+	colorscheme desert
 endif
 
 
