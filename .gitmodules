@@ -1,3 +1,6 @@
 [submodule ".vim/bundle/rainbow_parentheses"]
 	path = .vim/bundle/rainbow_parentheses
 	url = https://github.com/bitwalker/rainbow_parentheses.vim
+[submodule ".vim/bundle/vimclojure"]
+	path = .vim/bundle/vimclojure
+	url = https://github.com/vim-scripts/VimClojure

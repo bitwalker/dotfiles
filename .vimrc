@@ -175,3 +175,11 @@ au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
+
+"==================
+" VimClojure
+"==================
+" Ensure the Nailgun has been installed and is in $PATH
+" Toggle Nailgun on/off
+let vimclojure#WantNailgun = 1
+
