@@ -6,7 +6,10 @@
 # Load bin paths
 export BINPATH=/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/local/Cellar
 export RVM=~/.rvm/bin
-export PATH=$PATH:$BINPATH:$RVM
+export GNUUTILS="/usr/local/opt/coreutils/libexec/gnubin"
+export GNUMAN="/usr/local/opt/coreutils/libexec/gnuman"
+export PATH=$PATH:$BINPATH:$RVM:$GNUUTILS
+export MANPATH=$GNUMAN:$MANPATH
 
 # Path to the bash it configuration
 export BASH_IT=$HOME/.bash_it
