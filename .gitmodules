@@ -4,3 +4,27 @@
 [submodule ".vim/bundle/vimclojure"]
 	path = .vim/bundle/vimclojure
 	url = https://github.com/vim-scripts/VimClojure
+[submodule ".utils/powerline"]
+	path = .utils/powerline
+	url = https://github.com/Lokaltog/powerline
+[submodule ".utils/powerline-fonts"]
+	path = .utils/powerline-fonts
+	url = https://github.com/Lokaltog/powerline-fonts
+[submodule ".vim/bundle/Command-T"]
+	path = .vim/bundle/Command-T
+	url = https://github.com/wincent/Command-T
+[submodule ".vim/bundle/vim-surround"]
+	path = .vim/bundle/vim-surround
+	url = https://github.com/tpope/vim-surround
+[submodule ".vim/bundle/ack"]
+	path = .vim/bundle/ack
+	url = https://github.com/mileszs/ack.vim
+[submodule ".vim/bundle/coffeescript"]
+	path = .vim/bundle/coffeescript
+	url = https://github.com/kchmck/vim-coffee-script
+[submodule ".vim/bundle/golang"]
+	path = .vim/bundle/golang
+	url = https://github.com/jnwhiteh/vim-golang
+[submodule ".vim/bundle/markdown"]
+	path = .vim/bundle/markdown
+	url = https://github.com/tpope/vim-markdown
