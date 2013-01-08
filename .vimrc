@@ -63,15 +63,16 @@ set tm=500
 " OS-specific fonts
 set gfn=Monospace\ 10
 let g:Powerline_symbols = 'fancy'
-set shell=/bin/zsh
+set shell=/bin/bash
 
 if has("gui_running")
 	set guioptions-=T
-	set background=dark
-	colorscheme rdark
+	set background=light
+	colorscheme solarized
 else
 	set background=dark
-	colorscheme desert
+  let g:solarized_termcolors=256
+	colorscheme solarized
 endif
 
 
