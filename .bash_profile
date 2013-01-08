@@ -61,3 +61,13 @@ alias ls="ls -lAGHksp"
 
 # For easy .jar execution
 alias runjar="java -jar "
+
+# Generate a gif from a series of .png images
+function creategif {
+  for f in *.png; do 
+    convert "$f" -flatten -pointsize 20 -gravity south -annotate +0+25 "${f%.png}" "x$f"; 
+  done
+  local delayBy=200
+  local filename="output.gif"
+  convert -delay ${$1:-delayBy} x*.png ${$2:-filename}.gif;
+}
