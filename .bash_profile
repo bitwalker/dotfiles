@@ -58,3 +58,6 @@ export CDPATH=~/Repositories:~/Repsitories/Shared
 # files starting with '.', shows block usage in kb, and prints '/' after directories,
 # and output is colorized.
 alias ls="ls -lAGHksp"
+
+# For easy .jar execution
+alias runjar="java -jar "
