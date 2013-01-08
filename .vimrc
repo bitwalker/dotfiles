@@ -91,7 +91,8 @@ set laststatus=2
 "=================
 
 "set gfn=Monospace\ 10
-set guifont=Inconsolata\ for\ Powerline\ 10
+"set guifont=Inconsolata\ for\ Powerline\ 10
+set guifont=PragmataPro\ for\ Powerline\ 10
 if has("gui_running")
 	set guioptions-=T
 	set background=light
