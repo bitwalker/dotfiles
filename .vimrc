@@ -181,5 +181,5 @@ au Syntax * RainbowParenthesesLoadBraces
 "==================
 " Ensure the Nailgun has been installed and is in $PATH
 " Toggle Nailgun on/off
-let vimclojure#WantNailgun = 1
+let vimclojure#WantNailgun = 0
 
