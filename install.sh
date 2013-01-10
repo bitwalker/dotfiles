@@ -23,8 +23,8 @@ done
 
 # Update running environment
 print_message 'Updating environment...' \
-'You can ignore the "bind: warning: line editing not enabled"' \
-'Simply run "source ~/.bash_profile" once installation is complete to get those binds!'
+    'You can ignore the "bind: warning: line editing not enabled"' \
+    'Simply run "source ~/.bash_profile" once installation is complete to get those binds!'
 source $HOME/.bash_profile
 
 # Build vim plugins
@@ -35,4 +35,5 @@ else
     echo 'Ruby/Rake not installed. Unable to build command-t plugin'
 fi
 
-print_message 'dotfiles installed!'
+print_message 'dotfiles installed!' \
+    'Now run osx.sh if this is on a Mac, and you're golden!'
