@@ -41,11 +41,6 @@ bind 'TAB:menu-complete'
 bind 'set visible-stats on'
 shopt -s cdspell
 
-# Load bash-completion
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
-fi
-
 # NVM - Node.js Verson Manager
 . ~/.nvm/nvm.sh
 
