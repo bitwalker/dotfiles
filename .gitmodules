@@ -30,4 +30,7 @@
 	url = https://github.com/tpope/vim-markdown
 [submodule ".bash_it"]
 	path = .bash_it
-	url = https://github.com/bitwalker/bash_it.git
+	url = https://github.com/bitwalker/bash_it
+[submodule ".vim/bundle/vim-colors-solarized"]
+	path = .vim/bundle/vim-colors-solarized
+	url = https://github.com/altercation/vim-colors-solarized
