@@ -13,6 +13,7 @@
   ll           = log --pretty=oneline --abbrev-commit --max-count=15
   rmdead       = !git-ls-files --deleted | xargs git rm
   s            = status
+  submodsync   = !git-pull --recurse-submodules && git submodule update --recursive
 
 [color]
   ui = auto
