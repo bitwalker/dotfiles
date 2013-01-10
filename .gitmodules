@@ -28,3 +28,6 @@
 [submodule ".vim/bundle/markdown"]
 	path = .vim/bundle/markdown
 	url = https://github.com/tpope/vim-markdown
+[submodule ".bash_it"]
+	path = .bash_it
+	url = https://github.com/bitwalker/bash_it.git
