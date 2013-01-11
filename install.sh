@@ -9,7 +9,7 @@ function print_message {
 }
 
 print_message "Updating submodules..."
-git pull --recurse-submodules && git submodule update --recursive
+git pull --recurse-submodules && git submodule update --recursive --init
 
 
 print_message 'Linking dotfiles and directories..'
