@@ -44,9 +44,6 @@ shopt -s cdspell
 # NVM - Node.js Verson Manager
 . ~/.nvm/nvm.sh
 
-# Directory Bookmarks
-export CDPATH=~/Repositories:~/Repsitories/Shared
-
 # Aliases
 
 # ls is always in long form, follows symbolic links, filters out . and .., displays
