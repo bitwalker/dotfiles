@@ -43,6 +43,7 @@
 	tool = Kaleidoscope
 [mergetool]
 	prompt = false
+	keepBackup = false
 
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
