@@ -91,8 +91,7 @@ set laststatus=2
 "=================
 
 "set gfn=Monospace\ 10
-"set guifont=Inconsolata\ for\ Powerline\ 10
-set guifont=PragmataPro\ for\ Powerline\ 10
+set guifont=Liberation\ Mono\ for\ Powerline\ 10
 if has("gui_running")
 	set guioptions-=T
 	set background=light
@@ -205,6 +204,4 @@ let vimclojure#WantNailgun = 0   " Toggle Nailgun on/off
 "==================
 " Powerline
 "==================
-
-source $HOME/Repositories/dotfiles/.utils/powerline/powerline/ext/vim/source_plugin.vim
-let g:Powerline_symbols="fancy"
+set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
