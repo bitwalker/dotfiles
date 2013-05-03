@@ -1,10 +1,11 @@
 [user]
 	name = Paul Schoenfelder
-	email = paulschoenfelder@gmail.com
+	email = pschoenf@nerdery.com
 
 [core]
   editor = vim
-	excludesfile = ~/.gitignore_global
+  excludesfile = /Users/pschoenf/.gitignore_global
+  autocrlf = input
 
 [github]
   user = bitwalker
@@ -44,14 +45,6 @@
 [mergetool]
 	prompt = false
 	keepBackup = false
-
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
-
 [difftool "Kaleidoscope"]
 	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
 [mergetool "Kaleidoscope"]
