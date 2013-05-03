@@ -4,11 +4,11 @@
 [[ -s $HOME/.rvm/scripts/rvm ]] && source $HOME/.rvm/scripts/rvm
 
 # Load bin paths
-export BINPATH=/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/local/Cellar
+export BINPATH=/usr/local/bin:/usr/local/sbin
 export RVM=~/.rvm/bin
 export GNUUTILS="/usr/local/opt/coreutils/libexec/gnubin"
 export GNUMAN="/usr/local/opt/coreutils/libexec/gnuman"
-export PATH=$PATH:$BINPATH:$RVM:$GNUUTILS
+export PATH=$BINPATH:$RVM:$GNUUTILS:$PATH
 export MANPATH=$GNUMAN:$MANPATH
 export GOPATH=~/Repositories/Go
 
@@ -21,8 +21,9 @@ export BASH_IT=$HOME/.bash_it
 export BASH_IT_THEME='modern'
 
 # Set my editor and git editor
-export EDITOR="/bin/subl -w"
-export GIT_EDITOR='/usr/bin/vim -w'
+#export EDITOR='subl -w'
+export EDITOR='vim'
+export GIT_EDITOR='vim -w'
 
 # Don't check mail when opening terminal.
 unset MAILCHECK
@@ -53,6 +54,9 @@ alias ls="ls -lAGHksp"
 
 # For easy .jar execution
 alias runjar="java -jar "
+
+# Easily run synchosts.py
+alias syncvm="~/synchosts.py -n 'Windows 7' -u 'pschoenf' -p 'TH9ima4v'"
 
 # Generate a gif from a series of .png images
 function creategif {
