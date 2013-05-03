@@ -1,6 +1,3 @@
-" Autoload
-call pathogen#infect()
-
 "=================
 " GENERAL
 "=================
@@ -8,11 +5,40 @@ call pathogen#infect()
 set shell=/bin/bash            " self-explanatory
 set nu                         " line numbers
 syntax on                      " enable syntax highlighting
-filetype plugin indent on      " enable filetype plugin
 set autoread                   " reload files on change
 set ignorecase                 " case-insensitive searching
 set smartcase
 autocmd! bufwritepost vimrc source ~/.vimrc " reload vimrc when edited
+
+filetype off                   
+set rtp+=~/.vim/bundle/vundle  " Initialize Vundle
+call vundle#rc()
+
+" Allow Vundle to manage itself
+Bundle 'gmarik/vundle'
+
+"==================
+" Bundles
+"==================
+Bundle 'Lokaltog/vim-powerline'
+Bundle 'git://git.wincent.com/command-t.git'
+Bundle 'Command-T'
+Bundle 'Markdown'
+Bundle 'Sass'
+Bundle 'Solarized'
+Bundle 'The-NERD-Tree'
+Bundle 'ack.vim'
+Bundle 'nerdtree-ack'
+Bundle 'rainbow_parentheses.vim'
+Bundle 'vim-coffee-script'
+
+filetype plugin indent on
+
+"==================
+" Powerline
+"==================
+set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
+let g:Powerline_symbols = 'fancy'
 
 "==================
 " Keybindings
@@ -95,11 +121,11 @@ set guifont=Liberation\ Mono\ for\ Powerline\ 10
 if has("gui_running")
 	set guioptions-=T
 	set background=light
-	colorscheme solarized
+	colorscheme Solarized
 else
 	set background=dark
   let g:solarized_termcolors=256
-	colorscheme solarized
+	colorscheme Solarized
 endif
 
 "=================
@@ -193,15 +219,3 @@ au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
-
-"==================
-" VimClojure
-" NOTE: Ensure Nailgun has been installed and is in $PATH
-"==================
-
-let vimclojure#WantNailgun = 0   " Toggle Nailgun on/off
-
-"==================
-" Powerline
-"==================
-set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
