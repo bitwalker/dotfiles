@@ -9,6 +9,7 @@ set autoread                   " reload files on change
 set ignorecase                 " case-insensitive searching
 set smartcase
 autocmd! bufwritepost vimrc source ~/.vimrc " reload vimrc when edited
+set fileformats=unix,mac,dos
 
 filetype off                   
 set rtp+=~/.vim/bundle/vundle  " Initialize Vundle
@@ -31,6 +32,7 @@ Bundle 'ack.vim'
 Bundle 'nerdtree-ack'
 Bundle 'rainbow_parentheses.vim'
 Bundle 'vim-coffee-script'
+Bundle 'OrangeT/vim-csharp'
 
 filetype plugin indent on
 
@@ -55,6 +57,10 @@ nnoremap ; :
 nmap <leader>w :w!<cr>         
 " fast .vimrc editing
 map <leader>e :e! ~/.vimrc<cr> 
+" reload config after edit
+map <leader>r :so ~/.vimrc<cr>
+" launch NERDTree quickly
+map <leader>n :NERDTree<cr>
 "fix VIM's borked regex handling
 nnoremap / /\v
 vnoremap / /\v
@@ -116,16 +122,15 @@ set laststatus=2
 " Theme
 "=================
 
-"set gfn=Monospace\ 10
-set guifont=Liberation\ Mono\ for\ Powerline\ 10
+set guifont="Liberation Mono for Powerline 10"
 if has("gui_running")
 	set guioptions-=T
-	set background=light
-	colorscheme Solarized
+    set background=dark
+    colorscheme Tomorrow-Night-Eighties
 else
 	set background=dark
-  let g:solarized_termcolors=256
-	colorscheme Solarized
+    let g:solarized_termcolors=256
+    colorscheme Tomorrow-Night-Eighties
 endif
 
 "=================
