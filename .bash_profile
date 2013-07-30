@@ -4,7 +4,7 @@
 [[ -s $HOME/.rvm/scripts/rvm ]] && source $HOME/.rvm/scripts/rvm
 
 # Load bin paths
-export BINPATH=/usr/local/bin:/usr/local/sbin
+export BINPATH=/usr/local/bin:/usr/local/sbin:/usr/local/Cellar:/usr/bin:/usr/sbin:/bin
 export RVM=~/.rvm/bin
 export GNUUTILS="/usr/local/opt/coreutils/libexec/gnubin"
 export GNUMAN="/usr/local/opt/coreutils/libexec/gnuman"
