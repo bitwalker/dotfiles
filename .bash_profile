@@ -8,7 +8,9 @@ export BINPATH=/usr/local/bin:/usr/local/sbin:/usr/local/Cellar:/usr/bin:/usr/sb
 export RVM=~/.rvm/bin
 export GNUUTILS="/usr/local/opt/coreutils/libexec/gnubin"
 export GNUMAN="/usr/local/opt/coreutils/libexec/gnuman"
-export PATH=$BINPATH:$RVM:$GNUUTILS:$PATH
+export PLAY="/usr/local/play-2.1.1"
+export HEROKU="/usr/local/heroku/bin"
+export PATH=$GNUUTILS:$BINPATH:$HEROKU:$RVM:$PLAY:$PATH
 export MANPATH=$GNUMAN:$MANPATH
 export GOPATH=~/Repositories/Go
 
