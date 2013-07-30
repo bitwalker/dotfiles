@@ -58,6 +58,10 @@ alias runjar="java -jar "
 # Easily run synchosts.py
 alias syncvm="~/synchosts.py -n 'Windows 7' -u 'pschoenf' -p 'TH9ima4v'"
 
+# Postgres Admin
+alias startpg="pg_ctl -D /usr/local/var/postgres start"
+alias stoppg="pg_ctl -D /usr/local/var/postgres stop"
+
 # Generate a gif from a series of .png images
 function creategif {
   for f in *.png; do 
