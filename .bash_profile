@@ -22,9 +22,8 @@ export BASH_IT=$HOME/.bash_it
 export BASH_IT_THEME='modern'
 
 # Set my editor and git editor
-#export EDITOR='subl -w'
-export EDITOR='vim'
-export GIT_EDITOR='vim -w'
+export EDITOR="/usr/local/bin/vim"
+export GIT_EDITOR="/usr/local/bin/vim"
 
 # Don't check mail when opening terminal.
 unset MAILCHECK
