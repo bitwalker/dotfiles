@@ -19,7 +19,6 @@ export BASH_IT=$HOME/.bash_it
 
 # Lock and Load a custom theme file
 # location /.bash_it/themes/
-#export BASH_IT_THEME='minimal'
 export BASH_IT_THEME='modern'
 
 # Set my editor and git editor
