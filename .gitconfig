@@ -1,11 +1,10 @@
 [user]
-	name = Paul Schoenfelder
-	email = pschoenf@nerdery.com
+  name = Paul Schoenfelder
+  email = paulschoenfelder@gmail.com
 
 [core]
   editor = vim
-  excludesfile = /Users/pschoenf/.gitignore_global
-  autocrlf = input
+  excludesfile = ~/.gitignore_global
 
 [github]
   user = bitwalker
@@ -37,17 +36,18 @@
   untracked = blue bold
 
 [diff]
-	tool = Kaleidoscope
+  tool = Kaleidoscope
 [difftool]
-	prompt = false
+  prompt = false
 [merge]
-	tool = Kaleidoscope
+  tool = Kaleidoscope
 [mergetool]
-	prompt = false
-	keepBackup = false
+  prompt = false
+  keepBackup = false
+
 [difftool "Kaleidoscope"]
-	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+  cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
 [mergetool "Kaleidoscope"]
-	cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
-	trustExitCode = true
+  cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+  trustExitCode = true
 
