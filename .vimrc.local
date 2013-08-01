@@ -1,0 +1,13 @@
+" Only load bundles I'm using
+let g:spf13_bundle_groups=['general', 'programming', 'neocomplcache', 'scala', 'html', 'javascript', 'python', 'ruby', 'misc']
+
+" UnBundle specific bundles that cause issues
+UnBundle 'Lokaltog/powerline'
+UnBundle 'airblade/vim-gitgutter'
+
+" Set font
+set guifont=Menlo\ for\ Powerline\ 11
+
+" Set color scheme
+set background=dark
+color base16-tomorrow
