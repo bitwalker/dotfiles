@@ -7,6 +7,9 @@
   excludesfile = ~/.gitignore_global
   autocrlf = input
 
+[push]
+  default = current
+
 [github]
   user = bitwalker
 
@@ -51,4 +54,3 @@
 [mergetool "Kaleidoscope"]
   cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
   trustExitCode = true
-
