@@ -34,7 +34,7 @@ function fish_prompt
       set git_info "$git_info$dirty"
    end
 
-   printf $git_info
+   printf '%s' $git_info
 
    # Line 2
    echo
