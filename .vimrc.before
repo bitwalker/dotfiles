@@ -1,0 +1,3 @@
+set shell=/bin/sh
+set guifont=Monaco\ for\ Powerline:h12
+let g:airline_theme='serene'

@@ -32,9 +32,6 @@ unset MAILCHECK
 # https://github.com/xvzf/vcprompt
 #export VCPROMPT_EXECUTABLE=~/.vcprompt/bin/vcprompt
 
-# Load Bash It
-source $BASH_IT/bash_it.sh
-
 # Smarter Autocompletion
 bind 'set completion-ignore-case on'
 bind 'set show-all-if-ambigous on'

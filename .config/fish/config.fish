@@ -21,3 +21,5 @@ if test -f ~/.config/fish/config.local.fish
 end
 
 alias ls "ls -lAGHksp"
+
+rvm >/dev/null
