@@ -1,11 +1,11 @@
 [user]
-  name = Paul Schoenfelder
+  name  = Paul Schoenfelder
   email = paulschoenfelder@gmail.com
 
 [core]
-  editor = vim
+  editor       = vim
   excludesfile = ~/.gitignore_global
-  autocrlf = input
+  autocrlf     = input
 
 [commit]
   template = $HOME/.gitmessage.txt
@@ -23,7 +23,7 @@
   submodsync   = !git-pull --recurse-submodules && git submodule update --recursive
 
 [color]
-  ui = auto
+  ui = true
 
 [color "diff"]
   meta = blue bold
