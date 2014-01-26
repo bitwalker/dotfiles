@@ -9,6 +9,9 @@ do
     fi
 done
 
+echo "Ensuring XCode CLI Tools are installed..."
+xcode-select --install
+
 echo "Loading homebrew preferences..."
 brew bundle $HOME/Brewfile
 
