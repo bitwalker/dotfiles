@@ -7,6 +7,9 @@
   excludesfile = ~/.gitignore_global
   autocrlf = input
 
+[commit]
+  template = $HOME/.gitmessage.txt
+
 [push]
   default = current
 
