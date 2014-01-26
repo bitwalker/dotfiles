@@ -446,12 +446,12 @@ sudo mdutil -E / > /dev/null
 defaults write com.apple.terminal StringEncodings -array 4
 
 # Load visor profile
-cp "${HOME}/init/com.googlecode.iterm2.plist" ~/Library/Prefrences/com.googlecode.iterm2.plist
+ln -sf -t ~/Library/Preferences/ `pwd`/init/com.googlecode.iterm2.plist
 defaults write com.apple.terminal "Default Window Settings" -string "Visor"
 defaults write com.apple.terminal "Startup Window Settings" -string "Visor"
 
 # Install pretty iTerm colors
-open "${HOME}/init/Monokai Soda.itermcolors"
+open `pwd`/init/Monokai\ Soda.itermcolors
 
 # Don’t display the annoying prompt when quitting iTerm
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
@@ -526,7 +526,7 @@ defaults write com.google.Chrome.canary ExtensionInstallSources -array "https://
 ###############################################################################
 
 # Install Sublime Text settings
-cp -r init/Preferences.sublime-settings ~/Library/Application\ Support/Sublime\ Text*/Packages/User/Preferences.sublime-settings 2> /dev/null
+ln -sf -t ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User `pwd`/init/Preferences.sublime-settings
 
 ###############################################################################
 # Transmission.app                                                            #
