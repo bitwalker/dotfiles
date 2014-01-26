@@ -2,7 +2,7 @@
 	"auto_indent": true,
 	"bold_folder_labels": true,
 	"caret_style": "phase",
-	"color_scheme": "Packages/Ciapre Color Scheme/CiapreBlack.tmTheme",
+	"color_scheme": "Packages/Theme - Spacegray/base16-eighties.dark.tmTheme",
 	"detect_indentation": true,
 	"detect_slow_plugins": false,
 	"env":
@@ -29,7 +29,7 @@
 	"smart_indent": true,
 	"soda_folder_icons": true,
 	"tab_size": 2,
-	"theme": "Phoenix Dark.sublime-theme",
+	"theme": "Spacegray Eighties.sublime-theme",
 	"translate_tabs_to_spaces": true,
 	"use_tab_stops": true
 }
