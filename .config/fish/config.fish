@@ -21,5 +21,6 @@ if test -f ~/.config/fish/config.local.fish
 end
 
 alias ls "ls -lAGHksp"
+alias todo "todo.sh"
 
 rvm >/dev/null
