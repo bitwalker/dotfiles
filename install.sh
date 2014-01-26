@@ -13,7 +13,7 @@ echo "Ensuring XCode CLI Tools are installed..."
 xcode-select --install
 
 echo "Loading homebrew preferences..."
-brew bundle $HOME/Brewfile
+brew bundle `pwd`/Brewfile
 
 echo "Installing OSX preferences..."
 . $HOME/.osx
