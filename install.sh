@@ -9,5 +9,10 @@ do
     fi
 done
 
-echo "dotfiles installed!" \
-    "Now run osx.sh if this is on a Mac, and you're golden!"
+echo "Loading homebrew preferences..."
+brew bundle $HOME/Brewfile
+
+echo "Installing OSX preferences..."
+. $HOME/.osx
+
+echo "Success! dotfiles installed!" \
