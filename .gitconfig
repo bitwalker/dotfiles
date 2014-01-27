@@ -2,6 +2,9 @@
   name  = Paul Schoenfelder
   email = paulschoenfelder@gmail.com
 
+[credential]
+  helper = osxkeychain
+
 [core]
   editor       = vim
   excludesfile = ~/.gitignore_global
