@@ -2,19 +2,19 @@
 	"auto_indent": true,
 	"bold_folder_labels": true,
 	"caret_style": "phase",
-	"color_scheme": "Packages/Theme - Spacegray/base16-eighties.dark.tmTheme",
+	"color_scheme": "Packages/Color Scheme - Default/Solarized (Light).tmTheme",
 	"detect_indentation": true,
 	"detect_slow_plugins": false,
 	"env":
 	{
 		"PATH": "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/Paul/.nvm/v0.11.2/bin"
 	},
-	"font_face": "Akkurat-Mono",
+	"font_face": "Fantasque Sans Mono Regular",
 	"font_options":
 	[
 		"subpixel_antialias"
 	],
-	"font_size": 12,
+	"font_size": 14,
 	"highlight_active_indent_guide": true,
 	"highlight_line": true,
 	"ignored_packages":
@@ -30,7 +30,7 @@
 	"smart_indent": true,
 	"soda_folder_icons": true,
 	"tab_size": 2,
-	"theme": "Spacegray Eighties.sublime-theme",
+	"theme": "Spacegray Light.sublime-theme",
 	"translate_tabs_to_spaces": true,
 	"use_tab_stops": true
 }
