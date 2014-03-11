@@ -11,7 +11,7 @@
   autocrlf     = input
 
 [commit]
-  template = $HOME/.gitmessage.txt
+  template = ~/.gitmessage.txt
 
 [push]
   default = current
