@@ -9,12 +9,12 @@
 	{
 		"PATH": "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/Paul/.nvm/v0.11.2/bin"
 	},
-	"font_face": "Akkurat-Mono",
+	"font_face": "Fantasque Sans Mono Regular",
 	"font_options":
 	[
 		"subpixel_antialias"
 	],
-	"font_size": 12,
+	"font_size": 14,
 	"highlight_active_indent_guide": true,
 	"highlight_line": true,
 	"ignored_packages":
