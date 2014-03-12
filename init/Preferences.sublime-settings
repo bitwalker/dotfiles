@@ -2,7 +2,7 @@
 	"auto_indent": true,
 	"bold_folder_labels": true,
 	"caret_style": "phase",
-	"color_scheme": "Packages/Color Scheme - Default/Solarized (Light).tmTheme",
+	"color_scheme": "Packages/Dayle Rees Color Schemes/sublime/rainbow.tmTheme",
 	"detect_indentation": true,
 	"detect_slow_plugins": false,
 	"env":
@@ -30,7 +30,7 @@
 	"smart_indent": true,
 	"soda_folder_icons": true,
 	"tab_size": 2,
-	"theme": "Spacegray Light.sublime-theme",
+	"theme": "Spacegray.sublime-theme",
 	"translate_tabs_to_spaces": true,
 	"use_tab_stops": true
 }
