@@ -1,0 +1,8 @@
+{
+  "chocolatey": "require_chocolatey";
+  "psake": "require_psake";
+  "git": "require_git";
+  "vim": "require_vim";
+  "dotfiles": "require_dotfiles";
+  "sublime": "require_sublime";
+}
