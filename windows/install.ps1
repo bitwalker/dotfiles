@@ -1,7 +1,6 @@
-$identity  = [Security.Principal.WindowsIdentity]::GetCurrent()
-$principal = [Security.Principal.WindowsPrincipal] $identity
-$isAdmin   = $principal.IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 
+
+import-module .\includes\helpers.psm1
 import-module .\includes\file.psm1
 import-module .\includes\logging.psm1
 import-module .\includes\installer.psm1
@@ -10,10 +9,7 @@ import-module .\includes\installer.psm1
 trap { trace-error $error[0]; return; }
 
 # Just make things easier by requiring admin
-if (!$isAdmin) {
-  show-error 'You need to be admin to run this installer.'
-  return
-}
+assert-isElevatedShell
 
 # This can always be changed back later, but for now, fuck it
 if ((get-executionpolicy) -ne 'unrestricted') {

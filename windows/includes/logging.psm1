@@ -7,6 +7,7 @@ $colors = @{
   'debug'   = 'white';
   'info'    = 'blue';
   'success' = 'green'
+  'alert'   = 'cyan';
   'warn'    = 'yellow';
   'error'   = 'red'
 }
@@ -25,6 +26,10 @@ function show-info($message) {
 
 function show-success($message) {
   show-log $message $colors['success']
+}
+
+function show-alert($message) {
+  show-log $message $colors['alert']
 }
 
 function show-warning($message) {

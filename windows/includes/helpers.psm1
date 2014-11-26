@@ -5,7 +5,9 @@
 
 set-strictmode -version latest
 
-import-module .\logging.psm1
+$_includes = $PSScriptRoot
+import-module (join-path $_includes logging.psm1)
+import-module (join-path $_includes functional.psm1)
 
 function show-less {
 <#
@@ -30,4 +32,17 @@ function get-help-gui([string]$topic) {
     { show-error "Unable to find topic."; $error.clear(); return; }
 
   get-help -showwindow $topic
+}
+
+function assert-isElevatedShell {
+<#
+  .SYNOPSIS
+  Asserts that the current user is running as an elevated user.
+  If the assertion fails, an exception is thrown and returned to the user.
+#>
+  $identity  = [Security.Principal.WindowsIdentity]::GetCurrent()
+  $principal = [Security.Principal.WindowsPrincipal] $identity
+  $isAdmin   = $principal.IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+
+  if (-not $isAdmin) { throw "Assertion failed: shell is not running as an elevated user!" }
 }

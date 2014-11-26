@@ -5,8 +5,9 @@
 
 set-strictmode -version latest
 
-import-module .\logging.psm1
-import-module .\functional.psm1
+$_includes = $PSScriptRoot
+import-module (join-path $_includes logging.psm1)
+import-module (join-path $_includes functional.psm1)
 
 function test-directory([string]$path) {
 <#

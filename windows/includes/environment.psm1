@@ -7,7 +7,8 @@
 
 set-strictmode -version latest
 
-import-module .\functional.psm1
+$_includes = $PSScriptRoot
+import-module (join-path $_includes functional.psm1)
 
 function find-which($query) {
   $programs      = gci -path 'env:programfiles' | % { $_.value }
