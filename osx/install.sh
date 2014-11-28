@@ -5,8 +5,11 @@ cd "$(dirname "${BASH_SOURCE}")";
 git pull origin master;
 
 function doIt() {
+  # sync all dotfiles from this directory
   rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" \
-        -avh --no-perms . ~;
+        -avdh --no-perms . ~;
+  # as well as the git files shared between platforms
+  rsync -avdh --no-perms ../git ~;
   source ~/.bash_profile;
 }
 
