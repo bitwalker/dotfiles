@@ -1,0 +1,3 @@
+[core]
+  # Prevent git from ignoring filename casing differences on Windows
+  ignorecase = false

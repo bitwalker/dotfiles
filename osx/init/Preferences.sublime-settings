@@ -7,7 +7,7 @@
 	"detect_slow_plugins": false,
 	"env":
 	{
-		"PATH": "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/Paul/.nvm/v0.11.2/bin"
+		"PATH": "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 	},
 	"font_face": "Fantasque Sans Mono Regular",
 	"font_options":
@@ -32,5 +32,19 @@
 	"tab_size": 2,
 	"theme": "Spacegray.sublime-theme",
 	"translate_tabs_to_spaces": true,
-	"use_tab_stops": true
+	"use_tab_stops": true,
+	"file_exclude_patterns":
+	[
+		".DS_Store",
+		"Desktop.ini",
+		"*.pyc",
+		"._*",
+		"Thumbs.db",
+		".Spotlight-V100",
+		".Trashes"
+	],
+	"folder_exclude_patterns":
+	[
+		".git",
+	]
 }
