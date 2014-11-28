@@ -3,6 +3,9 @@
   Ccontains helpers for importing/exporting ConEmu preferences
 #>
 
+# Ensure errors stop execution so that they can be caught
+$ErrorActionPreference = 'Stop'
+# Use stricter evaluation for this module
 set-strictmode -version latest
 
 function Export-ConEmuPrefs([string]$outputPath = ${ throw "Must provide an output path!" }) {

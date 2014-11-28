@@ -3,6 +3,18 @@
   Useful helper functions for logging to the console
 #>
 
+<#
+  Valid Color Names
+  -------------------------
+  Black         DarkBlue
+  DarkGreen     DarkCyan
+  DarkRed       DarkMagenta
+  DarkYellow    Gray
+  DarkGray      Blue
+  Green         Cyan
+  Red           Magenta
+  Yellow        White
+#>
 $colors = @{
   'debug'   = 'white';
   'info'    = 'blue';
@@ -10,6 +22,13 @@ $colors = @{
   'alert'   = 'cyan';
   'warn'    = 'yellow';
   'error'   = 'red'
+}
+
+function get-callerinfo {
+  trap { continue; }
+  $frames = (get-pscallstack | select-object command,location,arguments)
+  $caller = $frames[2]
+  "$($caller.location), $($caller.command) $($caller.arguments)"
 }
 
 function show-log($message, $color = "white") {
@@ -40,28 +59,6 @@ function show-error($message) {
   show-log $message $colors['error']
 }
 
-function trace-error($err) {
-<#
-  .SYNOPSIS
-  Pretty prints errors contained in $error
-  .EXAMPLE
-  Use in conjunction with trap:
-
-    function get-things {
-      trap { trace-error $error[0]; return; }
-      ...
-    }
-
-#>
-  $location      = $err.InvocationInfo.PositionMessage
-  $exception     = $err.Exception
-  $exceptionType = $exception.GetType().Name
-  $message       = $exception.Message
-
-  show-error "$exceptionType : $message"
-  show-error $location
-}
-
 function show-object([parameter(ValueFromPipeline=$true)] $obj) {
   trap { continue; }
 
@@ -74,9 +71,31 @@ function show-object([parameter(ValueFromPipeline=$true)] $obj) {
   show-warning ('-' * 20)
 }
 
-function get-callerinfo {
-  trap { continue; }
-  $frames = (get-pscallstack | select-object command,location,arguments)
-  $caller = $frames[2]
-  "$($caller.location), $($caller.command) $($caller.arguments)"
+function trace-error($errors, [string]$default = 'A non-terminating error occurred, but contained no details.') {
+<#
+  .SYNOPSIS
+  Pretty prints errors contained in $error
+  .EXAMPLE
+  Use in conjunction with trap:
+
+    function get-things {
+      trap { trace-error $error -default 'Something broke'; return; }
+      ...
+    }
+
+#>
+  if ($errors -ne $null -and $errors.Count -gt 0) {
+    $err           = $errors[0]
+    $location      = $err.InvocationInfo.PositionMessage
+    $exception     = $err.Exception
+    $exceptionType = $exception.GetType().Name
+    $message       = $exception.Message
+
+    show-error "$exceptionType : $message"
+    show-error $location
+  } else {
+    $caller = get-callerinfo
+    show-error "$default"
+    show-error $caller
+  }
 }

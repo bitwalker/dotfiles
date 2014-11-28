@@ -3,8 +3,11 @@
   Helpers for handling files, directories, and paths
 #>
 
+# Ensure errors stop execution so that they can be caught
+$ErrorActionPreference = 'Stop'
+# Use stricter evaluation for this module
 set-strictmode -version latest
-
+# Load module dependencies
 $_includes = $PSScriptRoot
 import-module (join-path $_includes logging.psm1)
 import-module (join-path $_includes functional.psm1)
@@ -13,9 +16,13 @@ function test-directory([string]$path) {
 <#
   .SYNOPSIS
   Determines if a directory exists.
+  .PARAMETER path
+  The path to the directory in question.
+  .OUTPUTS
+  Boolean
 #>
-  trap { show-error $error[0]; break; }
-  $exists = if (test-path $path) {
+  trap { $false; return; }
+  if (test-path $path) {
     [System.IO.Directory]::Exists(resolve-path $path)
   } else {
     $false

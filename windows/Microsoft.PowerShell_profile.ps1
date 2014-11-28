@@ -4,25 +4,25 @@
   directory for the interesting stuff.
 #>
 
-# Enforce strict mode
+# Use stricter rules for evaluating this script
 set-strictmode -version latest
+# Friendlier errors
+trap { trace-error $error[0]; return; }
+# Ensure that any errors force the trap block to be executed
+$ErrorActionPreference = 'Stop'
 
 # Load submodules
-import-module .\includes\logging.psm1
-import-module .\includes\helpers.psm1
-import-module .\includes\environment.psm1
-import-module .\includes\file.psm1
-import-module .\includes\crypto.psm1
-import-module .\inculdes\functional.psm1
-import-module .\includes\installer.psm1
-
+$_includes = join-path (resolve-path $PSScriptRoot) includes
+import-module (join-path $_includes logging.psm1)
+import-module (join-path $_includes helpers.psm1)
+import-module (join-path $_includes environment.psm1)
+import-module (join-path $_includes file.psm1)
+import-module (join-path $_includes crypto.psm1)
+import-module (join-path $_includes functional.psm1)
+import-module (join-path $_includes installer.psm1)
 
 # Load aliases
 . .\aliases.ps1
-
-# Now that any dependencies have been loaded, trap all future errors
-# and write them using my own error formatter
-trap { trace-error $error[0] }
 
 # Exports
 $REPOS            = "C:\Repositories"

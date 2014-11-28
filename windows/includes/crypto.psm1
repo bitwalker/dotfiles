@@ -7,9 +7,12 @@
     to make common testing or validation tasks easier
 #>
 
+# Ensure errors stop execution so that they can be caught
+$ErrorActionPreference = 'Stop'
+# Use stricter evaluation for this module
 set-strictmode -version latest
 
-function get-hash {
+function Get-Hash {
 <#
   .SYNOPSIS
   Product a hash of the provided string or file
@@ -46,7 +49,7 @@ function get-hash {
   }
 }
 
-function get-md5([string]$str) {
+function Get-MD5([string]$str) {
 <#
   .SYNOPSIS
   Produce an MD5 hash of the provided string or file
@@ -59,7 +62,7 @@ function get-md5([string]$str) {
   get-hash $str -algorithm md5
 }
 
-function get-sha1([string]$str) {
+function Get-SHA1([string]$str) {
 <#
   .SYNOPSIS
   Produce a SHA1 hash of the provided string or file
@@ -72,7 +75,7 @@ function get-sha1([string]$str) {
   get-hash $str -algorithm sha1
 }
 
-function get-sha256([string]$str) {
+function Get-SHA256([string]$str) {
 <#
   .SYNOPSIS
   Produce a SHA256 hash of the provided string or file
