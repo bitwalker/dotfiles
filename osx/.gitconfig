@@ -1,3 +1,3 @@
 [include]
-  path = ../git/.gitconfig_shared
-  path = ../git/.gitconfig_osx
+  path = ~/git/.gitconfig_shared
+  path = ~/git/.gitconfig_osx
