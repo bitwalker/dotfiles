@@ -1,8 +1,38 @@
 {
-  "chocolatey": "require_chocolatey";
-  "psake": "require_psake";
-  "git": "require_git";
-  "vim": "require_vim";
-  "dotfiles": "require_dotfiles";
-  "sublime": "require_sublime";
+  'chocolatey': {
+    'type':   'script',
+    'script': "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
+  },
+  'psake': {
+    'type':    'package',
+    'package': 'psake'
+  },
+  'git': {
+    'type':    'package',
+    'package': 'git'
+  },
+  'vim': {
+    'type':    'package',
+    'package': 'vim'
+  },
+  'smtp4dev': {
+    'type':    'package',
+    'package': 'smtp4dev',
+  },
+  'conemu': {
+    'type':    'package',
+    'package': 'conemu'
+  },
+  'clink': {
+    'type':    'clink',
+    'package': 'clink'
+  },
+  'gow': {
+    'type':    'package',
+    'package': 'gow'
+  },
+  'pscx': {
+    'type': 'msi',
+    'path': 'vendor/pscx-3.2.0.msi'
+  }
 }

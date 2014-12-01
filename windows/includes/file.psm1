@@ -12,6 +12,69 @@ $_includes = $PSScriptRoot
 import-module (join-path $_includes logging.psm1)
 import-module (join-path $_includes functional.psm1)
 
+function sync-files {
+<#
+  .SYNOPSIS
+  Provides a clean API over robocopy. Loosely imitates rsync.
+#>
+  param(
+    [parameter(mandatory=$true,position=0,helpMessage='Source path to sync from')]
+    [alias('source')]
+    [string]
+    $from,
+    [parameter(mandatory=$true,position=1,helpMessage='Target path to sync to')]
+    [alias('target')]
+    [string]
+    $to,
+    [parameter(helpMessage='Verbose output. Will output full logging information')]
+    [alias('v')]
+    [switch]
+    $verbose,
+    [parameter(helpMessage='Exclude directories with the given names or paths')]
+    [alias('xd', 'exclude-dirs')]
+    [string[]]
+    $exclude_dirs,
+    [parameter(helpMessage='Exclude files with the given names or paths')]
+    [alias('xf', 'exclude-files')]
+    [string[]]
+    $exclude_files
+  )
+
+  # Ensure source path exists
+  $from_resolved = resolve-path $from
+  $xf = [string]::join(' ', $exclude_files)
+
+  # /e        - Sync subdirectories including empties
+  # /copy:DAT - copy data, attributes, timestamps
+  # /dcopy:T  - copy directory timestamps
+  # /timfix   - fix timestamps
+  $copy_opts = '/e /copy:DAT /dcopy:T /timfix'
+  # /v       - verbose logging
+  # /eta     - show estimated time to completion
+  # /unicode - output in unicode
+  # /njh     - no job header
+  # /njs     - no job summary
+  # /fp      - show full path
+  $log_opts  = '/eta /unicode /njh /njs /fp'
+  # /xx   - exclude extra files (do not delete extras in target)
+  # /xa:T - exclude temporary files
+  $file_opts = '/xx /xa:T'
+  # A list of filters to match files for exclusion
+  $excludes  = if ($exclude_files -eq $()) { '' } else { ' -xf ' + [string]::join(' ', $exclude_files) }
+  # A list of directory paths to exclude
+  $excludes += if ($exclude_dirs -eq $())  { '' } else { ' -xd ' + [string]::join(' ', $exclude_dirs) }
+
+  if ($verbose) {
+    robocopy $from_resolved $to `
+      $copy_opts $log_opts /v $file_opts $excludes
+  } else {
+    robocopy $from_resolved $to `
+      $copy_opts $log_opts $file_opts $excludes | out-null
+  }
+
+  if (!$?) { throw 'Failed to sync files!'}
+}
+
 function test-directory([string]$path) {
 <#
   .SYNOPSIS

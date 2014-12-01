@@ -1,0 +1,26 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+    <Snippets  xmlns='http://schemas.microsoft.com/PowerShell/Snippets'>
+        <Snippet Version='1.0.0'>
+            <Header>
+                <Title>elseif</Title>
+                <Description>inserts &quot;elseif&quot; conditional block</Description>
+                <Shortcut>ei</Shortcut> 
+                <Keywords>ScriptBlock,Editor</Keywords>
+                <Author>Tobias</Author>
+                <SnippetTypes>
+                    <SnippetType>Expansion</SnippetType>
+                </SnippetTypes>
+            </Header>
+
+            <Code>
+                <Script Language='PowerShell' CaretOffset='8'>
+                    <![CDATA[elseif ($a -eq 2)
+{
+  
+
+}]]>
+                </Script>
+            </Code>
+
+    </Snippet>
+</Snippets>

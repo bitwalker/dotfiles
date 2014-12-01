@@ -1,0 +1,7 @@
+"SearchTerm";"Type";"Target";"Description"
+"Clear-*";"Like";"Command";"Cmdlets with the verb ""Clear"" will erase content. You need to carefully evaluate what this cmdlet erases."
+"Disable-*";"Like";"Command";"Cmdlets with the verb ""Disable"" can disable functionality. Find out what is being disabled here, and whether it is security critical."
+"Enable-*";"Like";"Command";"Cmdlets with the verb ""Enable"" can enable functionality that in turn may affect security or stability. Find out what is being disabled here, and whether it is security critical."
+"Set-*";"Like";"Command";"Cmdlets with the verb ""Set"" will change settings. You need to carefully evaluate which settings are changed, and whether this affects your system stability"
+"Start-*";"Like";"Command";"Cmdlets with the verb ""Start"" invoke something. Please check what is being started here, and whether it is security relevant."
+"Suspend-*";"Like";"Command";"Cmdlets with the verb ""Suspend"" will temporarily stop things. Make sure you check what is being suspended here, and whether it affects security or stability."

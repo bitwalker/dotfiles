@@ -1,0 +1,26 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+    <Snippets  xmlns='http://schemas.microsoft.com/PowerShell/Snippets'>
+        <Snippet Version='1.0.0'>
+            <Header>
+                <Title>finally</Title>
+                <Description>inserts &quot;finally&quot; block</Description>
+                <Shortcut>fin</Shortcut> 
+                <Keywords>ScriptBlock,Editor</Keywords>
+                <Author>Tobias</Author>
+                <SnippetTypes>
+                    <SnippetType>Expansion</SnippetType>
+                </SnippetTypes>
+            </Header>
+
+            <Code>
+                <Script Language='PowerShell' CaretOffset='14'>
+                    <![CDATA[finally
+{
+  
+
+}]]>
+                </Script>
+            </Code>
+
+    </Snippet>
+</Snippets>

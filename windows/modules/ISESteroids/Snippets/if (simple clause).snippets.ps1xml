@@ -1,0 +1,25 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+    <Snippets  xmlns='http://schemas.microsoft.com/PowerShell/Snippets'>
+        <Snippet Version='1.0.0'>
+            <Header>
+                <Title>if (simple clause)</Title>
+                <Description>inserts a simple if clause</Description>
+                <Shortcut>if</Shortcut> 
+                <Keywords>ScriptBlock,Editor</Keywords>
+                <Author>Tobias</Author>
+                <SnippetTypes>
+                    <SnippetType>Expansion</SnippetType>
+                </SnippetTypes>
+            </Header>
+
+            <Code>
+                <Script Language='PowerShell' CaretOffset='4'>
+                    <![CDATA[if ($x -gt $y)
+{
+    
+}]]>
+                </Script>
+            </Code>
+
+    </Snippet>
+</Snippets>

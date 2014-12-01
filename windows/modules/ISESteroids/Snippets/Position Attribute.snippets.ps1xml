@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+    <Snippets  xmlns='http://schemas.microsoft.com/PowerShell/Snippets'>
+        <Snippet Version='1.0.0'>
+            <Header>
+                <Title>Position Attribute</Title>
+                <Description>inserts Position Attribute</Description>
+                <Shortcut>Pos</Shortcut> 
+                <Author></Author>
+                <SnippetTypes>
+                    <SnippetType>Expansion</SnippetType>
+                </SnippetTypes>
+            </Header>
+
+            <Code>
+                <Script Language='PowerShell' CaretOffset='12'>
+                    <![CDATA[Position = 0]]>
+                </Script>
+            </Code>
+
+    </Snippet>
+</Snippets>

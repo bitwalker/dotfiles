@@ -1,0 +1,24 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+    <Snippets  xmlns='http://schemas.microsoft.com/PowerShell/Snippets'>
+        <Snippet Version='1.0.0'>
+            <Header>
+                <Title>Param block (simple)</Title>
+                <Description>adds simple param() block</Description>
+                <Shortcut>par</Shortcut> 
+                <Author>Tobias</Author>
+                <SnippetTypes>
+                    <SnippetType>Expansion</SnippetType>
+                </SnippetTypes>
+            </Header>
+
+            <Code>
+                <Script Language='PowerShell' CaretOffset='12'>
+                    <![CDATA[param
+(
+  $Parameter1
+)]]>
+                </Script>
+            </Code>
+
+    </Snippet>
+</Snippets>

@@ -1,0 +1,22 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+    <Snippets  xmlns='http://schemas.microsoft.com/PowerShell/Snippets'>
+        <Snippet Version='1.0.0'>
+            <Header>
+                <Title>Where-Object</Title>
+                <Description>Where-Object Clause</Description>
+                <Shortcut>wh</Shortcut> 
+                <Keywords>Pipeline,Editor,Console</Keywords>
+                <Author>Tobias</Author>
+                <SnippetTypes>
+                    <SnippetType>Expansion</SnippetType>
+                </SnippetTypes>
+            </Header>
+
+            <Code>
+                <Script Language='PowerShell' CaretOffset='20'>
+                    <![CDATA[| Where-Object { $_. } ]]>
+                </Script>
+            </Code>
+
+    </Snippet>
+</Snippets>

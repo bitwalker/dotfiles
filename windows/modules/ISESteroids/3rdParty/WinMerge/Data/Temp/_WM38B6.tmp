@@ -1,0 +1,818 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Threading.Tasks;
+using System.Windows.Forms.Integration;
+
+using System.Management.Automation;
+using System.Management.Automation.Language;
+using Microsoft.PowerShell.Host.ISE;
+using Microsoft.VisualStudio.Text;
+using System.Collections;
+using System.Reflection;
+
+namespace ISESteroids.AddonTools
+{
+    /// <summary>
+    /// Interaktionslogik für VariableMonitor.xaml
+    /// </summary>
+    internal partial class VariableMonitor : System.Windows.Controls.UserControl, IAddOnToolHostObject
+    {
+        // true if visible:
+        private bool isActive = false;
+
+        private PSPropGrid _myPG;
+        private WindowsFormsHost _MyHost;
+        private MoreInfo _objColl = null;
+        private List<string> SystemVars = ISEHost.InternalVars;
+        // this is the tab the control is loaded in:
+        private PowerShellTab myTab = null;
+        private System.Timers.Timer RefreshTimer = null;
+        
+
+        internal enum DisplayMode
+        {
+            Custom,
+            Default,
+            None
+        }
+
+        internal void RefreshPGrid()
+        {
+            // dispose current PGrid and get new one
+            _myPG.OnItemLeftClick -= _myPG_OnItemLeftClick;
+            _myPG.OnItemRightClick -= _myPG_OnItemRightClick;
+            _myPG.OnItemDoubleClick -= _myPG_OnItemDoubleClick;
+            _myPG.OnDragDrop -= _myPG_OnDragDrop;
+            _myPG.PropertyGrid.SelectedObject = null;
+            object[] p = { true };
+            _myPG.PropertyGrid.Invoke_AllAccess("Dispose", p);
+
+
+            _myPG = new PSPropGrid();
+
+
+        }
+
+        // must be PUBLIC!
+
+        public VariableMonitor()
+        {
+            try
+            {
+                InitializeComponent();
+                
+                //, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+
+                _MyHost = new WindowsFormsHost();
+                _myPG = new PSPropGrid();
+                
+
+                _myPG.OnItemLeftClick += _myPG_OnItemLeftClick;
+                _myPG.OnItemRightClick += _myPG_OnItemRightClick;
+                _myPG.OnItemDoubleClick += _myPG_OnItemDoubleClick;
+                _myPG.OnDragDrop += _myPG_OnDragDrop;
+                Referencer.EventDispatcher.OnISEEditorFocus += EventDispatcher_OnISEEditorFocus;
+                Referencer.EventDispatcher.OnSettingsChanged += EventDispatcher_OnSettingsChanged;
+                Referencer.EventDispatcher.OnPowerShellBusyChanged += EventDispatcher_OnPowerShellBusyChanged;
+                Referencer.EventDispatcher.OnTabChange += EventDispatcher_OnTabChange;
+                try
+                {
+                    _myPG.Font = new System.Drawing.Font(Referencer.SteroidOptions.FontFamilyVariableMonitor, Referencer.SteroidOptions.GetEffectiveVariableMonitorFontSize(), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+                }
+                catch { }
+                //object test = _myPG.GetField_AllAccess("gridView").GetField_AllAccess("fontBold");
+                //_myPG.GetField_AllAccess("gridView").Invoke_AllAccess("ClearCachedFontInfo", null);
+                //_myPG.GetField_AllAccess("gridView").SetField_AllAccess("fontBold", _myPG.Font = new System.Drawing.Font("SegoeUI", 12));
+                //DateTime d = DateTime.Now;
+                //_myPG.SelectedObject = d;
+                //_myPG.Font = new System.Drawing.Font("Tahoma", 10);
+                //_myPG.Font = new System.Drawing.Font("Calibri", 10);
+                _MyHost.Child = _myPG;
+                Grid.SetRow(_MyHost, 2);
+                _Container.Children.Add(_MyHost);
+                _objColl = new MoreInfo();
+                DateTime d = DateTime.Now;
+                _myPG.PropertyGrid.SelectedObject = _objColl;
+                _myPG.PropertyGrid.Refresh();
+                this.SearchType.SelectionChanged += SearchType_SelectionChanged;
+                // workerthread updatevariable
+                
+                //worker = new BackgroundWorker();
+                //worker.WorkerReportsProgress = false;
+                //worker.WorkerSupportsCancellation = true;
+                //worker.DoWork += worker_UpdateVariable;
+                //worker.RunWorkerCompleted += worker_UpdateVariableDone;
+                RefreshTimer = new System.Timers.Timer();
+                RefreshTimer.Interval = 400;
+                RefreshTimer.Enabled = true;
+                RefreshTimer.AutoReset = false;
+                RefreshTimer.Elapsed += UpdateVariables_Elapsed;
+                contextTimer = new System.Timers.Timer();
+                contextTimer.Interval = 10;
+                contextTimer.Enabled = false;
+                contextTimer.AutoReset = false;
+                contextTimer.Elapsed += contextTimer_Elapsed;
+            }
+            catch (Exception ex)
+            {
+                ISEHost.MsgBox("Failure to initialize variable monitor: " + ex.Message.ToString(), "Failure Setup Tab", MessageBoxButton.OK, MessageBoxImage.Stop);
+            }
+            
+        }
+
+        void EventDispatcher_OnTabChange(PowerShellTab PowerShellTab)
+        {
+            // typically, there should be no need for changes on tabchange
+            // because each tab has its own varmon
+            var a = 1;
+            RefreshTimer.Stop();
+        }
+
+        void EventDispatcher_OnPowerShellBusyChanged(bool isBusy)
+        {
+            try
+            {
+                if (isBusy == true && this.myTab.CanInvoke == false)
+                {
+                    this.WarningLabel.Visibility = System.Windows.Visibility.Visible;
+                }
+                else
+                {
+                    this.WarningLabel.Visibility = System.Windows.Visibility.Collapsed;
+                }
+            }
+            catch { }
+        }
+
+        void EventDispatcher_OnSettingsChanged()
+        {
+            // we have a settings change
+            // so set font
+            _myPG.Font = new System.Drawing.Font(Referencer.SteroidOptions.FontFamilyVariableMonitor, Referencer.SteroidOptions.GetEffectiveVariableMonitorFontSize(), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            _myPG.PropertyGrid.Refresh();
+        }
+
+        void EventDispatcher_OnISEEditorFocus(object sender, ISEFile ActiveISEFile, ISEFile LastISEFile)
+        {
+            // attention:
+            // this will be received by each tab
+            // we must make sure it is picked up only by the varmon that is responsible
+            // for this event
+            if (Referencer.TestAddonVariable(ISEHost.GetCurrentTab))
+            {
+                if (Referencer.GetAddonVariable(ISEHost.GetCurrentTab).Control == this)
+                {
+                    RefreshTimer.Stop();
+                    RefreshTimer.Start();
+                }
+            }
+        }
+
+        
+
+        private bool ShouldCancelDragDrop = false;
+        
+
+        // this gets executed when a drag operation should be started
+        void _myPG_OnDragDrop(System.Windows.Forms.GridItem item)
+        {
+            try
+            {
+                ShouldCancelDragDrop = false;
+                PowerShellTab tab = ISEHost.GetCurrentTab;
+                // if the currently visible script is saved, do not allow drop!
+                if (tab.Files.Count > 0 && tab.Files.SelectedFile.IsUntitled == false)
+                {
+                    ISEHost.WriteStatusBarLink(ISESteroids.Properties.Resources.MessageNoDragDrop, ISEHost.StatusPriority.High);
+                    return;
+                }
+
+                ISEHost.ExecuteInUIThread(delegate
+                {
+                    DependencyObject dependencyObject = (DependencyObject)this;
+
+                    System.Windows.Forms.GridItem parent = item;
+                    List<string> varParts = new List<string>();
+                    bool IsEnum = false;
+                    do
+                    {
+                        string label = parent.Label.ToString();
+                        if (label.StartsWith(" ")) { label = label.TrimStart().Replace("[0","["); IsEnum = true; }
+                        varParts.Add(label);
+                        parent = parent.Parent;
+                    } while (parent.GridItemType != System.Windows.Forms.GridItemType.Category && IsEnum == false);
+
+                    string[] varArray = varParts.ToArray();
+                    string variable = "";
+                        Array.Reverse(varArray);
+                        variable = "$" + String.Join(".", varArray) + "\n"; 
+                    
+
+                    DragDrop.DoDragDrop(dependencyObject, variable, System.Windows.DragDropEffects.Move);
+
+                    return null;
+                });
+            }
+            catch { }
+
+        }
+
+        void _myPG_OnItemDoubleClick(System.Windows.Forms.GridItem item)
+        {
+            ShouldCancelDragDrop = true;
+            
+        }
+
+        System.Timers.Timer contextTimer = null;
+
+
+        void _myPG_OnItemRightClick(System.Windows.Forms.GridItem item)
+        {
+            ShouldCancelDragDrop = true;
+           
+            contextTimer.Start();
+           
+            }
+
+        
+void contextTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+{
+ 	contextTimer.Stop();
+        //this.ContextMenu.PlacementTarget = this;
+    ISEHost.ExecuteInUIThread(delegate
+    {
+        try
+        {
+            this.ContextMenu = new System.Windows.Controls.ContextMenu();
+
+            if (_myPG.PropertyGrid.SelectedGridItem.Parent.GridItemType == System.Windows.Forms.GridItemType.Root)
+            {
+                // top level entry was clicked
+                string label = _myPG.PropertyGrid.SelectedGridItem.Label;
+                this.ContextMenu.Items.Add(ISESteroids.MenuHelper.AddMenuItem("Collapse All Nodes", CommandImplementation.HostRelated.cmdCollapseVarGrid, _myPG.PropertyGrid));
+                this.ContextMenu.Items.Add(ISESteroids.MenuHelper.AddMenuItem("Expand All Nodes", CommandImplementation.HostRelated.cmdExpandVarGrid, _myPG.PropertyGrid));
+                
+    
+                if (label == ISESteroids.Properties.Resources.VarMonScriptVariables || label == ISESteroids.Properties.Resources.VarMonUserVariables)
+                {
+                    // script or user variables
+                    // offer to delete them all
+                    System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string>();
+                    foreach(KeyValuePair kvp in _objColl)
+                    {
+                        list.Add(String.Format("'{0}'", kvp.Name));
+                    }
+                    object[] parameters = { list, myTab };
+                    this.ContextMenu.Items.Add(new Separator());
+                    this.ContextMenu.Items.Add(ISESteroids.MenuHelper.AddMenuItem("Delete all variables", CommandImplementation.HostRelated.cmdDeleteVariable, parameters));
+                    
+                }
+                this.ContextMenu.Items.Add(new Separator());
+                this.ContextMenu.Items.Add(ISESteroids.MenuHelper.AddMenuItem("Font & Size", CommandImplementation.HostRelated.cmdSelectFont, _myPG.PropertyGrid));
+                
+                this.ContextMenu.IsOpen = true;
+            }
+            else
+            {
+                //this.ContextMenu.Items.Add(ISESteroids.MenuHelper.AddMenuItem("Highlight All Instances", CommandImplementation.TokenSelections.cmdSelectVariable, _myPG.PropertyGrid.SelectedGridItem.Label));
+                this.ContextMenu.Items.Add(new Separator());
+                this.ContextMenu.Items.Add(ISESteroids.MenuHelper.AddMenuItem("Collapse All Nodes", CommandImplementation.HostRelated.cmdCollapseVarGrid, _myPG.PropertyGrid));
+                this.ContextMenu.Items.Add(new Separator());
+
+                // ADD TO EDITOR/CONSOLE
+                this.ContextMenu.Items.Add(ISESteroids.MenuHelper.AddMenuItem("Insert Into Editor", CommandImplementation.TokenSelections.cmdInsertVariable, _myPG.PropertyGrid.SelectedGridItem));
+                // TODO: INSERT INTO CONSOLE, SWITCH TO CONSOLE IF NECESSARY, DO NOT ADD NEW LINE
+                this.ContextMenu.Items.Add(ISESteroids.MenuHelper.AddMenuItem("Insert Into Console", CommandImplementation.TokenSelections.cmdInsertVariableInConsole, _myPG.PropertyGrid.SelectedGridItem));
+                this.ContextMenu.Items.Add(new Separator());
+                // IS VARIABLE IN CUSTOM LIST?
+                if (_myPG.PropertyGrid.SelectedGridItem != null && _myPG.PropertyGrid.SelectedGridItem.Label != null && _myPG.PropertyGrid.SelectedGridItem.Label != "")
+                {
+                    string varName = _myPG.PropertyGrid.SelectedGridItem.Label;
+                    if (Referencer.GetCustomVarMonList(ISEHost.GetCurrentTab).Contains(varName) == false)
+                    {
+                        this.ContextMenu.Items.Add(ISESteroids.MenuHelper.AddMenuItem("Add to custom list", CommandImplementation.Debugger.cmdDebugAddVarMon, varName));
+                    }
+                    else
+                    {
+                        this.ContextMenu.Items.Add(ISESteroids.MenuHelper.AddMenuItem("Remove from custom list", CommandImplementation.Debugger.cmdDebugRemoveVarMon, varName));
+                    }
+                    this.ContextMenu.Items.Add(new Separator());
+                }
+                MenuItem DebugMenu = MenuHelper.AddMenuItem("Debugger");
+                DebugMenu.Items.Add(MenuHelper.AddMenuItem("Break On Read", CommandImplementation.Debugger.cmdDebugVariableRead, _myPG.PropertyGrid.SelectedGridItem));
+                DebugMenu.Items.Add(MenuHelper.AddMenuItem("Break On Write", CommandImplementation.Debugger.cmdDebugVariableWrite, _myPG.PropertyGrid.SelectedGridItem));
+                DebugMenu.Items.Add(MenuHelper.AddMenuItem("Break On Type Change", CommandImplementation.Debugger.cmdDebugVariableTypeChange, _myPG.PropertyGrid.SelectedGridItem));
+                this.ContextMenu.Items.Add(DebugMenu);
+                this.ContextMenu.IsOpen = true;
+            }
+
+            
+        }
+        catch (Exception ex)
+        { var a = 1; }
+        return null;
+    });
+}
+
+
+        void _myPG_OnItemLeftClick(System.Windows.Forms.GridItem item)
+        {
+            ShouldCancelDragDrop = true;
+            var c = 1;
+        }
+
+        bool selectionHasChanged = false;
+
+        void SearchType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            selectionHasChanged = true;
+            RefreshTimer.Stop();
+            RefreshTimer.Start();
+        }
+
+        private bool isBusy = false;
+        private void UpdateVariables_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            RefreshTimer.Stop();
+            Console.WriteLine("Update");
+            UpdateVariable();
+ 
+        }
+
+     
+
+        //private BackgroundWorker worker;
+        private ObjectModelRoot hostobject;
+        
+
+        public ObjectModelRoot HostObject
+        {
+            get
+            {
+                return this.hostobject;
+            }
+            set
+            {
+                this.hostobject = value;
+                
+            }
+        }
+
+        private DisplayMode requestedMode = DisplayMode.Default;
+        internal void InitializeControl(PowerShellTab tab)
+        {
+            this.myTab = tab;
+            this.IsVisibleChanged += VariableMonitor_IsVisibleChanged;
+            
+            Referencer.EventDispatcher.OnCommandExecuted += EventDispatcher_OnCommandExecuted;
+            RefreshTimer.Start();
+        }
+        void EventDispatcher_OnCommandExecuted(PowerShellTab tab, DisplayMode Mode)
+        {
+            // if this tab is active, update monitor:
+            // CANINVOKE DOES NOT WORK! TOO FREQUENT, INCL TABEXPANSION!
+            if (tab == myTab && isActive)
+            {
+                if (Mode != DisplayMode.Default) { requestedMode = Mode; }
+                RefreshTimer.Stop();
+                RefreshTimer.Start();
+            }
+        }
+
+        internal void SetDisplayMode(DisplayMode mode, bool isInitialization = false)
+        {
+            if (requestedMode == mode && isInitialization == false) return;
+            if (mode != DisplayMode.Default) { requestedMode = mode; }
+            RefreshTimer.Stop();
+            
+            lastRefresh = DateTime.FromBinary(0);
+            if (isInitialization)
+            {
+                // extend timer interval because this will be called when the addon is turned on, so it may take some time
+                // for it to be fully responsive
+                
+            }
+            RefreshTimer.Start();
+        }
+       
+        
+        void VariableMonitor_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // this is not safe
+            // we get duplicate scans because update may be (and should be) triggered elsewhere
+            // we have problems with tabchange
+            isActive = (bool)e.NewValue;
+            if (isActive) {
+                RefreshTimer.Stop();
+                RefreshTimer.Start();
+            }
+        }
+
+        private Dictionary<string, PSVariable> lastVars;
+        List<string> newVars;
+        List<string> updatedVars;
+        private string lastMode = "";
+        private DateTime lastRefresh = DateTime.Now;
+        private ISEEditor lastEditor = ISEHost.GetCurrentISEEditor;
+
+        internal void UpdateVariableDelayed()
+        {
+            //lastRefresh = DateTime.FromBinary(0);
+            RefreshTimer.Stop();
+            RefreshTimer.Start();
+        }
+
+        internal void ReleaseObjects()
+        {
+            if (_myPG.PropertyGrid.SelectedObject != null) _myPG.PropertyGrid.SelectedObject = null;
+        }
+
+        internal void UpdateVariable(bool force = false)
+        {
+            // updating variables is very expensive
+            // do this only if the variable monitor is really visible
+            RefreshTimer.Stop();
+            PowerShellTab tab = ISEHost.GetCurrentTab;
+            string dn = tab.DisplayName;
+            bool isVisible = (Referencer.ActiveAddon(tab) == "variablemonitor");
+
+
+            if (isVisible == false)
+            {
+                // release monitored objects 
+                if (_myPG.PropertyGrid.SelectedObject != null)  _myPG.PropertyGrid.SelectedObject = null;
+
+                return;
+            }
+            Dictionary<string, PSVariable> curVars=null;
+            
+            try
+            {
+                // as a brute force approach, we do not allow refreshs to the same instance
+                // within 300ms after last refresh ended
+                if (force == false)
+                {
+                    if ((DateTime.Now - lastRefresh).TotalMilliseconds < 300 && lastEditor == ISEHost.GetCurrentISEEditor) { return; }
+                    if (isActive == false) { return; }
+                }
+                    if (Referencer.GetExecutionContext(myTab) == null) { return; }
+                
+                
+
+                // what is the current memory consumption?
+                    System.Diagnostics.Process proc = System.Diagnostics.Process.GetCurrentProcess();
+                    long memoryLimit = 250000000;
+                // if it is considerably large, force a garbage collection
+                // this will free a lot of pending resources held by the property grid
+                    if (proc.PrivateMemorySize64 > memoryLimit)
+                    {
+                        GC.Collect();
+                        GC.WaitForPendingFinalizers();
+                        GC.Collect();
+                    }
+
+                // initializes variable monitor for new tab
+                // THIS WILL ACTUALLY REFRESH THE ENTIRE COLLECTION!
+                if (_objColl == null) { _objColl = new MoreInfo(); }
+
+           
+
+                //newVars = new List<string>();
+                //updatedVars = new List<string>();
+
+                // refresh variables if changed
+
+                curVars = Referencer.GetVariables(myTab) as Dictionary<string, PSVariable>;
+
+                //if (lastVars != null)
+                //{
+                //    foreach (PSVariable pv in curVars.Values)
+                //    {
+
+                //        // is it a new variable?
+                //        if (lastVars.ContainsKey(pv.Name) == false)
+                //        {
+                //            newVars.Add(pv.Name);
+
+                //        }
+                //        else
+                //        {
+                //            // is it an updated variable?
+                //            PSVariable pv2 = lastVars[pv.Name];
+                //            if (pv.Value != pv2.Value) //|| pv.Value.ToString() != pv2.Value.ToString())
+                //            {
+                //                updatedVars.Add(pv.Name);
+                //            }
+                //        }
+                //    }
+
+                //}
+                //lastVars = new Dictionary<string, PSVariable>(StringComparer.OrdinalIgnoreCase);
+                //foreach (PSVariable pv in curVars.Values)
+                //{
+                //    lastVars.Add(pv.Name, pv);
+                //}
+                //lastVars = curVars;
+            }catch{}
+
+            try{
+
+                ISEHost.ExecuteInUIThread(delegate
+                {
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    _myPG.PropertyGrid.SuspendLayout();
+                    // do we have a request for category display change?
+                    if (requestedMode != DisplayMode.Default)
+                    {
+                        switch (requestedMode)
+                        {
+                            case DisplayMode.Custom:
+                                {
+                                    requestedMode = DisplayMode.Default;
+                                    if (SearchType.Text != "Custom")
+                                    {
+                                        SearchType.SelectionChanged -= SearchType_SelectionChanged;
+                                        SearchType.Text = "Custom";
+                                        SearchType.SelectionChanged += SearchType_SelectionChanged;
+                                        selectionHasChanged = true;
+
+                                    }
+                                    break;
+                                }
+                        }
+                    }
+
+                    if (lastEditor != ISEHost.GetCurrentISEEditor && SearchType.Text == "Script")
+                    {
+                        selectionHasChanged = true;
+                    }
+                    lastEditor = ISEHost.GetCurrentISEEditor;
+
+                    // if there is a change in category, release all objects and get new ones
+                    // that is much faster
+                    if (selectionHasChanged)
+                    {
+                        selectionHasChanged = false;
+                        SearchTextBox.Text = "";
+                    }
+                    if ( true)  // ADDED TRUE TO RELEASE PREVIOUS OBJECTS
+                    {
+                        
+                        //NEW
+                        _myPG.PropertyGrid.SelectedObject = null;
+
+                        //if (_objColl != null)
+                        //{
+                        //    if (_objColl != null && _objColl.Count > 0)
+                        //    {
+                        //        foreach (KeyValuePair o in _objColl)
+                        //        {
+
+                        //        }
+                        //    }
+                        //}
+
+                        // NEW
+                        //_objColl.Clear();
+                        _objColl = new MoreInfo();
+                        _myPG.PropertyGrid.SelectedObject = _objColl;
+                    }
+                    else
+                    {
+                        _objColl.Clear();
+                    }
+                    //_objColl = new MoreInfo();
+                    string searchtype = this.SearchType.Text;
+                    Referencer.currentVarMonDisplayType = searchtype;
+                    string sbtext = SearchTextBox.Text.Trim();
+                    if (sbtext == "") { sbtext = "*"; }
+                    string searchtext = "(?i)" + Regex.Escape(sbtext).Replace("\\*", "(.*?)");
+
+                    // get all variables defined in current script
+                    if (searchtype.ToLower() == "script")
+                    {
+                        Dictionary<string, bool> varDict = GetCurrentVariables();
+                        foreach (KeyValuePair<string, bool> variable in varDict)
+                        {
+                            if (SystemVars.Contains(variable.Key) == false )
+                            {
+                            if (Regex.IsMatch(variable.Key, searchtext))
+                            {
+                                try
+                                {
+                                    if (curVars.ContainsKey(variable.Key))
+                                    {
+                                        KeyValuePair<string, PSVariable> psvar = curVars.First(Item => Item.Key == variable.Key);
+                                        KeyValuePair kvp = new KeyValuePair(psvar.Key, psvar.Value.Value, ISESteroids.Properties.Resources.VarMonScriptVariables, psvar.Value.Description);
+                                        _objColl.AddKeyValuePair(kvp);
+                                    }
+                                    else
+                                    {
+                                        KeyValuePair kvp = new KeyValuePair(variable.Key, null, ISESteroids.Properties.Resources.VarMonScriptVariables);
+                                        _objColl.AddKeyValuePair(kvp);
+
+                                    }
+                                }
+                                catch
+                                {
+                                }
+                            }
+                            }
+                        }
+                    }
+                    if (searchtype.ToLower() == "custom")
+                    {
+                        List<string> list = Referencer.GetCustomVarMonList(ISEHost.GetCurrentTab);
+                        foreach (string variable in list)
+                        {
+                            if (Regex.IsMatch(variable, searchtext))
+                            {
+                                try
+                                {
+                                    if (curVars.ContainsKey(variable))
+                                    {
+                                        KeyValuePair<string, PSVariable> psvar = curVars.First(Item => Item.Key == variable);
+                                        KeyValuePair kvp = new KeyValuePair(psvar.Key, psvar.Value.Value, "Custom List", psvar.Value.Description);
+                                        _objColl.AddKeyValuePair(kvp);
+                                    }
+                                    else
+                                    {
+                                        KeyValuePair kvp = new KeyValuePair(variable, null, "Custom List");
+                                        _objColl.AddKeyValuePair(kvp);
+
+                                    }
+                                }
+                                catch
+                                {
+                                }
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        List<string> TypeList = new List<string>();
+
+                        foreach (PSVariable item in curVars.Values)
+                        {
+                            TypeList.Clear();
+                            foreach (System.Attribute tc in item.Attributes.Where(Item => Item is System.Management.Automation.ArgumentTransformationAttribute))
+                            {
+                                
+                                foreach(Type t in (Type[])tc.GetField_AllAccess("_convertTypes"))
+                                {
+                                    TypeList.Add(t.Name);
+                                }
+                            }
+                            string Description = item.Description;
+                            if (TypeList.Count>0)
+                            {
+                                Description += "\nAcceptable types: ";
+                                
+
+                                Description += String.Join(",", TypeList);
+
+                            }
+
+                            switch (searchtype.ToLower())
+                            {
+                                case "user":
+                                    {
+                                        if (SystemVars.Contains(item.Name) == false && Regex.IsMatch(item.Name, searchtext))
+                                        {
+                                            KeyValuePair kvp = new KeyValuePair(item.Name, item.Value, ISESteroids.Properties.Resources.VarMonUserVariables, Description);
+                                            _objColl.AddKeyValuePair(kvp);
+                                        }
+
+                                        break;
+                                    }
+
+                                case "system":
+                                    {
+                                        if (SystemVars.Contains(item.Name) && Regex.IsMatch(item.Name, searchtext))
+                                        {
+                                            KeyValuePair kvp = new KeyValuePair(item.Name, item.Value, "PowerShell System Variables", Description);
+                                            _objColl.AddKeyValuePair(kvp);
+                                        }
+                                        break;
+                                    }
+                                case "all":
+                                    {
+                                        if (Regex.IsMatch(item.Name, searchtext))
+                                        {
+                                            KeyValuePair kvp = new KeyValuePair(item.Name, item.Value, "All Variables", Description);
+                                            _objColl.AddKeyValuePair(kvp);
+                                        }
+                                        break;
+
+                                    }
+                                case "regex":
+                                    {
+                                        if (Regex.IsMatch(item.Name, SearchTextBox.Text))
+                                        {
+                                            KeyValuePair kvp = new KeyValuePair(item.Name, item.Value, "Variables", Description);
+                                            _objColl.AddKeyValuePair(kvp);
+                                        }
+                                        break;
+                                    }
+                                //case "current":
+                                //    {
+                                //        if (Regex.IsMatch(item.Name, SearchTextBox.Text))
+                                //        {
+                                //            if (newVars.Contains(item.Name) | updatedVars.Contains(item.Name))
+                                //            {
+                                //                KeyValuePair kvp = new KeyValuePair(item.Name, item.Value, "New Or Updated Variables", Description);
+                                //                _objColl.AddKeyValuePair(kvp);
+                                //            }
+                                //        }
+                                //        break;
+                                //    }
+                            }
+
+                        }
+                    }
+
+                    //_myPG.SelectedObject = _objColl;
+                    _myPG.PropertyGrid.Refresh();
+                    _myPG.PropertyGrid.ResumeLayout();
+
+                    Mouse.OverrideCursor = null;
+
+                    return null;
+                });
+            }
+            catch 
+            {  }
+            lastRefresh = DateTime.Now;
+        }
+
+        internal Token[] GetCurrentToken(ISEEditor ISEEditor)
+        {
+            
+                if (ISEEditor == null) { return null; }
+                Token[] tokenList = null;
+                ITextBuffer buffer = (ITextBuffer)ISEEditor.GetField_AllAccess("buffer");
+                try
+                {
+
+                    buffer.Properties.TryGetProperty<Token[]>("PSTokens", out tokenList);
+                }
+                catch { }
+                return tokenList;
+        }
+
+        Dictionary<string, bool> GetCurrentVariables()
+        {
+            try
+            {
+                Dictionary<string, bool> rv = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+                ISEEditor ISEEditor = ISEHost.GetCurrentISEEditor;
+                if (ISEEditor == null) { return rv; }
+                Token[] tokenList = null;
+                ITextBuffer buffer = (ITextBuffer)ISEEditor.GetField_AllAccess("buffer");
+                try
+                {
+
+                    buffer.Properties.TryGetProperty<Token[]>("PSTokens", out tokenList);
+                }
+                catch { }
+                if (tokenList == null || tokenList.Count() == 0) { return rv; }
+                System.Collections.Generic.IEnumerable<Token> matchToken = tokenList.Where(Item => Item.Kind == TokenKind.Variable);
+                foreach(Token current in matchToken)
+                {
+                    string varname = current.Text.TrimStart('$');
+                    if (rv.ContainsKey(varname)==false)
+                    {
+                        rv.Add(varname, true);
+                    }
+                }
+                return rv;
+            }
+            catch
+            { }
+
+            return null;
+}
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateVariable();
+//            RefreshTimer.Stop();
+  //          RefreshTimer.Start();
+        }
+
+    }
+}

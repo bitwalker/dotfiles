@@ -13,51 +13,62 @@
   be overwritten at any time!
 #>
 
+param(
+  [parameter(HelpMessage='Allow output from individual commands to be displayed during installation')]
+  [switch]
+  $verbose = $false
+)
+
+# Stop executing if an error is encountered
+$ErrorActionPreference = 'Stop'
+
 # Use stricter rules for evaluating this script
 set-strictmode -version latest | out-null
 
-
 write-host 'Bootstrapping installer...'
+
 # We require an elevated shell for some portions of the installation process,
 # so fail early if we don't already have one.
-assert-isElevatedShell | out-null
+assert-isElevatedShell
+
 # Include some of the extension modules for use during installation
 $_includes = resolve-path (join-path $PSScriptRoot includes)
-import-module (join-path $_includes helpers.psm1) | out-null
-import-module (join-path $_includes file.psm1) | out-null
-import-module (join-path $_includes logging.psm1) | out-null
-import-module (join-path $_includes installer.psm1)
-import-module (join-path $_includes git.psm1)
-# Trap all errors and handle them to produce friendlier, more useful output
-trap { trace-error $error[0]; return; }
-# Ensure that any errors force the trap block to be executed
-$ErrorActionPreference = 'Stop'
-# Since these scripts are not locally created, nor signed (yet),
-# we need to ensure the execution policy is set to unrestricted
-grant-unrestrictedExecution
-# Load dependency manifest
-$json         = get-content (resolve-path .\dependencies.json) -encoding utf8
-$dependencies = convertfrom-json $json
+import-module (join-path $_includes helpers.psm1)
+import-module (join-path $_includes file.psm1)
+import-module (join-path $_includes logging.psm1)
+import-module (join-path $_includes installer.psm1) -disableNameChecking
 
-show-success 'Dependency manifest loaded!'
-# Run sync-depedencies, which will check to make sure all
-# deps are installed, and any applicable preferences are symlinked
-sync-dependencies $dependencies
-# Link profile module to $HOME\Documents\WindowsPowerShell directory
-$from_path = $PSScriptRoot
-$to_path   = split-path $PROFILE
-$files = (ls .\* -include *.ps1,*.psm1 -exlude install.ps1 -recurse) | % { get-relativepath $_ }
-# Change to the profile path to make this linking stuff a bit cleaner
-pushd $to_path
-# Link all these files to the source repo so that updates are automatically propogated from now on
-$files | foreach {
-  new-directory (split-path $_)
-  $file = (join-path $from_path $_)
-  if (!(test-path $file)) {
-    # Only symlink if there isn't already a file there
-    new-link -s $_ $file
-  }
+# Trap all errors and handle them to produce friendlier, more useful output
+trap {
+  trace-error $error[0]
+  show-error 'Failed to install profile!'
+  break
 }
-# Change back to the original directory
-popd
+
+# Link profile module to $HOME\Documents\WindowsPowerShell directory
+exec 'Syncing profile scripts...' `
+  -verbose $verbose `
+  ${function:sync-profile}
+
+# Make sure .cmdrc is setup
+show-info 'Installing cmd.exe profile...'
+exec 'Installing cmd.exe profile' `
+  -verbose $verbose `
+  ${function:install-cmdrc}
+
+# Make sure ansicon is installed (adds entry to HKLM:\Software\Microsoft\Command Processor:AutoRun)
+show-info 'Installing ansicon...'
+exec 'Installing ansicon...' `
+  -verbose $verbose `
+  ${function:install-ansicon}
+
+# Restore dependencies
+exec 'Restoring dependencies...' `
+  -verbose $verbose `
+  ${function:restore-dependencies}
+
+# Build version information from git and write it to VERSION
+# file located in profile root directory, for reference
+$version = update-profileVersion
+
 show-success "Profile module $version has been installed succesfully!"

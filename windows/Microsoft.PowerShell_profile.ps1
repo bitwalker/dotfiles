@@ -28,13 +28,13 @@ import-module (join-path $_includes installer.psm1)
 $REPOS            = "C:\Repositories"
 $PROFILE_DIR      = split-path $PROFILE
 $PS_PROMPT        = resolve-path .\prompt.ps1
-$SUBLIME_PACKAGES = "$pgfiles\SublimeText\Data\Packages"
+$SUBLIME_PACKAGES = "$HOME\Dropbox\Applications\SublimeText\Data\Packages"
 
 # Import prompt
 . .\prompt.ps1
 
 # Load posh-git profile
-. .\poshgit\profile.ps1
+. .\modules\poshgit\profile.ps1
 
 # Reset home directory
 mkdirp $REPOS

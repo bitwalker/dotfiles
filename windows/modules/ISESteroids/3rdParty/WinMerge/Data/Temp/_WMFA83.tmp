@@ -1,0 +1,470 @@
+
+using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Management.Automation;
+using System.Runtime.CompilerServices;
+using System.Management.Automation.Runspaces;
+using System.Windows.Threading;
+using System.Threading;
+using System.Reflection;
+using Microsoft.PowerShell.Host.ISE;
+using System.Collections.Generic;
+
+namespace ISESteroids
+{
+    [TypeConverter(typeof(PSConverter))]
+    internal class MyTypeDescriptor : ICustomTypeDescriptor
+    {
+        private PSObjectContainer _obj;
+        private string _displayname;
+        private bool _norecurse;
+        internal MyTypeDescriptor(PSObjectContainer obj)
+        {
+            this._obj = null;
+            this._displayname = "";
+            this._norecurse = true;
+            this._obj = obj;
+        }
+        internal MyTypeDescriptor(PSObjectContainer obj, string displayname, bool norecurse)
+        {
+            this._obj = null;
+            this._displayname = "";
+            this._norecurse = true;
+            this._obj = obj;
+            this._displayname = displayname;
+            this._norecurse = norecurse;
+        }
+        public AttributeCollection GetAttributes()
+        {
+            return TypeDescriptor.GetAttributes(this, true);
+        }
+        public string GetClassName()
+        {
+            return TypeDescriptor.GetClassName(this, true);
+        }
+        public string GetComponentName()
+        {
+            return TypeDescriptor.GetComponentName(this, true);
+        }
+        public TypeConverter GetConverter()
+        {
+            return TypeDescriptor.GetConverter(this, true);
+        }
+        public EventDescriptor GetDefaultEvent()
+        {
+            return TypeDescriptor.GetDefaultEvent(this, true);
+        }
+        public PropertyDescriptor GetDefaultProperty()
+        {
+            return TypeDescriptor.GetDefaultProperty(this, true);
+        }
+        public object GetEditor(Type editorBaseType)
+        {
+            return TypeDescriptor.GetEditor(this, editorBaseType, true);
+        }
+        public EventDescriptorCollection GetEvents()
+        {
+            return TypeDescriptor.GetEvents(this, true);
+        }
+        public EventDescriptorCollection GetEvents(Attribute[] attributes)
+        {
+            return TypeDescriptor.GetEvents(this, attributes, true);
+        }
+        public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
+        {
+            return this.GetProperties();
+        }
+        public object GetPropertyOwner(PropertyDescriptor pd)
+        {
+            return this;
+        }
+        private PowerShell ps = null;
+        internal PropertyDescriptorCollection pdc = null;
+                        
+        
+        public PropertyDescriptorCollection GetProperties()
+        {
+            // first, try and get the property values directly from PowerShell
+            // GUI-related objects are bound to the PS thread, so this is the only way to get them
+            // however, the PS thread may be busy so this first approach may fail:
+            try
+            {
+                bool inDebugger = (bool)ISEHost.GetCurrentTab.GetProperty_AllAccess("InDebugger");
+
+                // if we are in a debug session, a reference to the powershell is needed
+                    if (ps == null )
+                    {
+                        ps = PowerShell.Create();
+                        ps.Runspace = (System.Management.Automation.Runspaces.Runspace)ISEHost.GetCurrentTab.GetField_AllAccess("runspaceRef").GetProperty_AllAccess("Runspace");
+                    
+                    }
+                    PropertyDescriptorCollection propertyDescriptorCollection = new PropertyDescriptorCollection(null);
+                    List<string> ownThreadProps = new List<string>();
+                    List<string> alienThreadProps = new List<string>();
+                    bool isUI = this._obj.GetPSBase.ImmediateBaseObject is System.Windows.UIElement;
+                    
+                    if (isUI == false)
+                    {
+                        //var ccc = ps.AddScript("$host.UI.RawUI").Invoke();
+                        // find props that can be safely read from own thread
+
+
+                        foreach (string PropName in this._obj.PropertyNames)
+                        {
+                            try
+                            {
+                                //var c = WaitFor<object>.Run(TimeSpan.FromMilliseconds(2), () => this._obj.GetPSBase.Properties[PropName].Value);
+                                var c = this._obj.GetPSBase.Properties[PropName].Value;
+                                ownThreadProps.Add(PropName);
+                                if (PropName.ToLower() != "syncroot")
+                                {
+                                    propertyDescriptorCollection.Add(new MyPropertyDescriptor(this, c, PropName, this._norecurse));
+                                }
+                            }
+                            catch { alienThreadProps.Add(PropName); }
+                        }
+                        if (alienThreadProps.Count == 0 && isUI==false)
+                        {
+                            IEnumerator enumerator = null;
+            
+                            int num = 0;
+                            try
+                            {
+                                if (this._obj.GetPSBase.ImmediateBaseObject is IEnumerable)
+                                {
+                                    try
+                                    {
+                                        enumerator = ((IEnumerable)this._obj.GetPSBase.ImmediateBaseObject).GetEnumerator();
+                                        while (enumerator.MoveNext())
+                                        {
+                                            object objectValue = RuntimeHelpers.GetObjectValue(enumerator.Current);
+                                            string text2 = string.Format("{0:00}", num);
+                                            propertyDescriptorCollection.Add(new MyPropertyDescriptor(this, RuntimeHelpers.GetObjectValue(objectValue), string.Concat(new string[]
+								{
+									" ",
+									this._displayname,
+									"[",
+									text2,
+									"]"
+								}), true));
+                                            num++;
+                                            if (num > 10)
+                                            {
+                                                text2 = string.Format("{0:00}", num);
+                                                propertyDescriptorCollection.Add(new MyPropertyDescriptor(this, "only the first 10 elements are shown", string.Concat(new string[]
+									{
+										" ",
+										this._displayname,
+										"[",
+										text2,
+										"]..."
+									})));
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    finally
+                                    {
+
+                                        if (enumerator is IDisposable)
+                                        {
+                                            (enumerator as IDisposable).Dispose();
+                                        }
+                                    }
+                                }
+                            }
+                            catch 
+                            {
+
+
+                            }
+
+                        }
+                    }
+
+                // there are props that need reading in PS task
+                    if (alienThreadProps.Count > 0 || isUI)
+                    {
+                        if (inDebugger == false)
+                        {
+
+                            ps.AddScript("param(${____ö1}, ${____ö2}, ${____ö3}) ${____ö1}.GetPropertiesFromPS(${____ö2}, ${____ö3}); Remove-Variable -Name ____ö1,____ö2,____ö3").AddArgument(this).AddArgument(ownThreadProps).AddArgument(propertyDescriptorCollection);
+
+                            var r = ps.Invoke<PropertyDescriptorCollection>();
+                            if (r.Count == 1)
+                            {
+                                propertyDescriptorCollection = r[0];
+                            }
+
+                        }
+                        else
+                        {
+                            ThreadStart callback = delegate
+                            {
+                                try
+                                {
+                                    GetPropertiesFromPSThread(propertyDescriptorCollection, ownThreadProps);
+                                }
+                                catch { }
+                            };
+
+                            Type[] paramTypes = { typeof(ThreadStart), typeof(bool) };
+                            MethodInfo mi = typeof(PowerShellTab).GetMethod("PostToPipelineThread", BindingFlags.NonPublic | BindingFlags.Instance, null, paramTypes, null);
+                            Object[] param = { callback, true };
+                            mi.Invoke(ISEHost.GetCurrentTab, param);
+                            propertyDescriptorCollection = pdc;
+                        }
+                    }
+                    return propertyDescriptorCollection;
+                
+            }
+            catch  {  }
+            Referencer.EventDispatcher.FirePowerShellBusy(true);
+            return null;
+            
+            
+        }
+
+        //[Obfuscation]
+        //public PropertyDescriptorCollection GetPropertiesFromPSDebugger(TypeDescriptor td)
+        //{
+        //    System.Management.Automation.Debugger debug = ((System.Management.Automation.Runspaces.Runspace)ISEHost.GetCurrentTab.GetField_AllAccess("runspaceRef").GetProperty_AllAccess("Runspace")).Debugger;
+        //    PSCommand pscommand = new PSCommand();
+        //    PSDataCollection<PSObject> data = new PSDataCollection<PSObject>();
+        //    pscommand.AddScript("param($obj) $obj.GetPropertiesFromPS($obj)").AddArgument(td);
+        //    debug.ProcessCommand(pscommand, data);
+        //    if (data.Count == 1)
+        //    {
+        //        return (PropertyDescriptorCollection)data[0].BaseObject;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
+        public void GetPropertiesFromPSThread(PropertyDescriptorCollection pdc, List<string>Exclude)
+        {
+            this.pdc = _GetPropertiesFromPS(this, Exclude, pdc); // NEW!!
+        }
+ 
+
+        // needs to be unobfuscated so that PS can find it
+        [Obfuscation]
+        public PropertyDescriptorCollection GetPropertiesFromPS(List<string>Exclude, PropertyDescriptorCollection pdc)
+        {
+                return _GetPropertiesFromPS(this, Exclude, pdc); // NEW!!
+        }
+        public PropertyDescriptorCollection _GetPropertiesFromPS(MyTypeDescriptor td, List<string>Exclude, PropertyDescriptorCollection pdc)
+        {
+        
+            
+            string[] propertyNames = td._obj.PropertyNames;
+            long start = DateTime.Now.Ticks;
+            long cutoff = start + (new TimeSpan(0, 0, 5)).Ticks;
+            bool skip = false;
+
+            checked
+            {
+                
+                for (int i = 0; i < propertyNames.Length; i++)
+                {
+                    
+                    string text = propertyNames[i];
+                    if (text.ToLower() != "syncroot" && Exclude.Contains(text)==false)
+                    {
+                        PSMemberInfo pSMemberInfo = td._obj.GetPSBase.Properties[text];
+                        if (td._norecurse)
+                        {
+                        }
+                        try
+                        {
+                            // ATTENTION: CAN GO OUT OF HAND WITH COMPLEX OBJECTS SUCH AS WPF WINDOW
+                            // DELAYS COME FROM EXCEPTIONS, WE SHOULD TRY AND NOT GET THE EXCEPTIONS. WHERE ARE THEY ADDED?
+                            object value = null;
+                            try
+                            {
+                                if (skip == false)
+                                {
+                                    //value = WaitFor<object>.Run(TimeSpan.FromSeconds(4) , () => RuntimeHelpers.GetObjectValue(pSMemberInfo.Value));
+                                    value = RuntimeHelpers.GetObjectValue(pSMemberInfo.Value);
+                                    
+                                    //value = pSMemberInfo.GetField_AllAccess("baseObject").GetProperty_AllAccess(pSMemberInfo.Name);
+                                        
+                                }
+                                else
+                                {
+                                    value = "(evaluation took too long and was skipped)";
+                                }
+                                pdc.Add(new MyPropertyDescriptor(td, value, text, td._norecurse));
+                            }
+                            catch (Exception e)
+                            {
+                                if (e.InnerException != null)
+                                {
+                                    pdc.Add(new MyPropertyDescriptor(td, String.Format("[{0}]", e.InnerException.Message), text));
+                                }
+                                else
+                                {
+                                    pdc.Add(new MyPropertyDescriptor(td, String.Format("[{0}]", e.Message), text));
+                                }
+                                }
+
+                        }
+                        catch (Exception expr_83)
+                        {
+
+                            Exception ex = expr_83;
+                            if (ex.Message.ToLower().Contains("runspace"))
+                            {
+                                string theValue = "[" + Enum.GetName(typeof(PSMemberTypes), td._obj.GetPSBase.Members[text].MemberType) + "]";
+                                pdc.Add(new MyPropertyDescriptor(td, theValue, text));
+                            }
+                            else
+                            {
+                                pdc.Add(new MyPropertyDescriptor(td, ex.Message, text));
+                            }
+
+                        }
+                    }
+                }
+                
+
+                
+                return pdc;
+            }
+        }
+
+        
+        public sealed class WaitFor<TResult>
+        {
+            readonly TimeSpan _timeout;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="WaitFor{T}"/> class, 
+            /// using the specified timeout for all operations.
+            /// </summary>
+            /// <param name="timeout">The timeout.</param>
+            public WaitFor(TimeSpan timeout)
+            {
+                _timeout = timeout;
+            }
+
+            /// <summary>
+            /// Executes the spcified function within the current thread, aborting it
+            /// if it does not complete within the specified timeout interval. 
+            /// </summary>
+            /// <param name="function">The function.</param>
+            /// <returns>result of the function</returns>
+            /// <remarks>
+            /// The performance trick is that we do not interrupt the current
+            /// running thread. Instead, we just create a watcher that will sleep
+            /// until the originating thread terminates or until the timeout is
+            /// elapsed.
+            /// </remarks>
+            /// <exception cref="ArgumentNullException">if function is null</exception>
+            /// <exception cref="TimeoutException">if the function does not finish in time </exception>
+            public TResult Run(Func<TResult> function)
+            {
+                if (function == null) throw new ArgumentNullException("function");
+
+                var sync = new object();
+                var isCompleted = false;
+
+                WaitCallback watcher = obj =>
+                {
+                    var watchedThread = obj as Thread;
+
+                    lock (sync)
+                    {
+                        if (!isCompleted)
+                        {
+                            Monitor.Wait(sync, _timeout);
+                        }
+                    }
+                    // CAUTION: the call to Abort() can be blocking in rare situations
+                    // http://msdn.microsoft.com/en-us/library/ty8d3wta.aspx
+                    // Hence, it should not be called with the 'lock' as it could deadlock
+                    // with the 'finally' block below.
+
+                    if (!isCompleted)
+                    {
+                        //watchedThread.Abort();
+                    }
+                };
+
+                try
+                {
+                    ThreadPool.QueueUserWorkItem(watcher, Thread.CurrentThread);
+                    return function();
+                }
+                catch (ThreadAbortException)
+                {
+                    // This is our own exception.
+                    Thread.ResetAbort();
+
+                    throw new TimeoutException(string.Format("The operation has timed out after {0}.", _timeout));
+                }
+                finally
+                {
+                    lock (sync)
+                    {
+                        isCompleted = true;
+                        Monitor.Pulse(sync);
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Executes the spcified function within the current thread, aborting it
+            /// if it does not complete within the specified timeout interval.
+            /// </summary>
+            /// <param name="timeout">The timeout.</param>
+            /// <param name="function">The function.</param>
+            /// <returns>result of the function</returns>
+            /// <remarks>
+            /// The performance trick is that we do not interrupt the current
+            /// running thread. Instead, we just create a watcher that will sleep
+            /// until the originating thread terminates or until the timeout is
+            /// elapsed.
+            /// </remarks>
+            /// <exception cref="ArgumentNullException">if function is null</exception>
+            /// <exception cref="TimeoutException">if the function does not finish in time </exception>
+            public static TResult Run(TimeSpan timeout, Func<TResult> function)
+            {
+                return new WaitFor<TResult>(timeout).Run(function);
+            }
+        }
+        public string GetObjectType()
+        {
+            string result;
+            try
+            {
+                result = this._obj._psobject.BaseObject.GetType().FullName;
+            }
+            catch 
+            {
+                
+                result = "";
+               
+            }
+            return result;
+        }
+        public override string ToString()
+        {
+            
+            try
+            {
+                return this._obj.ToString();
+            }
+            catch 
+            {
+                
+               return "";
+                
+            }
+           
+        }
+    }
+}
