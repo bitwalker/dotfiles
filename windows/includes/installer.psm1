@@ -3,10 +3,9 @@
   Contains individual installation tasks for the installer script
 #>
 
-$_includes = resolve-path .
+$_includes = resolve-path $PSScriptRoot
 import-module (join-path $_includes logging.psm1)
 import-module (join-path $_includes file.psm1)
-import-module (join-path $_includes git.psm1)
 
 function exec {
 <#

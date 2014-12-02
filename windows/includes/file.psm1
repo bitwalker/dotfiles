@@ -86,7 +86,7 @@ function test-directory([string]$path) {
 #>
   trap { $false; return; }
   if (test-path $path) {
-    [System.IO.Directory]::Exists(resolve-path $path)
+    [System.IO.Directory]::Exists((resolve-path $path))
   } else {
     $false
   }

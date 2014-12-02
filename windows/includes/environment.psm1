@@ -59,13 +59,13 @@ function Get-ServicesFuzzy {
     [validateNotNull()]
     [string] $sort      = 'name',
     [alias('asc')]
-    [switch] $ascending = $true
+    [switch] $ascending = $true,
     [alias('r')]
     [switch] $running   = $false,
     [alias('s')]
     [switch] $stopped   = $false,
     [alias('rs', 'a', 'any')]
-    [switch] $all       = $true,
+    [switch] $all       = $true
   )
   $services = get-service | where { $_.name -match $service }
   $services = if ($all -or ($running -and $stopped)) { $services }
