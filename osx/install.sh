@@ -9,7 +9,8 @@ function doIt() {
   rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" \
         -avdh --no-perms . ~;
   # as well as the git files shared between platforms
-  rsync -avdh --no-perms ../git ~;
+  # cp -aufv ../git ~;
+  rsync -avh ../git/.[^.]* ~/git;
   source ~/.bash_profile;
 }
 
@@ -26,19 +27,19 @@ unset doIt;
 
 echo "Your dotfiles have been synchronized!"
 
-read -p "Have you installed the XCode Command Line Tools? (y/n) " -n 1;
+read -p "Install XCode Command Line Tools? (y/n) " -n 1;
 echo "";
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-  echo "Let's do that first.."
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  echo "Running installer.."
   xcode-select --install
 fi;
 
 echo ""
-read -p "Do you want to bootstrap your homebrew installation? (y/n) " -n 1;
+read -p "Install Homebrew packages? (y/n) " -n 1;
 echo "";
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  echo "Configuring homebrew..."
-  brew bundle `pwd`/Brewfile
+  echo "Running homebrew..."
+  brew bundle ../Brewfile
 fi;
 
 echo ""
