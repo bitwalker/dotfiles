@@ -6,11 +6,13 @@ git pull origin master;
 
 function doIt() {
   # sync all dotfiles from this directory
-  rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" \
+  rsync --exclude ".git/" --exclude ".DS_Store" --exclude "install.sh" \
+        --exclude "init" --exclude "Brewfile" \
         -avdh --no-perms . ~;
   # as well as the git files shared between platforms
-  # cp -aufv ../git ~;
   rsync -avh ../git/.[^.]* ~/git;
+  # and my vim configuration
+  rsync -avh ../.vim/.[^.]* ~/.vim;
   source ~/.bash_profile;
 }
 
