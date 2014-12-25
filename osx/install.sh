@@ -12,7 +12,7 @@ function doIt() {
   # as well as the git files shared between platforms
   rsync -avh ../git/.[^.]* ~/git;
   # and my vim configuration
-  rsync -avh ../.vim/.[^.]* ~/.vim;
+  rsync -avh ../.vim ~;
   source ~/.bash_profile;
 }
 

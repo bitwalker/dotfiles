@@ -1,61 +1,107 @@
-set nocompatible
-filetype off
+set nocompatible | filetype indent plugin on | syn on
+
+"""""""""""""""""""
+" Vim Addon Manager
+"""""""""""""""""""
+fun! EnsureVamIsOnDisk(plugin_root_dir)
+  " windows users may want to use http://mawercer.de/~marc/vam/index.php
+  " to fetch VAM, VAM-known-repositories and the listed plugins
+  " without having to install curl, 7-zip and git tools first
+  " -> BUG [4] (git-less installation)
+  let vam_autoload_dir = a:plugin_root_dir.'/vim-addon-manager/autoload'
+  if isdirectory(vam_autoload_dir)
+    return 1
+  else
+    call mkdir(a:plugin_root_dir, 'p')
+    execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '.
+	    \  shellescape(a:plugin_root_dir, 1).'/vim-addon-manager'
+    " VAM runs helptags automatically when you install or update 
+    " plugins
+    exec 'helptags '.fnameescape(a:plugin_root_dir.'/vim-addon-manager/doc')
+    return isdirectory(vam_autoload_dir)
+  endif
+endfun
+
+fun! SetupVAM(plugin_dir)
+  " Set advanced options like this:
+  " let g:vim_addon_manager = {}
+  " let g:vim_addon_manager.key = value
+  "     Pipe all output into a buffer which gets written to disk
+  " let g:vim_addon_manager.log_to_buf =1
+
+  " Example: drop git sources unless git is in PATH. Same plugins can
+  " be installed from www.vim.org. Lookup MergeSources to get more control
+  " let g:vim_addon_manager.drop_git_sources = !executable('git')
+  " let g:vim_addon_manager.debug_activation = 1
+
+  " VAM install location:
+  let c = get(g:, 'vim_addon_manager', {})
+  let g:vim_addon_manager = c
+  let c.plugin_root_dir = expand(a:plugin_dir, 1)
+  if !EnsureVamIsOnDisk(c.plugin_root_dir)
+    echohl ErrorMsg | echomsg "No VAM found!" | echohl NONE
+    return
+  endif
+  let &rtp.=(empty(&rtp)?'':',').c.plugin_root_dir.'/vim-addon-manager'
+
+  " Tell VAM which plugins to fetch & load:
+  " call vam#ActivateAddons([], {'auto_install' : 0})
+  " sample: call vam#ActivateAddons(['pluginA','pluginB', ...], {'auto_install' : 0})
+  " Also See "plugins-per-line" below
+
+  " Addons are put into plugin_root_dir/plugin-name directory
+  " unless those directories exist. Then they are activated.
+  " Activating means adding addon dirs to rtp and do some additional
+  " magic
+
+  " How to find addon names?
+  " - look up source from pool
+  " - (<c-x><c-p> complete plugin names):
+  " You can use name rewritings to point to sources:
+  "    ..ActivateAddons(["github:foo", .. => github://foo/vim-addon-foo
+  "    ..ActivateAddons(["github:user/repo", .. => github://user/repo
+  " Also see section "2.2. names of addons and addon sources" in VAM's documentation
+endfun
+
 """"""""""""""""""""""
 " Plugin Configuration
 """"""""""""""""""""""
-call plug#begin('~/.vim/bundle')
+call SetupVAM('~/.vim/bundle')
 
-" Notes and Examples
-" - Make sure you use single quotes
-" - On-demand loading:
-"     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-"     Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-" - Using git URL:
-"     Plug 'https://github.com/junegunn/vim-github-dashboard.git'
-" - Plugin options:
-"     Plug 'nsf/gocode', { 'tag': 'go.weekly.2012-03-13', 'rtp': 'vim' }
-" - Plugin outside ~/.vim/bundle with post-update hook:
-"     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
-" - Unmanaged plugin (manually installed and updated):
-"     Plug '~/my-prototype-plugin'
+let g:vim_addon_manager.log_to_buf = 1
+call vam#ActivateAddons([])
 
 " Color Schemes
-" Plug 'blerins/flattown'
-" Plug 'zefei/cake16'
-" Plug 'duythinht/vim-coffee'
-" Plug 'tomasr/molokai'
-" Plug 'altercation/vim-colors-solarized'
-" Plug 'ajh17/Spacegray.vim'
-" Plug 'CruizeMissile/Revolution.vim'
-" Plug 'gertjanreynaert/cobalt2-vim-theme'
-Plug 'abra/vim-abra'
+" 'blerins/flattown'
+" 'zefei/cake16'
+" 'duythinht/vim-coffee'
+" 'tomasr/molokai'
+" 'altercation/vim-colors-solarized'
+" 'ajh17/Spacegray.vim'
+" 'CruizeMissile/Revolution.vim'
+" 'gertjanreynaert/cobalt2-vim-theme'
+VAMActivate github:abra/vim-abra
 " General plugins
-Plug 'tpope/vim-surround'
-Plug 'kien/ctrlp.vim'
-Plug 'scrooloose/nerdtree'
-Plug 'nathanaelkane/vim-indent-guides'
-Plug 'tpope/vim-fugitive'
+VAMActivate github:tpope/vim-surround
+VAMActivate github:kien/ctrlp.vim
+VAMActivate github:scrooloose/nerdtree
+VAMActivate github:nathanaelkane/vim-indent-guides
+VAMActivate github:tpope/vim-fugitive
 " UI plugins
-Plug 'bling/vim-airline'
+VAMActivate github:bling/vim-airline
 " Language support
-Plug 'othree/html5.vim'
-Plug 'pangloss/vim-javascript'
-Plug 'tpope/vim-markdown'
-
-
-call plug#end()
-filetype plugin indent on
+VAMActivate github:othree/html5.vim
+VAMActivate github:pangloss/vim-javascript
+VAMActivate github:tpope/vim-markdown
 
 """""""""""""""""""""""
 " General Configuration
 """""""""""""""""""""""
-syntax enable
 
 " Change shell
 set shell=bash " Vim expects a POSIX-compliant shell, which Fish (my default shell) is not
 
 " UI
-set background = dark
 try
   colorscheme abra
 catch
@@ -81,9 +127,9 @@ let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 
 " highlight current line
-au WinLeave * set nocursorline nocursorcolumn
-au WinEnter * set cursorline cursorcolumn
-set cursorline cursorcolumn
+"au WinLeave * set nocursorline nocursorcolumn
+"au WinEnter * set cursorline cursorcolumn
+"set cursorline cursorcolumn
 
 " set leader to ,
 let mapleader=","
@@ -93,7 +139,6 @@ let g:mapleader=","
 set history=1000
 set undolevels=1000
 set nocompatible
-set confirm                    " prompt when existing from an unsaved file
 set backspace=indent,eol,start " More powerful backspacing
 set report=0                   " always report number of lines changed
 set nowrap                     " dont wrap lines
