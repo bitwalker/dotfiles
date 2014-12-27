@@ -2,13 +2,27 @@
 	"auto_indent": true,
 	"bold_folder_labels": true,
 	"caret_style": "phase",
-	"color_scheme": "Packages/Dayle Rees Color Schemes/sublime/rainbow.tmTheme",
+	"color_scheme": "Packages/User/SublimeLinter/Solarized (Dark) (SL).tmTheme",
 	"detect_indentation": true,
 	"detect_slow_plugins": false,
 	"env":
 	{
-		"PATH": "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+		"PATH": "/Users/Schoens/.exenv/versions/1.0.2/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 	},
+	"file_exclude_patterns":
+	[
+		".DS_Store",
+		"Desktop.ini",
+		"*.pyc",
+		"._*",
+		"Thumbs.db",
+		".Spotlight-V100",
+		".Trashes"
+	],
+	"folder_exclude_patterns":
+	[
+		".git"
+	],
 	"font_face": "Fantasque Sans Mono Regular",
 	"font_options":
 	[
@@ -30,21 +44,7 @@
 	"smart_indent": true,
 	"soda_folder_icons": true,
 	"tab_size": 2,
-	"theme": "Spacegray.sublime-theme",
+	"theme": "Watson.sublime-theme",
 	"translate_tabs_to_spaces": true,
-	"use_tab_stops": true,
-	"file_exclude_patterns":
-	[
-		".DS_Store",
-		"Desktop.ini",
-		"*.pyc",
-		"._*",
-		"Thumbs.db",
-		".Spotlight-V100",
-		".Trashes"
-	],
-	"folder_exclude_patterns":
-	[
-		".git",
-	]
+	"use_tab_stops": true
 }
