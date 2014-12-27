@@ -81,6 +81,7 @@ call vam#ActivateAddons([])
 " 'CruizeMissile/Revolution.vim'
 " 'gertjanreynaert/cobalt2-vim-theme'
 VAMActivate github:abra/vim-abra
+call vam#ActivateAddons(['github:daylerees/colour-schemes'], {'runtimepath': 'vim'})
 " General plugins
 VAMActivate github:tpope/vim-surround
 VAMActivate github:kien/ctrlp.vim
@@ -95,6 +96,7 @@ VAMActivate github:pangloss/vim-javascript
 VAMActivate github:tpope/vim-markdown
 VAMActivate github:elixir-lang/vim-elixir
 VAMActivate github:jimenezrick/vimerl
+VAMActivate github:dag/vim-fish
 
 """""""""""""""""""""""
 " General Configuration
@@ -105,7 +107,7 @@ set shell=bash " Vim expects a POSIX-compliant shell, which Fish (my default she
 
 " UI
 try
-  colorscheme abra
+  colorscheme earthsong-contrast
 catch
 endtry
 set guifont=Fantasque\ Sans\ Mono\ Regular:h14
@@ -213,7 +215,7 @@ cmap w!! %!sudo tee >/dev/null %
 " Airline
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme = "luna"
+let g:airline_theme = "wombat"
 let g:airline_enable_branch = 1
 
 " ctrlp
