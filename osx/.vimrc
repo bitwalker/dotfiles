@@ -93,6 +93,8 @@ VAMActivate github:bling/vim-airline
 VAMActivate github:othree/html5.vim
 VAMActivate github:pangloss/vim-javascript
 VAMActivate github:tpope/vim-markdown
+VAMActivate github:elixir-lang/vim-elixir
+VAMActivate github:jimenezrick/vimerl
 
 """""""""""""""""""""""
 " General Configuration
@@ -240,3 +242,11 @@ endif
 " highlight conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
+" Shortcut for toggling display of invisibles
+nmap <leader>l :set list!<CR>
+
+" Use the same symbols as textmate for tabstops and EOLs
+set listchars=nbsp:·,tab:▸\ ,eol:¬,trail:·,extends:>,precedes:<
+
+" Toggle search highlighting
+nmap <leader>h :set hlsearch!<CR>
