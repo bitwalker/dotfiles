@@ -2,7 +2,7 @@
 	"auto_indent": true,
 	"bold_folder_labels": true,
 	"caret_style": "phase",
-	"color_scheme": "Packages/User/SublimeLinter/Solarized (Dark) (SL).tmTheme",
+	"color_scheme": "Packages/Theme - Afterglow/Afterglow.tmTheme",
 	"detect_indentation": true,
 	"detect_slow_plugins": false,
 	"env":
@@ -44,7 +44,8 @@
 	"smart_indent": true,
 	"soda_folder_icons": true,
 	"tab_size": 2,
-	"theme": "Watson.sublime-theme",
+	"tabs_small": true,
+	"theme": "Afterglow.sublime-theme",
 	"translate_tabs_to_spaces": true,
 	"use_tab_stops": true
 }
