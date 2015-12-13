@@ -2,17 +2,11 @@
 
 cd "$(dirname "${BASH_SOURCE}")";
 
-git pull origin master;
-
 function doIt() {
   # sync all dotfiles from this directory
   rsync --exclude ".git/" --exclude ".DS_Store" --exclude "install.sh" \
         --exclude "init" --exclude "Brewfile" \
         -avdh --no-perms . ~;
-  # as well as the git files shared between platforms
-  rsync -avh ../git/.[^.]* ~/git;
-  # and my vim configuration
-  rsync -avh ../.vim ~;
   source ~/.bash_profile;
 }
 
@@ -41,7 +35,7 @@ read -p "Install Homebrew packages? (y/n) " -n 1;
 echo "";
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "Running homebrew..."
-  brew bundle ../Brewfile
+  brew bundle Brewfile
 fi;
 
 echo ""
