@@ -5,8 +5,9 @@ cd "$(dirname "${BASH_SOURCE}")";
 function doIt() {
   # sync all dotfiles from this directory
   rsync --exclude ".git/" --exclude ".DS_Store" --exclude "install.sh" \
-        --exclude "init" --exclude "Brewfile" \
+        --exclude "init" --exclude "Brewfile" --exclude "emacs" \
         -avdh --no-perms . ~;
+  sudo cp emacs /usr/local/bin/
   source ~/.bash_profile;
 }
 
