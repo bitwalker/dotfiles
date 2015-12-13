@@ -1,3 +1,6 @@
+tap homebrew/devel-only
+tap railwaycat/emacsmacport
+
 # Make sure we’re using the latest Homebrew
 update
 
@@ -30,23 +33,22 @@ install fish
 install wget --with-iri
 
 # Install more recent versions of some OS X tools
+install emacs-mac
 install vim --override-system-vi
 install apple-gcc42
 
 # Install other useful utilities
-install ack
+install the_silver_searcher
 install git
 install tree
 install dtrx
+install jq
 
 # Install Runtimes
-install erlang
-install python
+install erlang rebar3
+install python python3
 install ruby
 install node
-
-# Install Android SDK
-install android-sdk
 
 # Install brew-cask
 tap phinze/cask
