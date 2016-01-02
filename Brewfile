@@ -43,6 +43,7 @@ install git
 install tree
 install dtrx
 install jq
+install direnv
 
 # Install Runtimes
 install erlang rebar3
