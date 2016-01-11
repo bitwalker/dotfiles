@@ -5,7 +5,7 @@ set EXENV ~/.exenv/bin ~/.exenv/shims
 
 # Exports
 set -gx NVM_DIR ~/.nvm
-set -x GOPATH ~/
+set -x GOPATH ~
 set -x PATH $BINPATH $RVM $EXENV $NVM_DIR $GOPATH/bin $PATH
 set -x MANPATH /usr/local/share/man /usr/share/man
 set -x EDITOR "vim"
