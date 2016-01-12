@@ -2,11 +2,17 @@
 
 cd "$(dirname "${BASH_SOURCE}")";
 
+CWD=$(pwd)
+
 function doIt() {
-  # sync all dotfiles from this directory
-  rsync --exclude ".git/" --exclude ".DS_Store" --exclude "install.sh" \
-        --exclude "init" --exclude "Brewfile" --exclude "emacs" \
-        -avdh --no-perms . ~;
+  find . \
+       -maxdepth 1 \
+         \! \( -name ".git" \
+               -or -name "emacs" \
+               -or -name "install.sh" \
+               -or -name "." \
+               -or -name ".#*" \) \
+        -execdir ln -sf "$CWD/{}" "$HOME/{}"
   sudo cp emacs /usr/local/bin/
   source ~/.bash_profile;
 }
@@ -31,13 +37,29 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   xcode-select --install
 fi;
 
-echo ""
 read -p "Install Homebrew packages? (y/n) " -n 1;
 echo "";
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "Running homebrew..."
   brew bundle Brewfile
 fi;
+
+echo "Fetching iTerm2 color schemes..."
+git clone https://github.com/mbadolato/iTerm2-Color-Schemes ~/src/iTerm2-Color-Schemes
+
+echo "Installing Node.js version manager..."
+curl -L http://git.io/n-install | bash
+
+echo "Installing latest stable Node.js version..."
+n stable
+
+echo "Installing Elixir version manager..."
+git clone https://github.com/mururu/exenv.git ~/.exenv
+echo 'export PATH="$HOME/.exenv/bin:$PATH"' >> ~/.bash_profile
+
+echo "Installing Elixir..."
+git clone https://github.com/mururu/elixir-build.git ~/.exenv/plugins/elixir-build
+exenv install 1.2.0
 
 echo ""
 echo "All done!"
