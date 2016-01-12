@@ -42,7 +42,7 @@ brew install fish
 brew install wget --with-iri
 
 # Install more recent versions of some OS X tools
-brew install emacs-mac
+brew install emacs-mac --with-spacemacs-icon
 brew install vim --override-system-vi
 brew install apple-gcc42
 
