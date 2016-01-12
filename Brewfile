@@ -24,6 +24,14 @@ install gnu-sed --with-default-names
 install autoconf
 install automake
 
+# Install common build dependencies
+install openssl
+install libyaml
+install readline
+install libxslt
+install libtool
+install unixodbc
+
 # Install Shells
 install bash
 install bash-completion
@@ -41,19 +49,14 @@ install apple-gcc42
 install the_silver_searcher
 install git
 install tree
-install dtrx
+install dtrx p7zip
 install jq
 install direnv
 
 # Install Runtimes
 install erlang rebar3
 install python python3
-install ruby
-install node
-
-# Install brew-cask
-tap phinze/cask
-install brew-cask
+install rbenv ruby-build
 
 # Remove outdated versions from the cellar
 cleanup
