@@ -12,7 +12,7 @@ function doIt() {
                -or -name "install.sh" \
                -or -name "." \
                -or -name ".#*" \) \
-        -execdir ln -sf "$CWD/{}" "$HOME/{}"
+        -execdir ln -sf "$CWD/{}" "$HOME/{}" \;
   sudo cp emacs /usr/local/bin/
   source ~/.bash_profile;
 }
@@ -40,8 +40,9 @@ fi;
 read -p "Install Homebrew packages? (y/n) " -n 1;
 echo "";
 if [[ $REPLY =~ ^[Yy]$ ]]; then
+  sudo xcodebuild -license
   echo "Running homebrew..."
-  brew bundle Brewfile
+  . Brewfile
 fi;
 
 echo "Fetching iTerm2 color schemes..."

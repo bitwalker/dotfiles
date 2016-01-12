@@ -80,7 +80,6 @@ call vam#ActivateAddons([])
 " 'ajh17/Spacegray.vim'
 " 'CruizeMissile/Revolution.vim'
 " 'gertjanreynaert/cobalt2-vim-theme'
-VAMActivate github:abra/vim-abra
 call vam#ActivateAddons(['github:daylerees/colour-schemes'], {'runtimepath': 'vim'})
 " General plugins
 VAMActivate github:tpope/vim-surround

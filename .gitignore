@@ -1,3 +1,5 @@
 .netrwhist
 .config/fish/fish_history
 .config/fish/fishd.*
+.vim/bundle
+.local/share/fish/generated_completions

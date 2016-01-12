@@ -1,62 +1,66 @@
-tap homebrew/devel-only
-tap railwaycat/emacsmacport
+#!/usr/bin/env bash
+brew tap homebrew/devel-only
+brew tap railwaycat/emacsmacport
 
 # Make sure we’re using the latest Homebrew
-update
+brew update
 
 # Upgrade any already-installed formulae
-upgrade
+brew upgrade
 
 # Install GNU core utilities (those that come with OS X are outdated)
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
-install coreutils
+brew install coreutils
 
 # Install some other useful utilities like `sponge`.
-install moreutils
+brew install moreutils
 
 # Install GNU `find`, `locate`, `updatedb`, and `xargs`, g-prefixed
-install findutils
+brew install findutils
 
 # Install GNU `sed`, overwriting the built-in `sed`.
-install gnu-sed --with-default-names
+brew install gnu-sed --with-default-names
 
 # Install build tools
-install autoconf
-install automake
+brew install autoconf
+brew install automake
 
 # Install common build dependencies
-install openssl
-install libyaml
-install readline
-install libxslt
-install libtool
-install unixodbc
+brew install openssl
+brew install libyaml
+brew install readline
+brew install libxslt
+brew install libtool
+brew install unixodbc
 
 # Install Shells
-install bash
-install bash-completion
-install fish
+brew install bash
+brew install bash-completion
+brew install fish
 
 # Install wget with IRI support
-install wget --with-iri
+brew install wget --with-iri
 
 # Install more recent versions of some OS X tools
-install emacs-mac
-install vim --override-system-vi
-install apple-gcc42
+brew install emacs-mac
+brew install vim --override-system-vi
+brew install apple-gcc42
 
 # Install other useful utilities
-install the_silver_searcher
-install git
-install tree
-install dtrx p7zip
-install jq
-install direnv
+brew install the_silver_searcher
+brew install git
+brew install tree
+brew install dtrx p7zip
+brew install jq
+brew install direnv
 
 # Install Runtimes
-install erlang rebar3
-install python python3
-install rbenv ruby-build
+brew install erlang
+brew install --devel homebrew/devel-only/rebar3
+brew install python python3
+brew install rbenv ruby-build
+
+brew linkapps
 
 # Remove outdated versions from the cellar
-cleanup
+brew cleanup
