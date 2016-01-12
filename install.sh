@@ -24,6 +24,7 @@ else
   echo "";
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     doIt;
+    git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
   fi;
 fi;
 unset doIt;
