@@ -50,7 +50,7 @@ values."
      org
      colors
      themes-megapack
-     ;;editorconfig
+     editorconfig
      ;;perspectives
      ;; (shell :variables
      ;;        shell-default-height 30
@@ -63,8 +63,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(
-                                      (gotbones-dark-theme :location local))
+   dotspacemacs-additional-packages '()
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -241,9 +240,12 @@ user code."
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
-  ;(require `gotbones-dark-theme)
+  ;;(require `gotbones-dark-theme)
   (setq neo-theme 'ascii)
-  (setq neo-vc-integration nil)
+  ;; Javascript
+  (setq-default js2-basic-offset 2)
+  (setq-default js-indent-level 2)
+  ;;(setq neo-vc-integration nil)
 
   (exec-path-from-shell-copy-env "PATH")
   (add-hook 'alchemist-mode-hook 'company-mode)
