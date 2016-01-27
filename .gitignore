@@ -4,3 +4,4 @@
 .config/direnv/allow
 .vim/bundle
 .local/share/fish/generated_completions
+.local/share/letsencrypt

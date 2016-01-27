@@ -14,9 +14,9 @@ function _git_is_dirty
 end
 
 function fish_right_prompt
-  set -l green (set_color green)
+  set -l cyan (set_color green)
   set -l normal (set_color normal)
-  printf (date "+$green%H$normal:$green%M$normal:$green%S")
+  printf (date "+$cyan%H:%M:%S$normal")
 end
 
 function fish_prompt
