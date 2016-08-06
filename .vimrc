@@ -214,9 +214,10 @@ cmap w!! %!sudo tee >/dev/null %
 
 " Airline
 let g:airline_powerline_fonts = 1
+"let g:airline_theme = "wombat"
+let g:airline_theme='luna'
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme = "wombat"
-let g:airline_enable_branch = 1
+let g:airline#extensions#branch#enabled = 1
 
 " ctrlp
 let g:ctrlp_map = '<c-p>'

@@ -23,34 +23,43 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     auto-completion
+     ;; auto-completion
      ;; better-defaults
      git
      ;; languages
+     c-c++
+     ;;clojure
+     dockerfile
      emacs-lisp
-     markdown
      erlang
      elixir
+     go
      html
      javascript
-     go
+     ;;java
+     latex
      lua
-     dockerfile
+     markdown
      python
      ruby
      rust
+     ;;scala
      shell
+     shell-scripts
      sql
+     windows-scripts
      yaml
      ;; tools
+     org
+     deft
      react
      ;; other
-     dash
+     ;;dash
      osx
-     org
+     ;;org
      colors
      themes-megapack
-     editorconfig
+     ;;editorconfig
      ;;perspectives
      ;; (shell :variables
      ;;        shell-default-height 30
@@ -63,7 +72,10 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages
+   '(
+     base16-theme
+    )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -101,7 +113,8 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(darktooth
+   dotspacemacs-themes '(twilight-anti-bright
+                         darktooth
                          spacemacs-dark
                          spacemacs-light
                          solarized-light
@@ -177,7 +190,7 @@ values."
    ;; If non nil a progress bar is displayed when spacemacs is loading. This
    ;; may increase the boot time on some systems and emacs builds, set it to
    ;; nil to boost the loading time. (default t)
-   dotspacemacs-loading-progress-bar t
+   dotspacemacs-loading-progress-bar nil
    ;; If non nil the frame is fullscreen when Emacs starts up. (default nil)
    ;; (Emacs 24.4+ only)
    dotspacemacs-fullscreen-at-startup nil
@@ -234,13 +247,14 @@ values."
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init'.  You are free to put any
 user code."
+  dotspacemacs-elpa-https nil
   )
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
-  ;;(require `gotbones-dark-theme)
+  (setq deft-directory "~/Dropbox/Notes")
   (setq neo-theme 'ascii)
   ;; Javascript
   (setq-default js2-basic-offset 2)
