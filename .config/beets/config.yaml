@@ -1,0 +1,36 @@
+directory: ~/Downloads/Music
+library: ~/.config/music/library.blb
+import:
+    write: yes
+    move: yes
+    resume: ask
+    incremental: yes
+    detail: yes
+    group_albums: yes
+ignore:
+    - .AppleDouble
+    - ._*
+    - "*~"
+    - .DS_Store
+ui:
+    color: yes
+pluginpath: ~/.config/beets/plugins
+plugins:
+    - fetchart
+    - discogs
+    - lastgenre
+    - lastimport
+    - scrub
+    - duplicates
+    - echonest
+echonest:
+    auto: no
+fetchart:
+    cautious: true
+lastgenre:
+    force: yes
+lastfm:
+    user: paulschoens
+duplicates:
+    album: yes
+    path: yes

@@ -1,0 +1,6 @@
+beets
+discogs-client
+pyechonest
+requests
+pylast
+pyacoustid
