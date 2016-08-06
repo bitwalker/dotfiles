@@ -1,0 +1,1 @@
+/Users/paulschoenfelder/.config/fisherman/docker-completion/completions/docker.fish

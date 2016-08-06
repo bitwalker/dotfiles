@@ -1,0 +1,1 @@
+/Users/paulschoenfelder/.config/fisherman/functions/__kill_emacs.fish
