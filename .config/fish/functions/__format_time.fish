@@ -1,1 +1,1 @@
-/Users/paulschoenfelder/.config/fisherman/pure/__format_time.fish
+/Users/paulschoenfelder/.config/fisherman/functions/__format_time.fish

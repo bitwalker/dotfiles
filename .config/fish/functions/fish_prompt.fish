@@ -1,1 +1,1 @@
-/Users/paulschoenfelder/.config/fisherman/pure/fish_prompt.fish
+/Users/paulschoenfelder/.config/fisherman/functions/fish_prompt.fish

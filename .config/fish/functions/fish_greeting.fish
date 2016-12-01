@@ -1,1 +1,1 @@
-/Users/paulschoenfelder/.config/fisherman/pure/fish_greeting.fish
+/Users/paulschoenfelder/.config/fisherman/functions/fish_greeting.fish
