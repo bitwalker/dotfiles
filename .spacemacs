@@ -25,11 +25,14 @@ values."
      ;; ----------------------------------------------------------------
      ;; auto-completion
      ;; better-defaults
+     aria
+     leg
      git
      ;; languages
+     ocaml
      c-c++
-     ;;clojure
-     dockerfile
+     clojure
+     docker
      emacs-lisp
      erlang
      elixir
@@ -75,6 +78,7 @@ values."
    dotspacemacs-additional-packages
    '(
      base16-theme
+     ;;(aria-mode :location local)
     )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -277,6 +281,9 @@ layers configuration. You are free to put any user code."
  '(custom-safe-themes
    (quote
     ("59f42f7028e0cf1d8d6a7bc172dc37da64e4cd11fd29cf03c6ca950451cc2a00" default)))
+ '(package-selected-packages
+   (quote
+    (utop tuareg caml ocp-indent merlin docker tablist docker-tramp clj-refactor inflections edn paredit peg cider-eval-sexp-fu cider queue clojure-mode evil-unimpaired zenburn-theme yapfify xterm-color which-key web-mode uuidgen use-package toc-org tango-plus-theme spaceline sass-mode ruby-test-mode rubocop robe rake racer pytest py-isort pug-mode pip-requirements persp-mode paradox osx-dictionary org-projectile org-plus-contrib org-download omtose-phellack-theme neotree move-text macrostep livid-mode skewer-mode simple-httpd live-py-mode link-hint less-css-mode js2-refactor yasnippet js2-mode hl-todo highlight-indentation helm-projectile helm-ag gruber-darker-theme grandshell-theme go-eldoc go-mode git-link flycheck-rust flycheck-mix fish-mode eyebrowse evil-visual-mark-mode evil-mc evil-ediff eshell-z eshell-prompt-extras erlang dumb-jump darktooth-theme darkokai-theme cyberpunk-theme column-enforce-mode color-identifiers-mode cmake-mode clang-format cargo base16-theme badwolf-theme auctex anaconda-mode ample-theme alchemist elixir-mode aggressive-indent ace-window ace-link anzu iedit smartparens undo-tree flycheck projectile helm helm-core markdown-mode magit magit-popup git-commit with-editor async f dash s package-build zonokai-theme zen-and-art-theme yaml-mode ws-butler window-numbering web-beautify volatile-highlights vi-tilde-fringe underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme tronesque-theme toxi-theme toml-mode tern tao-theme tangotango-theme tango-2-theme tagedit sunny-day-theme sublime-themes subatomic256-theme subatomic-theme stekene-theme sql-indent spinner spacemacs-theme spacegray-theme soothe-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode shell-pop seti-theme seq scss-mode rvm rust-mode ruby-tools ruby-end rspec-mode reverse-theme reveal-in-osx-finder restart-emacs rbenv rainbow-mode rainbow-identifiers rainbow-delimiters railscasts-theme quelpa pyvenv pyenv-mode purple-haze-theme professional-theme powershell powerline popwin planet-theme pkg-info phoenix-dark-pink-theme phoenix-dark-mono-theme pcre2el pbcopy pastels-on-dark-theme osx-trash orgit organic-green-theme org-repo-todo org-present org-pomodoro org-bullets open-junk-file oldlace-theme occidental-theme obsidian-theme noctilux-theme niflheim-theme naquadah-theme mustang-theme multiple-cursors multi-term monokai-theme monochrome-theme molokai-theme moe-theme mmm-mode minimal-theme material-theme markdown-toc majapahit-theme magit-gitflow lush-theme lua-mode lorem-ipsum linum-relative light-soap-theme launchctl json-mode js-doc jbeans-theme jazz-theme jade-mode ir-black-theme inkpot-theme info+ indent-guide ido-vertical-mode hydra hy-mode hungry-delete htmlize highlight-parentheses highlight-numbers heroku-theme hemisu-theme help-fns+ helm-themes helm-swoop helm-pydoc helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss hc-zenburn-theme haml-mode gruvbox-theme gotham-theme google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger gh-md gandalf-theme flycheck-pos-tip flx-ido flatui-theme flatland-theme firebelly-theme fill-column-indicator farmhouse-theme fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-args evil-anzu eval-sexp-fu espresso-theme esh-help emmet-mode elisp-slime-nav dracula-theme dockerfile-mode django-theme disaster diminish deft define-word darkmine-theme darkburn-theme dakrone-theme cython-mode company colorsarenice-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized coffee-mode clues-theme clean-aindent-mode chruby cherry-blossom-theme busybee-theme bundler buffer-move bubbleberry-theme bracketed-paste birds-of-paradise-plus-theme bind-key auto-highlight-symbol auto-compile apropospriate-theme anti-zenburn-theme ample-zen-theme alect-themes afternoon-theme adaptive-wrap ace-jump-helm-line)))
  '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
