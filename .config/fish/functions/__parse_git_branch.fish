@@ -1,1 +1,0 @@
-/Users/paulschoenfelder/.config/fisherman/functions/__parse_git_branch.fish

@@ -1,6 +1,3 @@
-#source $fisher_home/config.fish
+if not functions -q fundle; eval (curl -sfL https://git.io/fundle-install); end
 
 source ~/.config/fish/config.local.fish
-
-# OPAM configuration
-#. /Users/paulschoenfelder/.opam/opam-init/init.fish > /dev/null 2> /dev/null or true

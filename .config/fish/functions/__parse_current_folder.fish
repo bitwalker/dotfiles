@@ -1,1 +1,0 @@
-/Users/paulschoenfelder/.config/fisherman/functions/__parse_current_folder.fish

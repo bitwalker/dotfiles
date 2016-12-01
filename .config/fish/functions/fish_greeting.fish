@@ -1,1 +1,0 @@
-/Users/paulschoenfelder/.config/fisherman/functions/fish_greeting.fish

@@ -1,1 +1,0 @@
-/Users/paulschoenfelder/.config/fisherman/functions/__launch_emacs.fish

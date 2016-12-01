@@ -1,1 +1,0 @@
-/Users/paulschoenfelder/.config/fisherman/functions/direnv.fish

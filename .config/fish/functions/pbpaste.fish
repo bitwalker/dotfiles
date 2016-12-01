@@ -1,1 +1,0 @@
-/Users/paulschoenfelder/.config/fisherman/pbcopy/functions/pbpaste.fish
