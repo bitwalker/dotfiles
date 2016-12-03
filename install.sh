@@ -13,7 +13,8 @@ function doIt() {
                -or -name "." \
                -or -name ".#*" \) \
         -execdir ln -sf "$CWD/{}" "$HOME/{}" \;
-  sudo cp emacs /usr/local/bin/
+  mkdir -p ~/bin;
+  mkdir -p ~/src;
   source ~/.bash_profile;
 }
 
@@ -49,19 +50,14 @@ fi;
 echo "Fetching iTerm2 color schemes..."
 git clone https://github.com/mbadolato/iTerm2-Color-Schemes ~/src/iTerm2-Color-Schemes
 
-echo "Installing Node.js version manager..."
-curl -L http://git.io/n-install | bash
+echo "Installing version manager..."
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.2.0
+source ~/.asdf/asdf.sh
 
-echo "Installing latest stable Node.js version..."
-n stable
-
-echo "Installing Elixir version manager..."
-git clone https://github.com/mururu/exenv.git ~/.exenv
-echo 'export PATH="$HOME/.exenv/bin:$PATH"' >> ~/.bash_profile
-
-echo "Installing Elixir..."
-git clone https://github.com/mururu/elixir-build.git ~/.exenv/plugins/elixir-build
-exenv install 1.2.0
+echo "Adding Erlang, Elixir, Go plugins"
+asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
+asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
+asdf plugin-add golang https://github.com/kennyp/asdf-golang.git
 
 echo ""
 echo "All done!"
