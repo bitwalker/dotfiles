@@ -25,8 +25,8 @@ values."
      ;; ----------------------------------------------------------------
      ;; auto-completion
      ;; better-defaults
-     aria
-     leg
+     ;;aria
+     ;;leg
      git
      ;; languages
      ocaml
