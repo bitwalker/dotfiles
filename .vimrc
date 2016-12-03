@@ -88,6 +88,7 @@ VAMActivate github:scrooloose/nerdtree
 VAMActivate github:nathanaelkane/vim-indent-guides
 VAMActivate github:tpope/vim-fugitive
 " UI plugins
+VAMActivate github:vim-airline/vim-airline-themes
 VAMActivate github:bling/vim-airline
 " Language support
 VAMActivate github:othree/html5.vim
