@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 cd "$(dirname "${BASH_SOURCE}")";
 
 CWD=$(pwd)
@@ -13,6 +15,9 @@ function doIt() {
                -or -name "." \
                -or -name ".#*" \) \
         -execdir ln -sf "$CWD/{}" "$HOME/{}" \;
+  mkdir -p ~/.config/nvim
+  ln -s "$CWD/.vimrc" "$HOME/.config/nvim/init.vim"
+  ln -s "$CWD/.vimrc" "$HOME/.vim/init.vim"
   mkdir -p ~/bin;
   mkdir -p ~/src;
   source ~/.bash_profile;
@@ -32,6 +37,12 @@ unset doIt;
 
 echo "Your dotfiles have been synchronized!"
 
+# Install tmux plugins
+echo "Installing tmux plugins.."
+sudo pip install powerline-status
+mkdir -p ~/src/github.com/tmux-plugins
+git clone https://github.com/tmux-plugins/tmux-yank ~/src/github.com/tmux-plugins/tmux-yank
+
 read -p "Install XCode Command Line Tools? (y/n) " -n 1;
 echo "";
 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -47,8 +58,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   . Brewfile
 fi;
 
-echo "Fetching iTerm2 color schemes..."
-git clone https://github.com/mbadolato/iTerm2-Color-Schemes ~/src/iTerm2-Color-Schemes
+#echo "Fetching iTerm2 color schemes..."
+#git clone https://github.com/mbadolato/iTerm2-Color-Schemes ~/src/iTerm2-Color-Schemes
 
 echo "Installing version manager..."
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.2.0
