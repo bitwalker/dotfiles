@@ -90,6 +90,7 @@ VAMActivate github:tpope/vim-fugitive
 " UI plugins
 VAMActivate github:vim-airline/vim-airline-themes
 VAMActivate github:bling/vim-airline
+VAMActivate github:tmux-plugins/vim-tmux-focus-events
 " Language support
 VAMActivate github:othree/html5.vim
 VAMActivate github:pangloss/vim-javascript
