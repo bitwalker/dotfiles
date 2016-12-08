@@ -40,8 +40,8 @@ echo "Your dotfiles have been synchronized!"
 # Install tmux plugins
 echo "Installing tmux plugins.."
 sudo pip install powerline-status
-mkdir -p ~/src/github.com/tmux-plugins
-git clone https://github.com/tmux-plugins/tmux-yank ~/src/github.com/tmux-plugins/tmux-yank
+mkdir -p ~/.tmux/plugins
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 read -p "Install XCode Command Line Tools? (y/n) " -n 1;
 echo "";
