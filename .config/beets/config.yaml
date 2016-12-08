@@ -22,9 +22,6 @@ plugins:
     - lastimport
     - scrub
     - duplicates
-    - echonest
-echonest:
-    auto: no
 fetchart:
     cautious: true
 lastgenre:
