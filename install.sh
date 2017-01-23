@@ -38,10 +38,14 @@ unset doIt;
 echo "Your dotfiles have been synchronized!"
 
 # Install tmux plugins
-echo "Installing tmux plugins.."
-sudo pip install powerline-status
-mkdir -p ~/.tmux/plugins
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+read -p "Install tmux plugins? (y/n) " -n 1;
+echo "";
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "Installing tmux plugins.."
+    sudo pip install powerline-status
+    mkdir -p ~/.tmux/plugins
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi;
 
 read -p "Install XCode Command Line Tools? (y/n) " -n 1;
 echo "";
@@ -53,22 +57,27 @@ fi;
 read -p "Install Homebrew packages? (y/n) " -n 1;
 echo "";
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  sudo xcodebuild -license
   echo "Running homebrew..."
   . Brewfile
 fi;
 
-#echo "Fetching iTerm2 color schemes..."
-#git clone https://github.com/mbadolato/iTerm2-Color-Schemes ~/src/iTerm2-Color-Schemes
+read -p "Install iTerm2 color schemes? (y/n) " -n 1;
+echo "";
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "Fetching iTerm2 color schemes..."
+    git clone https://github.com/mbadolato/iTerm2-Color-Schemes ~/src/iTerm2-Color-Schemes
+fi;
 
-echo "Installing version manager..."
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.2.0
-source ~/.asdf/asdf.sh
-
-echo "Adding Erlang, Elixir, Go plugins"
-asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
-asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
-asdf plugin-add golang https://github.com/kennyp/asdf-golang.git
+read -p "Install asdf version manager? (y/n) " -n 1;
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "Installing version manager..."
+    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.2.0
+    source ~/.asdf/asdf.sh
+    echo "Adding Erlang, Elixir, Go plugins"
+    asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
+    asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
+    asdf plugin-add golang https://github.com/kennyp/asdf-golang.git
+fi;
 
 echo ""
 echo "All done!"

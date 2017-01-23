@@ -46,8 +46,8 @@ brew install wget --with-iri
 
 # Install more recent versions of some OS X tools
 brew install emacs-mac --with-spacemacs-icon
-brew install vim --override-system-vi
-brew install apple-gcc42
+brew tap neovim/neovim
+brew install neovim
 
 # Install other useful utilities
 brew install the_silver_searcher
@@ -58,10 +58,7 @@ brew install jq
 brew install direnv
 
 # Install Runtimes
-brew install erlang
-brew install --devel homebrew/devel-only/rebar3
 brew install python python3
-brew install rbenv ruby-build
 
 brew linkapps
 
