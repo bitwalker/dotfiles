@@ -60,6 +60,10 @@ brew install direnv
 # Install Runtimes
 brew install python python3
 
+# Tmux
+brew install tmux
+brew install reattach-to-user-namespace
+
 brew linkapps
 
 # Remove outdated versions from the cellar
