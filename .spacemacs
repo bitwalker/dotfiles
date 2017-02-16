@@ -263,6 +263,8 @@ layers configuration. You are free to put any user code."
   ;; Javascript
   (setq-default js2-basic-offset 2)
   (setq-default js-indent-level 2)
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 8)
   ;;(setq neo-vc-integration nil)
 
   (exec-path-from-shell-copy-env "PATH")
