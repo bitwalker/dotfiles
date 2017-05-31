@@ -260,12 +260,14 @@ This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
   (setq deft-directory "~/Dropbox/Notes")
   (setq neo-theme 'ascii)
+  (setq neo-smart-open 'true)
+  (setq neo-autorefresh nil)
+  (setq neo-vc-integration char)
   ;; Javascript
   (setq-default js2-basic-offset 2)
   (setq-default js-indent-level 2)
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 8)
-  ;;(setq neo-vc-integration nil)
 
   (exec-path-from-shell-copy-env "PATH")
   (add-hook 'alchemist-mode-hook 'company-mode)
