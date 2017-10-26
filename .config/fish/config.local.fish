@@ -11,6 +11,9 @@ set -x PATH $NPM_BIN $GOPATH/bin $CARGO_BIN $GNUPATH /usr/local/bin /usr/local/s
 set -x MANPATH /usr/local/share/man /usr/share/man
 set -x EDITOR "vim"
 
+set -x ERL_AFLAGS "-kernel shell_history enabled"
+set -x ELIXIR_EDITOR "~/bin/emacs +__LINE__ __FILE__"
+
 # Init package managers
 source ~/.asdf/asdf.fish
 
