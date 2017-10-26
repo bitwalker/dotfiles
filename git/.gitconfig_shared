@@ -69,7 +69,7 @@
   # Use short hashes. Pass --no-abbrev-commit to disable
   abbrevCommit = true
   # default, short, local, iso, rfc, relative
-  date = relative
+  date = rfc
   # print short ref names, full prints the entire ref name
   decorate = short
 
@@ -132,17 +132,30 @@
   # List contributors with number of commits
   contributors = shortlog --summary --numbered
 
-  # Merge GitHub pull request on top of the `master` branch
-  mergepr = "!f() { \
-    if [ $(printf \"%s\" \"$1\" | grep '^[0-9]\\+$' > /dev/null; printf $?) -eq 0 ]; then \
-      git fetch origin refs/pull/$1/head:pr/$1 && \
-      git rebase master pr/$1 && \
-      git checkout master && \
-      git merge pr/$1 && \
-      git branch -D pr/$1 && \
-      git commit --amend -m \"$(git log -1 --pretty=%B)\n\nCloses #$1.\"; \
-    fi \
+  # Fetch a GitHub pull request
+  fetchpr = "!f() { \n\
+    if [ -z \"$2\" ]; then \n\
+        repo="origin" \n\
+        pr="$1" \n\
+    else \n\
+        repo="$1" \n\
+        pr="$2" \n\
+    fi \n\
+    if [ $(printf \"%s\" \"$pr\" | grep '^[0-9]\\+$' > /dev/null; printf $?) -eq 0 ]; then \n\
+      git fetch $repo refs/pull/$pr/head:pr/$pr \n\
+    else \n\
+      printf "Invalid PR \"%s\"" "$pr"; return 1 \n\
+    fi \n\
   }; f"
+
+  # Merge GitHub pull request on top of the `master` branch
+  #mergepr = "!f() { \
+    #if git fetchpr $1 $2 ; then \n\
+        #git checkout master && \
+        #git merge --log -m "Closes #$1" pr/$1 && \
+        #git branch -D pr/$1 \n\
+    #fi \n\
+  #}; f"
 
 #################
 # Colors
@@ -182,10 +195,12 @@
 [diff]
   # Detect copies as well as renames
   renames = copies
+  renameLimit = 5000
 
 [merge]
   # Include summaries of merged commits in newly created merge commit messages
   log = true
+  renameLimit = 5000
 
 [mergetool]
   keepBackup = false
