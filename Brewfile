@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 brew tap homebrew/devel-only
-brew tap railwaycat/emacsmacport
 
 # Make sure we’re using the latest Homebrew
 brew update
@@ -44,8 +43,8 @@ brew install fish
 # Install wget with IRI support
 brew install wget --with-iri
 
-# Install more recent versions of some OS X tools
-brew install emacs-mac --with-spacemacs-icon
+# Install text editors
+brew install emacs --with-cocoa --with-dbus --with-gnutls --with-imagemagick@6 --with-librsvg --with-modules
 brew tap neovim/neovim
 brew install neovim
 
