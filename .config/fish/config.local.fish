@@ -6,6 +6,7 @@ set CARGO_BIN $HOME/.cargo/bin
 #bass source ~/.nix-profile/etc/profile.d/nix.sh
 
 set -x GOPATH ~
+set -x JAVA_HOME (/usr/libexec/java_home)
 set -x GNUPATH /usr/local/opt/make/libexec/gnubin
 set -x PATH $NPM_BIN $GOPATH/bin $CARGO_BIN $GNUPATH /usr/local/bin /usr/local/sbin $PATH
 set -x MANPATH /usr/local/share/man /usr/share/man
