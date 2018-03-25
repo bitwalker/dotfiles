@@ -16,11 +16,15 @@ function doIt() {
                -or -name ".#*" \) \
         -execdir ln -sf "$CWD/{}" "$HOME/{}" \;
   mkdir -p ~/.config/nvim
-  ln -s "$CWD/.vimrc" "$HOME/.config/nvim/init.vim"
-  ln -s "$CWD/.vimrc" "$HOME/.vim/init.vim"
+  echo "Creating vim config"
+  ln -sf "$CWD/.vimrc" "$HOME/.config/nvim/init.vim"
+  ln -sf "$CWD/.vimrc" "$HOME/.vim/init.vim"
+  echo "Creating source dirs"
   mkdir -p ~/bin;
   mkdir -p ~/src;
-  source ~/.bash_profile;
+  echo "Sourcing bash profile"
+  touch ~/.bash_profile && source ~/.bash_profile
+  return 0
 }
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
