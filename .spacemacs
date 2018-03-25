@@ -47,7 +47,7 @@ This function should only modify configuration layer settings."
      ;;leg
      git
      ;; languages
-     ocaml
+     ;; ocaml
      c-c++
      clojure
      docker
@@ -55,11 +55,14 @@ This function should only modify configuration layer settings."
      erlang
      elixir
      go
+     ;; haskell
+     ;; sml
      html
      javascript
+     ;;elm
      ;;java
-     latex
-     lua
+     ;;latex
+     ;;lua
      markdown
      python
      ruby
@@ -73,7 +76,11 @@ This function should only modify configuration layer settings."
      ;; tools
      org
      deft
-     react
+     ;;ansible
+     ;;chef
+     ;;puppet
+     ;;salt
+     ;;react
      ;; other
      ;;dash
      osx
