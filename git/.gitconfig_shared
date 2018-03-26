@@ -93,7 +93,7 @@
   cloneall = clone --recursive
 
   # Pull in remote changes for the current repository and all its submodules
-  p = !"git pull; git submodule foreach git pull origin master"
+  pullall = !"git pull; git submodule foreach git pull origin master"
 
   # Show the diff between the latest commit and the current state
   diffcwd = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
@@ -115,6 +115,9 @@
 
   # Amend the currently staged files to the latest commit
   amend = commit --amend --reuse-message=HEAD
+
+  # Push to origin/master
+  pm = push origin master
 
   # Credit an author on the latest commit
   credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
