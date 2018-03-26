@@ -92,6 +92,12 @@
   # Clone a repository including all submodules
   cloneall = clone --recursive
 
+  # Pull origin/<current>
+  pu = git pull
+
+  # Pull and rebase on origin/<current>
+  r = git pull --rebase
+
   # Pull in remote changes for the current repository and all its submodules
   pullall = !"git pull; git submodule foreach git pull origin master"
 
@@ -138,30 +144,56 @@
   # List contributors with number of commits
   contributors = shortlog --summary --numbered
 
+  # Get repo name as a string
+  repo = "!f() { \n\
+      git remote get-url origin | \
+      sed -e 's|https://github.com/[[:alnum:]]*/||' \
+          -e 's|git@github.com:[[:alnum:]]*/||' \
+          -e 's/.git//' \n\
+  }; f"
+
+  # Add a GitHub repo as a remote
+  add-gh-remote = "!f() { \n\
+      if [ -z \"$1\" ]; then \n\
+          echo \"You must provide the GitHub user for the remote repo\"; return 1 \n\
+      else \n\
+          repo=$(git repo) \n\
+          git remote add $1 gh:$1/$repo \n\
+      fi \n\
+  }; f"
+
   # Fetch a GitHub pull request
   fetchpr = "!f() { \n\
     if [ -z \"$2\" ]; then \n\
-        repo="origin" \n\
-        pr="$1" \n\
+        repo=\"origin\" \n\
+        pr=\"$1\" \n\
     else \n\
-        repo="$1" \n\
-        pr="$2" \n\
+        repo=\"$1\" \n\
+        pr=\"$2\" \n\
     fi \n\
     if [ $(printf \"%s\" \"$pr\" | grep '^[0-9]\\+$' > /dev/null; printf $?) -eq 0 ]; then \n\
       git fetch $repo refs/pull/$pr/head:pr/$pr \n\
     else \n\
-      printf "Invalid PR \"%s\"" "$pr"; return 1 \n\
+      printf \"Invalid PR (%s)\" \"$pr\"; return 1 \n\
     fi \n\
   }; f"
 
-  # Merge GitHub pull request on top of the `master` branch
-  #mergepr = "!f() { \
-    #if git fetchpr $1 $2 ; then \n\
-        #git checkout master && \
-        #git merge --log -m "Closes #$1" pr/$1 && \
-        #git branch -D pr/$1 \n\
-    #fi \n\
-  #}; f"
+  # Merge GitHub pull request on top of the current branch
+  mergepr = "!f() { \n\
+    if [ -z \"$2\" ]; then \n\
+        repo=\"origin\" \n\
+        pr=\"$1\" \n\
+    else \n\
+        repo=\"$1\" \n\
+        pr=\"$2\" \n\
+    fi \n\
+    if git fetchpr $repo $pr ; then \n\
+        subject='Merge and close #' \n\
+        msg=$(git fmt-merge-msg --log -m \"$subject$pr\" --file .git/FETCH_HEAD) \n\
+        git merge --log -m \"$msg\" pr/$pr && \
+        git branch -D pr/$pr \n\
+    fi \n\
+  }; f"
 
 #################
 # Colors
