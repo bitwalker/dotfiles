@@ -11,7 +11,11 @@ function doIt() {
        -maxdepth 1 \
          \! \( -name ".git" \
                -or -name "emacs" \
+               -or -name "init.el" \
+               -or -name "init" \
                -or -name "install.sh" \
+               -or -name "Brewfile" \
+               -or -name "requirements.txt" \
                -or -name "." \
                -or -name ".#*" \) \
         -execdir ln -sf "$CWD/{}" "$HOME/{}" \;
@@ -35,7 +39,10 @@ else
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     doIt;
     if [ ! -d ~/.emacs.d ]; then
-        git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+        echo "Cloning Emacs configuration.."
+        git clone git@github.com:bitwalker/doom-emacs ~/.emacs.d
+        echo "Linking init.el.."
+        ln -sf "$CWD/init.el" "$HOME/.emacs.d/init.el"
     fi;
   fi;
 fi;
@@ -66,6 +73,17 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "Running homebrew..."
   . Brewfile
 fi;
+
+# Requires that Emacs is installed
+if which emacs >/dev/null; then
+    echo "Compiling Emacs configuration.."
+    pushd ~/.emacs.d
+    make
+    popd
+    echo "Emacs is ready!"
+else
+    echo "Skipping Emacs configuration, 'which emacs' failed with non-zero exit"
+fi
 
 read -p "Install iTerm2 color schemes? (y/n) " -n 1;
 echo "";

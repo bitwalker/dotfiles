@@ -7,3 +7,4 @@
 .local/share/fish/generated_completions
 .local/share/letsencrypt
 .local/share/fish/fish_history
+*.elc
