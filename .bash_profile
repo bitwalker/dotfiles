@@ -1,4 +1,5 @@
 # Add `~/bin` to the `$PATH`
+export XDG_CONFIG_HOME="$HOME/.config"
 export PATH="$HOME/bin:$PATH";
 #export PS1="\[\e[36m\]\w \[\e[35m\]\$\[\e[0m\] "
 

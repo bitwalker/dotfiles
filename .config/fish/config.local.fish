@@ -5,6 +5,7 @@ set CARGO_BIN $HOME/.cargo/bin
 # Exports
 #bass source ~/.nix-profile/etc/profile.d/nix.sh
 
+set -x XDG_CONFIG_HOME ~/.config
 set -x GOPATH ~
 set -x JAVA_HOME (/usr/libexec/java_home)
 set -x GNUPATH /usr/local/opt/make/libexec/gnubin
