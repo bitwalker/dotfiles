@@ -49,23 +49,23 @@
 
        :completion
        company           ; the ultimate code completion backend
-       ivy               ; a search engine for love and life
       ;helm              ; the *other* search engine for love and life
       ;ido               ; the other *other* search engine...
+       ivy               ; a search engine for love and life
 
        :ui
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
        doom-modeline     ; a snazzy Atom-inspired mode-line
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
+       evil-goggles      ; display visual hints when editing in evil
        hl-todo           ; highlight TODO/FIXME/NOTE tags
        nav-flash         ; blink the current line after jumping
-       evil-goggles      ; display visual hints when editing in evil
-      ;unicode           ; extended unicode support for various languages
+      ;posframe          ; use child frames where possible (Emacs 26+ only)
       ;tabbar            ; FIXME an (incomplete) tab bar for Emacs
+      ;unicode           ; extended unicode support for various languages
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
-      ;posframe          ; use child frames where possible (Emacs 26+ only)
 
        :tools
        dired             ; making dired pretty [functional]
@@ -80,6 +80,7 @@
        neotree           ; a project drawer, like NERDTree for vim
        ;password-store    ; password manager for nerds
        pdf               ; pdf enhancements
+       ;rgb              ; creating color strings
        rotate-text       ; cycle region at point between text candidates
        term              ; terminals in Emacs
        tmux              ; an API for interacting with tmux
@@ -92,7 +93,6 @@
        clojure           ; java with a lisp
        csharp            ; unity, .NET, and mono shenanigans
        data              ; config/data formats
-       erlang            ; erlang
        elixir            ; erlang done right
        elm               ; care for a cup of TEA?
        emacs-lisp        ; drown in parentheses
@@ -152,4 +152,3 @@
        ;; $XDG_CONFIG_HOME/doom/. Without +xdg it uses ~/.doom.d/. If your
        ;; config directory doesn't exist, this module does nothing.
        (private +xdg))
-
