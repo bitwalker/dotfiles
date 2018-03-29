@@ -1,6 +1,9 @@
 # Add `~/bin` to the `$PATH`
 export XDG_CONFIG_HOME="$HOME/.config"
-export PATH="$HOME/bin:$PATH";
+export GOPATH="$HOME"
+export JAVA_HOME=$(/usr/libexec/java_home)
+export NPM_BIN=./node_modules/.bin
+export PATH="$NPM_BIN:$GOPATH/bin:$HOME/bin:/usr/local/bin:$PATH";
 #export PS1="\[\e[36m\]\w \[\e[35m\]\$\[\e[0m\] "
 
 # Load the shell dotfiles, and then some:
@@ -48,9 +51,7 @@ complete -W "NSGlobalDomain" defaults;
 
 # Add `killall` tab completion for common apps
 complete -o "nospace" -W "Contacts Calendar Dock Finder Mail Safari iTunes SystemUIServer Terminal Twitter" killall;
-export PATH="$HOME/.exenv/bin:$PATH"
 
-export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 if [ -e /Users/paulschoenfelder/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/paulschoenfelder/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
 # Frontend to controlling prompt
@@ -337,3 +338,6 @@ prompt() {
 
 # Start with full-fledged prompt
 prompt on
+
+# Init package managers
+source ~/.asdf/asdf.sh
