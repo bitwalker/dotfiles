@@ -27,7 +27,17 @@
             :desc "Switch to project buffer" :nv "b" #'counsel-projectile-switch-to-buffer
             :desc "Switch to project buffer or file" :nv "SPC" #'counsel-projectile))))
 
-;; Provide keybind to easily change theme
+;; Neotree config
+(after! neotree
+  ;; When opening neotree, jump to current file if possible
+  (setq neo-smart-open t)
+  ;; When switching to a file in the current project, expand the directory
+  ;; tree to the new file buffer, i.e. neotree follows the current buffer
+  (add-hook! 'find-file-hook
+    (if (and (buffer-file-name) (neo-global--window-exists-p))
+        (neotree-find))))
+
+;; Global keybindings
 (map!
   :after evil
   (:leader
