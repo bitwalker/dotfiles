@@ -1,9 +1,12 @@
 ;;;  -*- lexical-binding: t; -*-
 
 ;; Private modules (found in XDG_CONFIG_HOME/doom/modules/private
-(doom! :private
-       ;; Erlang support
-       erlang)
+(doom! :lang
+       erlang
+
+       ; :private
+       ; name_of_private_module
+       )
 
 ;; Projects
 (defvar +bitwalker/project-path
