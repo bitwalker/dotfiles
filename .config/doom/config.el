@@ -11,11 +11,18 @@
   :when (memq window-system '(mac ns x))
   :config (exec-path-from-shell-copy-env "PATH"))
 
+(defun +bitwalker/alchemist-iex-send-buffer ()
+    "Sends the current buffer to the IEx process and evaluates it"
+    (interactive)
+    (alchemist-iex--send-command (alchemist-iex-process) (buffer-string)))
+
 ;; Seems to kick in during *any* evil mode, which obviously isn't ideal with SPC as leader
 ;;(setq alchemist-key-command-prefix (kbd doom-localleader-key))
 (after! alchemist
   (map! :map elixir-mode-map
-        :nv "SPC m" alchemist-mode-keymap))
+        :nv "SPC m" alchemist-mode-keymap
+        (:localleader
+          (:prefix "i" :nv "B" #'+bitwalker/alchemist-iex-send-buffer))))
 
 ;; Extend projectile keybindings to provide easy way to kill project buffers
 (after! projectile
