@@ -1,23 +1,41 @@
-# Local variables
-set NPM_BIN node_modules/.bin
-set CARGO_BIN $HOME/.cargo/bin
+# Disable fish greeting
+set fish_greeting
 
-# Exports
-#bass source ~/.nix-profile/etc/profile.d/nix.sh
+# Navigation
+function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 
 set -x XDG_CONFIG_HOME ~/.config
-set -x GOPATH ~
-set -x JAVA_HOME (/usr/libexec/java_home)
-set -x GNUPATH /usr/local/opt/make/libexec/gnubin
-set -x PATH $NPM_BIN $GOPATH/bin $CARGO_BIN $GNUPATH /usr/local/bin /usr/local/sbin $PATH
-set -x MANPATH /usr/local/share/man /usr/share/man
+set -x GNU_PATH /usr/local/opt/coreutils/libexec/gnubin
+set -x GNU_MANPATH /usr/local/opt/coreutils/libexec/gnuman
+set -x PATH $GNU_PATH /usr/local/bin /usr/local/sbin $PATH
+set -x MANPATH $GNU_MANPATH /usr/local/share/man /usr/share/man $MANPATH
 set -x EDITOR "vim"
 
+# Init package managers
+# nix
+#bass source ~/.nix-profile/etc/profile.d/nix.sh
+source ~/.asdf/asdf.fish
+
+# erlang/elixir
 set -x ERL_AFLAGS "-kernel shell_history enabled"
 set -x ELIXIR_EDITOR "~/bin/emacs +__LINE__ __FILE__"
 
-# Init package managers
-source ~/.asdf/asdf.fish
+# rust
+if test -d ~/.cargo/bin
+  set -x PATH ~/.cargo/bin $PATH
+end
 
-# OPAM configuration
-. /Users/paulschoenfelder/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+# golang
+set -x GOPATH ~
+mkdir -p $GOPATH/bin
+set -x PATH $GOPATH/bin $PATH
+
+#java
+if test -f /usr/libexec/java_home
+  set -x JAVA_HOME (/usr/libexec/java_home)
+end
+
+# opam
+if hash opam 2>/dev/null
+  eval (opam config env)
+end
