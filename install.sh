@@ -39,13 +39,12 @@ else
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     doIt;
     if [ ! -d ~/.emacs.d ]; then
-        echo "Cloning Emacs configuration.."
+        printf "Installing Emacs config.."
         git clone git@github.com:bitwalker/doom-emacs ~/.emacs.d
         pushd ~/.emacs.d
         git remote add hlissner git@github.com:hlissner/doom-emacs.git
         popd
-        echo "Linking init.el.."
-        ln -sf "$CWD/init.el" "$HOME/.emacs.d/init.el"
+        printf "done!\n"
     fi;
   fi;
 fi;
