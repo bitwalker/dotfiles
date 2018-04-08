@@ -4,7 +4,20 @@ set fish_greeting
 # Navigation
 function ll ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
 
-set -x XDG_CONFIG_HOME ~/.config
+# XDG System
+set -x XDG_DATA_DIRS /usr/share /usr/local/share
+set -x XDG_CONFIG_DIRS /etc/xdg
+# XDG User
+set -x XDG_CACHE_HOME $HOME/.cache
+set -x XDG_CONFIG_HOME $HOME/.config
+set -x XDG_DATA_HOME $HOME/.local/share
+set -x XDG_DESKTOP_DIR $HOME/Desktop
+set -x XDG_DOWNLOAD_DIR $HOME/Downloads
+set -x XDG_DOCUMENTS_DIR $HOME/Documents
+set -x XDG_MUSIC_DIR $HOME/Music
+set -x XDG_PICTURES_DIR $HOME/Pictures
+set -x XDG_VIDEOS_DIR $HOME/Videos
+
 set -x GNU_PATH /usr/local/opt/coreutils/libexec/gnubin
 set -x GNU_MANPATH /usr/local/opt/coreutils/libexec/gnuman
 set -x PATH $GNU_PATH /usr/local/bin /usr/local/sbin $PATH
@@ -39,3 +52,16 @@ end
 if hash opam 2>/dev/null
   eval (opam config env)
 end
+
+# expose PATH to graphical apps
+if which launchctl >/dev/null
+  launchctl setenv PATH (echo $PATH | sed -e 's| /|:/|g' -e 's| ./|:./|g')
+end
+
+# Fish plugins
+fundle plugin 'bitwalker/pure'
+fundle plugin 'edc/bass'
+fundle plugin 'tuvistavie/oh-my-fish-core'
+fundle plugin 'oh-my-fish/plugin-errno'
+
+fundle init

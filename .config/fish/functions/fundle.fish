@@ -1,4 +1,4 @@
-set __fundle_current_version '0.5.2'
+set __fundle_current_version '0.6.1'
 
 function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
@@ -21,12 +21,12 @@ function __fundle_next_arg -a index
 end
 
 function __fundle_compare_versions -a version1 -a version2
-	for i in (__fundle_seq 4)
+	for i in (__fundle_seq 3)
 		set -l v1 (echo $version1 | cut -d '.' -f $i | sed -Ee 's/[a-z]+//g')
 		set -l v2 (echo $version2 | cut -d '.' -f $i | sed -Ee 's/[a-z]+//g')
-		if test $v1 -lt $v2 -o \( -n $v1 -a -z $v2 \)
+		if test \( -n $v1 -a -z $v2 \) -o \( -n $v1 -a -n $v2 -a $v1 -lt $v2 \)
 			echo -n "lt"; and return 0
-		else if test $v1 -gt $v2 -o \( -z $v1 -a -n $v2 \)
+		else if test \( -z $v1 -a -n $v2 \) -o \( -n $v1 -a -n $v2 -a $v1 -gt $v2 \)
 			echo -n "gt"; and return 0
 		end
 	end
@@ -106,7 +106,11 @@ end
 
 function __fundle_plugins_dir -d "returns fundle directory"
 	if test -z "$fundle_plugins_dir"
-		echo $HOME/.config/fish/fundle
+		if test -n "$XDG_CONFIG_HOME"
+			echo $XDG_CONFIG_HOME/fish/fundle
+		else
+			echo $HOME/.config/fish/fundle
+		end
 	else
 		echo $fundle_plugins_dir
 	end
@@ -197,6 +201,8 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 
 	set -l plugin_name (echo $plugin | awk -F/ '{print $NF}' | sed -e s/plugin-//)
 	set -l init_file "$plugin_dir/init.fish"
+	set -l conf_dir "$plugin_dir/conf.d"
+	set -l bindings_file  "$plugin_dir/key_bindings.fish"
 	set -l functions_dir "$plugin_dir/functions"
 	set -l completions_dir  "$plugin_dir/completions"
 	set -l plugin_paths $__fundle_plugin_name_paths
@@ -211,11 +217,20 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 
 	if test -f $init_file
 		source $init_file
+	else if test -d $conf_dir
+		# read all *.fish files in conf.d
+		for f in (find $conf_dir -maxdepth 1 -iname "*.fish")
+			source $f
+		end
 	else
-		# read all *.fish files if no init.fish found
+		# read all *.fish files if no init.fish or conf.d found
 		for f in (find $plugin_dir -maxdepth 1 -iname "*.fish")
 			source $f
 		end
+	end
+
+	if test -f $bindings_file
+		set -g __fundle_binding_paths $bindings_file $__fundle_binding_paths
 	end
 
 	set -g __fundle_loaded_plugins $plugin $__fundle_loaded_plugins
@@ -227,6 +242,21 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 	end
 
 	emit "init_$plugin_name" $plugin_dir
+end
+
+function __fundle_bind -d "set up bindings"
+	if functions -q fish_user_key_bindings; and not functions -q __fish_user_key_bindings
+		functions -c fish_user_key_bindings __fish_user_key_bindings
+	end
+
+	function fish_user_key_bindings
+		for bindings in $__fundle_binding_paths
+			source $bindings
+		end
+		if functions -q __fish_user_key_bindings
+			__fish_user_key_bindings
+		end
+	end
 end
 
 function __fundle_init -d "initialize fundle"
@@ -248,6 +278,8 @@ Try reloading your shell if you just edited your configuration."
 		echo $name_path | sed -e 's/:/ /' | read -l -a name_path
 		__fundle_profile_or_run $profile __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
 	end
+
+	__fundle_bind
 end
 
 function __fundle_install -d "install plugin"
