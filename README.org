@@ -1,0 +1,29 @@
+#+TITLE: dotfiles
+
+This repository contains all of my personal system configuration files. It is, currently, aimed
+at macOS, as that is my primary operating system right now, but most configuration is written such
+that it works on any Linux system as well, since I do occasionally use it on my desktop machine.
+
+* What's In Here?
+- Bash :: My backup shell
+  + Aliases :: Useful shortcuts for common command-line invocations
+  + Functions :: Utility functions I've found helpful
+  + Environment :: Setup XDG folders, text editor, and other helpful tools
+  + Prompt :: A useful, but simple, prompt and other assorted configuration
+- Fish :: My primary shell
+  + Prompt :: A beautiful prompt out of the box
+  + Plugins :: Via the 'vundle' utility
+  + Functions :: Some handy functions and aliases I use every day
+- Tools :: Configuration for a variety of tools I use
+  + Tmux
+  + Git
+  + Hg
+  + gdb
+  + gem
+  + htop
+  + wget
+- macOS :: A script which applies a variety of useful settings for macOS (not applied by the installer)
+- Fonts :: Check the init/fonts folder
+- Emacs :: My opinionated Emacs configuration, based on Doom Emacs
+- Neovim :: My relatively spartan, but still quite robust, vim configuration, with support for neovim
+    
