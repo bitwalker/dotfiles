@@ -4,7 +4,6 @@ export GOPATH="$HOME"
 export JAVA_HOME=$(/usr/libexec/java_home)
 export NPM_BIN=./node_modules/.bin
 export PATH="$NPM_BIN:$GOPATH/bin:$HOME/bin:/usr/local/bin:$PATH";
-#export PS1="\[\e[36m\]\w \[\e[35m\]\$\[\e[0m\] "
 
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
@@ -31,10 +30,11 @@ for option in autocd globstar; do
 done;
 
 # Add tab completion for many Bash commands
-if which brew > /dev/null && [ -f "$(brew --prefix)/etc/bash_completion" ]; then
-  source "$(brew --prefix)/etc/bash_completion";
+# Add tab completion for many Bash commands
+if which brew &> /dev/null && [ -f "$(brew --prefix)/share/bash-completion/bash_completion" ]; then
+	source "$(brew --prefix)/share/bash-completion/bash_completion";
 elif [ -f /etc/bash_completion ]; then
-  source /etc/bash_completion;
+	source /etc/bash_completion;
 fi;
 
 # Enable tab completion for `g` by marking it as an alias for `git`
@@ -52,7 +52,7 @@ complete -W "NSGlobalDomain" defaults;
 # Add `killall` tab completion for common apps
 complete -o "nospace" -W "Contacts Calendar Dock Finder Mail Safari iTunes SystemUIServer Terminal Twitter" killall;
 
-if [ -e /Users/paulschoenfelder/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/paulschoenfelder/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
 # Frontend to controlling prompt
 prompt() {
