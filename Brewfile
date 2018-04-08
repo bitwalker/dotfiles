@@ -1,69 +1,94 @@
 #!/usr/bin/env bash
-brew tap homebrew/devel-only
 
-# Make sure we’re using the latest Homebrew
+INSTALLED=$(brew list)
+TAPPED=$(brew tap)
+
+TAPS=$(cat <<EOM
+homebrew/devel-only
+d12frosted/emacs-plus
+neovim/neovim
+EOM)
+
+# Install missing taps
+IFS=$'\n'
+for tap in $TAPS; do
+  if ! echo "$TAPPED" | grep "$tap" >/dev/null; then
+    brew tap $tap;
+  fi
+done
+unset IFS
+
+# Update metadata
 brew update
 
-# Upgrade any already-installed formulae
+# Upgrade already installed packages
 brew upgrade
 
-# Install GNU core utilities (those that come with OS X are outdated)
-# Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
-brew install coreutils
+# Desired packages
+PACKAGES=$(cat <<EOM
 
-# Install some other useful utilities like `sponge`.
-brew install moreutils
+# Utilities
+coreutils
+moreutils
+findutils
+wget --with-iri
+the_silver_searcher
+ripgrep
+git
+tree
+dtrx
+p7zip
+jq
+direnv
 
-# Install GNU `find`, `locate`, `updatedb`, and `xargs`, g-prefixed
-brew install findutils
+# Ncurses disk usage utility
+ncdu
 
-# Install disk usage utility
-brew install ncdu
+# Use gnu-sed rather than builtin sed
+gnu-sed --with-default-names
 
-# Install GNU `sed`, overwriting the built-in `sed`.
-brew install gnu-sed --with-default-names
+# Build tools and common dependencies
+autoconf
+automake
+openssl
+unixodbc
 
-# Install build tools
-brew install autoconf
-brew install automake
+# Shells
+bash
+bash-completion
+fish
 
-# Install common build dependencies
-brew install openssl
-brew install libyaml
-brew install readline
-brew install libxslt
-brew install libtool
-brew install unixodbc
+# Editors
+emacs-plus \
+    --without-spacemacs-icon \
+    --with-natural-title-bar \
+    --with-dbus \
+    --with-24bit-color
 
-# Install Shells
-brew install bash
-brew install bash-completion
-brew install fish
+neovim
 
-# Install wget with IRI support
-brew install wget --with-iri
-
-# Install text editors
-brew install emacs --with-cocoa --with-dbus --with-gnutls --with-imagemagick@6 --with-librsvg --with-modules
-brew tap neovim/neovim
-brew install neovim
-
-# Install other useful utilities
-brew install the_silver_searcher
-brew install git
-brew install tree
-brew install dtrx p7zip
-brew install jq
-brew install direnv
-
-# Install Runtimes
-brew install python python3
+# Languages
+python
+python3
 
 # Tmux
-brew install tmux
-brew install reattach-to-user-namespace
+tmux
+reattach-to-user-namespace
 
+EOM)
+PACKAGES=$(echo "$PACKAGES" | sed -e '/#.*$/d' -e '/^$/d')
+
+IFS=$'\n'
+for pkg in $PACKAGES; do
+  pkgname=$(echo "$pkg" | sed -e 's/ .*//')
+  if ! echo "$INSTALLED" | grep "$pkgname" >/dev/null; then
+    brew install $pkg
+  fi
+done
+unset IFS
+
+# Link applications
 brew linkapps
 
-# Remove outdated versions from the cellar
+# Cleanup post-install
 brew cleanup
