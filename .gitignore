@@ -3,6 +3,8 @@
 .config/fish/fish_history
 .config/fish/fishd.*
 .config/direnv/allow
+.config/brew/API_TOKEN
+.config/pgcli/log
 .vim/bundle
 .vim/init.vim
 .local/share/fish/generated_completions
