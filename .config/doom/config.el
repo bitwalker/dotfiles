@@ -1,9 +1,29 @@
-;; Set font
+;;; -*- lexical-binding: t; -*-
+
+;; System
+
+(defvar xdg-data (getenv "XDG_DATA_HOME"))
+(defvar xdg-cache (getenv "XDG_CACHE_HOME"))
+(defvar xdg-config (getenv "XDG_CONFIG_HOME"))
+
+(setq user-full-name "Paul Schoenfelder"
+      user-mail-address "paulschoenfelder@gmail.com"
+
+      show-trailing-whitespace t)
+
+;; maximize first frame
+(set-frame-parameter nil 'fullscreen 'maximized)
+
+;; UI
+(setq-hook! 'minibuffer-setup-hook show-trailing-whitespace nil)
+
 (setq doom-font (font-spec :family "Fantasque Sans Mono"
                            :size 14))
-
-;; Set theme
 (setq doom-theme 'doom-city-lights)
+
+;; Magit
+(setq magit-repository-directories '(("~/src" . 2))
+      +magit-hub-features t)
 
 ;; Ensure binaries from PATH are found
 ;; But only on macOS/Linux
@@ -26,6 +46,23 @@
 
 ;; Extend projectile keybindings to provide easy way to kill project buffers
 (after! projectile
+  (when (executable-find "rg")
+    (progn
+      (defconst bitwalker/rg-arguments
+        `("--line-number"  ; line numbers
+          "--smart-case"
+          "--follow"       ; follow symlinks
+          "--mmap")        ; apply memory map optimization when possible
+        "Default rg arguments used in `projectile' project file listings.")
+      (defun bitwalker/advice-projectile-use-rg ()
+        "Always use `rg' for getting a list of all files in the project."
+        (mapconcat 'identity
+                   (append '("\\rg") ; used unaliased version of `rg': \rg
+                            bitwalker/rg-arguments
+                            '("--null" ; output null separated results
+                              "--files")) ; get file names matching the empty regex (all files)
+                   " "))
+      (advice-add 'projectile-get-ext-command :override #'bitwalker/advice-projectile-use-rg)))
   (map! :map projectile-mode-map
         (:leader
           (:prefix "p"
@@ -34,20 +71,9 @@
             :desc "Switch to project buffer" :nv "b" #'counsel-projectile-switch-to-buffer
             :desc "Switch to project buffer or file" :nv "SPC" #'counsel-projectile))))
 
-;; Neotree config
 
-;; When opening neotree, jump to current file if possible
-(setq neo-smart-open t)
-
-(after! neotree
-  ;; When switching to a file in the current project, expand the directory
-  ;; tree to the new file buffer, i.e. neotree follows the current buffer
-  (add-hook! 'find-file-hook
-    (if (and (buffer-file-name) (neo-global--window-exists-p))
-        ;; And only if the file is a child of the current neotree root
-        (if (neo-global--file-in-root-p (buffer-file-name))
-            ;; We need to trigger neotree-find then switch back to the buffer we just opened
-            (save-current-buffer (neotree-find))))))
+(after! treemacs
+  (treemacs-follow-mode t))
 
 ;; Global keybindings
 (map!
