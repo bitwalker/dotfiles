@@ -24,6 +24,16 @@ set -x PATH $GNU_PATH /usr/local/bin /usr/local/sbin $PATH
 set -x MANPATH $GNU_MANPATH /usr/local/share/man /usr/share/man $MANPATH
 set -x EDITOR "vim"
 
+# Tmux
+set -x TMUXP_CONFIGDIR $XDG_CONFIG_HOME/tmuxp
+
+# Homebrew
+set -x HOMEBREW_NO_ANALYTICS 1
+if test -f $XDG_CONFIG_HOME/brew/API_TOKEN
+  set -l token (cat $XDG_CONFIG_HOME/brew/API_TOKEN)
+  set -x HOMEBREW_GITHUB_API_TOKEN "$token"
+end
+
 # Init package managers
 # nix
 #bass source ~/.nix-profile/etc/profile.d/nix.sh
