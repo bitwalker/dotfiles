@@ -1,5 +1,5 @@
-directory: ~/Downloads/Music
-library: ~/.config/music/library.blb
+directory: /Volumes/SHERPA/Music
+library: /Volumes/SHERPA/Music/library.blb
 import:
     write: yes
     move: yes
@@ -12,8 +12,15 @@ ignore:
     - ._*
     - "*~"
     - .DS_Store
+ignore_hidden: yes
 ui:
     color: yes
+match:
+    ignored: missing_tracks unmatched_tracks
+    preferred:
+        countries: ['US', 'GB|UK']
+        media: ['CD', 'Vinyl', 'Digital Media|File']
+        original_year: yes
 pluginpath: ~/.config/beets/plugins
 plugins:
     - fetchart
@@ -22,6 +29,14 @@ plugins:
     - lastimport
     - scrub
     - duplicates
+    - convert
+convert:
+    dest: ~/Downloads/Music/Converted
+    copy_album_art: true
+    embed: yes
+    no_convert: format:AAC
+    never_convert_lossy_files: yes
+    format: mp3
 fetchart:
     cautious: true
 lastgenre:
