@@ -5,6 +5,7 @@ TAPPED=$(brew tap)
 
 TAPS=$(cat <<EOM
 homebrew/devel-only
+caskroom/fonts
 d12frosted/emacs-plus
 neovim/neovim
 EOM)
@@ -74,6 +75,9 @@ python3
 # Tmux
 tmux
 reattach-to-user-namespace
+
+# Fonts
+font-fantasque-sans-mono
 
 EOM)
 PACKAGES=$(echo "$PACKAGES" | sed -e '/#.*$/d' -e '/^$/d')
