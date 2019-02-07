@@ -1,0 +1,115 @@
+[lumen70]
+url = "https://github.com/llvm-mirror/llvm"
+branch = "release_70"
+# In recent versions of LLVM, the WebAssembly target is not experimental
+# but in 7.0 it is, comment/uncomment the relevant options depending on
+# your target version
+target = ["X86"]
+option."LLVM_EXPERIMENTAL_TARGETS_TO_BUILD" = "WebAssembly"
+# target = ["X86", "WebAssembly"]
+
+# Enable caching with ccache
+# To use, make sure you have ccache installed
+option."LLVM_CCACHE_BUILD" = "ON"
+
+# Enable various extended tool builds
+option."LLVM_TOOL_LLD_BUILD" = "ON"
+option."LLVM_TOOL_CLANG_BUILD" = "ON"
+option."LLVM_TOOL_COMPILER_RT_BUILD" = "ON"
+#option."LLVM_TOOL_LLDB_BUILD" = "ON"
+
+# Building the debugserver for LLDB requires codesigning
+# certificates, unless you want this, we just disable it
+# For recent versions of LLVM use this when building LLDB
+#option."LLDB_USE_SYSTEM_DEBUGSERVER" = "ON"
+# For LLVM 7.0 though, use this setting instead
+#option."LLDB_NO_DEBUGSERVER" = "ON"
+
+[[lumen70.tools]]
+name = "clang"
+url = "https://github.com/llvm-mirror/clang"
+branch = "release_70"
+relative_path = "tools/clang"
+
+[[lumen70.tools]]
+name = "clang-extra"
+url = "https://github.com/llvm-mirror/clang-tools-extra"
+branch = "release_70"
+relative_path = "tools/clang/tools/extra"
+
+[[lumen70.tools]]
+name = "libcxx"
+url = "https://github.com/llvm-mirror/libcxx"
+branch = "release_70"
+relative_path = "projects/libcxx"
+
+[[lumen70.tools]]
+name = "lld"
+url = "https://github.com/llvm-mirror/lld"
+branch = "release_70"
+relative_path = "tools/lld"
+
+[[lumen70.tools]]
+name = "compiler-rt"
+url = "https://github.com/llvm-mirror/compiler-rt"
+branch = "release_70"
+relative_path = "projects/compiler-rt"
+
+#[[lumen70.tools]]
+#name = "lldb"
+#url = "https://github.com/llvm-mirror/lldb"
+#branch = "release_70"
+#relative_path = "tools/lldb"
+
+
+[latest]
+url = "https://github.com/llvm-mirror/llvm"
+target = ["X86", "WebAssembly"]
+
+# Enable caching with ccache
+# To use, make sure you have ccache installed
+option."LLVM_CCACHE_BUILD" = "ON"
+
+# Enable various extended tool builds
+option."LLVM_TOOL_LLD_BUILD" = "ON"
+option."LLVM_TOOL_CLANG_BUILD" = "ON"
+option."LLVM_TOOL_COMPILER_RT_BUILD" = "ON"
+#option."LLVM_TOOL_LLDB_BUILD" = "ON"
+
+# Building the debugserver for LLDB requires codesigning
+# certificates, unless you want this, we just disable it
+# For recent versions of LLVM use this when building LLDB
+#option."LLDB_USE_SYSTEM_DEBUGSERVER" = "ON"
+# For LLVM 7.0 though, use this setting instead
+#option."LLDB_NO_DEBUGSERVER" = "ON"
+
+[[latest.tools]]
+name = "clang"
+url = "https://github.com/llvm-mirror/clang"
+relative_path = "tools/clang"
+
+[[latest.tools]]
+name = "clang-extra"
+url = "https://github.com/llvm-mirror/clang-tools-extra"
+relative_path = "tools/clang/tools/extra"
+
+[[latest.tools]]
+name = "libcxx"
+url = "https://github.com/llvm-mirror/libcxx"
+relative_path = "projects/libcxx"
+
+[[latest.tools]]
+name = "lld"
+url = "https://github.com/llvm-mirror/lld"
+relative_path = "tools/lld"
+
+[[latest.tools]]
+name = "compiler-rt"
+url = "https://github.com/llvm-mirror/compiler-rt"
+relative_path = "projects/compiler-rt"
+
+#[[latest.tools]]
+#name = "lldb"
+#url = "https://github.com/llvm-mirror/lldb"
+#branch = "release_70"
+#relative_path = "tools/lldb"
