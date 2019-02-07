@@ -25,6 +25,20 @@ brew update
 # Upgrade already installed packages
 brew upgrade
 
+CASKS=$(cat <<EOM
+kitty
+EOM)
+
+# Install casks
+IFS=$'\n'
+for cask in $CASKS; do
+  pkgname=$(echo "$cask" | sed -e 's/ .*//')
+  if ! echo "$INSTALLED" | grep "$pkgname" >/dev/null; then
+    brew cask install $pkg
+  fi
+done
+unset IFS
+
 # Desired packages
 PACKAGES=$(cat <<EOM
 
