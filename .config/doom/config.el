@@ -54,7 +54,7 @@
           "--follow"       ; follow symlinks
           "--mmap")        ; apply memory map optimization when possible
         "Default rg arguments used in `projectile' project file listings.")
-      (defun bitwalker/advice-projectile-use-rg ()
+      (defun bitwalker/advice-projectile-use-rg (vcs)
         "Always use `rg' for getting a list of all files in the project."
         (mapconcat 'identity
                    (append '("\\rg") ; used unaliased version of `rg': \rg
