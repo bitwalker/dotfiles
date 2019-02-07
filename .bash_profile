@@ -341,3 +341,5 @@ prompt on
 
 # Init package managers
 source ~/.asdf/asdf.sh
+
+export PATH="$HOME/.cargo/bin:$PATH"
