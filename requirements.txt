@@ -1,3 +1,5 @@
+neovim
+powerline-status
 beets
 discogs-client
 pyechonest

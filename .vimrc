@@ -80,6 +80,9 @@ call vam#ActivateAddons([])
 " 'ajh17/Spacegray.vim'
 " 'CruizeMissile/Revolution.vim'
 " 'gertjanreynaert/cobalt2-vim-theme'
+" VAMActivate github:drewtempelmeyer/palenight.vim
+" VAMActivate github:arcticicestudio/nord-vim
+VAMActivate github:ayu-theme/ayu-vim
 call vam#ActivateAddons(['github:daylerees/colour-schemes'], {'runtimepath': 'vim'})
 " General plugins
 VAMActivate github:tpope/vim-surround
@@ -88,6 +91,7 @@ VAMActivate github:scrooloose/nerdtree
 VAMActivate github:nathanaelkane/vim-indent-guides
 VAMActivate github:tpope/vim-fugitive
 " UI plugins
+"call vam#ActivateAddons(['powerline'])
 VAMActivate github:vim-airline/vim-airline-themes
 VAMActivate github:bling/vim-airline
 VAMActivate github:tmux-plugins/vim-tmux-focus-events
@@ -100,6 +104,11 @@ VAMActivate github:jimenezrick/vimerl
 VAMActivate github:dag/vim-fish
 VAMActivate github:derekwyatt/vim-scala
 
+" Install powerline
+"python3 from powerline.vim import setup as powerline_setup
+"python3 powerline_setup()
+"python3 del powerline_setup
+
 """""""""""""""""""""""
 " General Configuration
 """""""""""""""""""""""
@@ -108,8 +117,20 @@ VAMActivate github:derekwyatt/vim-scala
 set shell=bash " Vim expects a POSIX-compliant shell, which Fish (my default shell) is not
 
 " UI
+if (has("nvim"))
+  "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
+"For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+"Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+" < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+if (has("termguicolors"))
+  set termguicolors
+endif
 try
-  colorscheme earthsong-contrast
+  let ayucolor="mirage" " light, dark, mirage
+  colorscheme ayu
+  "colorscheme nord
 catch
 endtry
 set guifont=Fantasque\ Sans\ Mono\ Regular:h14
@@ -217,7 +238,9 @@ cmap w!! %!sudo tee >/dev/null %
 " Airline
 let g:airline_powerline_fonts = 1
 "let g:airline_theme = "wombat"
-let g:airline_theme='luna'
+"let g:airline_theme='luna'
+"let g:airline_theme='papercolor'
+let g:airline_theme='ayu'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 
@@ -233,14 +256,18 @@ let g:ctrlp_custom_ignore = {
 " Close vim if last open buffer is NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
-" Use The Silver Searcher over grep, iff possible
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
+" rg > ag > grep
+if executable('rg')
+    set grepprg=rg\ --no-heading\ --color=never
+    " Use rg for listing files, it is fast, and respects various ignore files
+    let g:ctrlp_user_command = 'rg --color=never --files --sort=path %s'
+    " Don't cache, rg is fast enough
+    let g:ctrlp_use_caching = 0
+elseif executable('ag')
+    " same situation as rg, just slightly different invocations
+    set grepprg=ag\ --nogroup\ --color=never
+    let g:ctrlp_user_command = 'ag -l --nocolor -g ""'
+    let g:ctrlp_use_caching = 0
 endif
 
 " Conflict markers {{{

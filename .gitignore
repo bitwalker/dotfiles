@@ -2,6 +2,7 @@
 .config/beets/*.pickle
 .config/fish/fish_history
 .config/fish/fishd.*
+.config/fish/fish_variables
 .config/direnv/allow
 .config/brew/API_TOKEN
 .config/pgcli/log
