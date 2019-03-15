@@ -4,32 +4,23 @@ windows:
     - window_name: scratch
       start_directory: ~/src/github.com/bitwalker
       focus: true
-      layout: main-vertical
+      layout: even-vertical
       panes:
           - focus: true
     - window_name: emacs
       start_directory: ~/.emacs.d
-      layout: main-vertical
+      layout: even-vertical
       panes:
           - focus: true
           - shell_command:
               - cd ~/src/github.com/bitwalker/dotfiles/.config/doom
-    - window_name: book
-      start_directory: ~/src/github.com/bitwalker/elixir_alchemy
-      layout: main-vertical
-      panes:
-          - focus: true
-            shell_command:
-                - cd Book
-          - shell_command:
-                - cd Book
     - window_name: oss
       start_directory: ~/src/github.com/bitwalker
-      layout: main-vertical
+      layout: even-vertical
       panes:
           - focus: true
     - window_name: wasm
-      layout: main-vertical
+      layout: even-vertical
       start_directory: ~/src/github.com/bitwalker/lumen
       panes:
           - focus: true
