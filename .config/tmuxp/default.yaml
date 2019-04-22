@@ -4,25 +4,29 @@ windows:
     - window_name: scratch
       start_directory: ~/src/github.com/bitwalker
       focus: true
-      layout: even-vertical
+      layout: even-horizontal
       panes:
-          - focus: true
+          - pane
     - window_name: emacs
       start_directory: ~/.emacs.d
-      layout: even-vertical
+      layout: even-horizontal
       panes:
-          - focus: true
+          - pane
           - shell_command:
               - cd ~/src/github.com/bitwalker/dotfiles/.config/doom
     - window_name: oss
       start_directory: ~/src/github.com/bitwalker
-      layout: even-vertical
+      layout: even-horizontal
       panes:
-          - focus: true
+          - pane
     - window_name: wasm
-      layout: even-vertical
+      layout: even-horizontal
       start_directory: ~/src/github.com/bitwalker/lumen
       panes:
-          - focus: true
-          - shell_command:
-              - cd ~/src/github.com/bitwalker/lumen
+          - pane
+          - pane
+    - window_name: otp
+      layout: even-horizontal
+      start_directory: ~/src/github.com/bitwalker/otp
+      panes:
+          - pane
