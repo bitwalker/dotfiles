@@ -27,7 +27,9 @@ function doSync() {
               -or -name ".#*" \) \
               -execdir ln -sf "$CWD/{}" "$HOME/{}" \;
     ln -sf ~/.vimrc ~/.config/nvim/init.vim
+    mkdir -p ~/.config/.vim
     ln -sf ~/.vimrc ~/.config/.vim/init.vim
+    ln -sf ~/.config/hammerspoon ~/.hammerspoon
     return 0
 }
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
@@ -44,8 +46,7 @@ else
 fi
 unset doSync
 
-# Update shell environment based on profile
-source ~/.bash_profile
+. Brewfile
 
 if [ ! -d ~/.emacs.d ]; then
     printf "Installing Emacs config.."
@@ -143,6 +144,9 @@ fi
 
 echo "Installing Python-based utilities.."
 pip install -r $CWD/requirements.txt
+
+# Update shell environment based on profile
+source ~/.bash_profile
 
 echo ""
 echo "All done!"

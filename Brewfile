@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 
+set -x
+
 INSTALLED=$(brew list)
 TAPPED=$(brew tap)
 
 TAPS=$(cat <<EOM
-homebrew/devel-only
 caskroom/fonts
 d12frosted/emacs-plus
 neovim/neovim
-EOM)
+EOM
+)
 
 # Install missing taps
 IFS=$'\n'
@@ -27,7 +29,9 @@ brew upgrade
 
 CASKS=$(cat <<EOM
 kitty
-EOM)
+font-fantasque-sans-mono
+EOM
+)
 
 # Install casks
 IFS=$'\n'
@@ -90,10 +94,8 @@ python3
 tmux
 reattach-to-user-namespace
 
-# Fonts
-font-fantasque-sans-mono
-
-EOM)
+EOM
+)
 PACKAGES=$(echo "$PACKAGES" | sed -e '/#.*$/d' -e '/^$/d')
 
 IFS=$'\n'
@@ -104,9 +106,6 @@ for pkg in $PACKAGES; do
   fi
 done
 unset IFS
-
-# Link applications
-brew linkapps
 
 # Cleanup post-install
 brew cleanup
