@@ -1,3 +1,61 @@
+[lumen80]
+url = "https://github.com/llvm-mirror/llvm"
+branch = "release_80"
+target = ["X86", "WebAssembly"]
+
+# Enable caching with ccache
+# To use, make sure you have ccache installed
+option."LLVM_CCACHE_BUILD" = "ON"
+
+# Enable various extended tool builds
+option."LLVM_TOOL_LLD_BUILD" = "ON"
+option."LLVM_TOOL_CLANG_BUILD" = "ON"
+option."LLVM_TOOL_COMPILER_RT_BUILD" = "ON"
+
+# Building the debugserver for LLDB requires codesigning
+# certificates, unless you want this, we just disable it
+# For recent versions of LLVM use this when building LLDB
+option."LLVM_TOOL_LLDB_BUILD" = "OFF"
+option."LLDB_USE_SYSTEM_DEBUGSERVER" = "ON"
+
+[[lumen80.tools]]
+name = "clang"
+url = "https://github.com/llvm-mirror/clang"
+branch = "release_80"
+relative_path = "tools/clang"
+
+[[lumen80.tools]]
+name = "clang-extra"
+url = "https://github.com/llvm-mirror/clang-tools-extra"
+branch = "release_80"
+relative_path = "tools/clang/tools/extra"
+
+[[lumen80.tools]]
+name = "libcxx"
+url = "https://github.com/llvm-mirror/libcxx"
+branch = "release_80"
+relative_path = "projects/libcxx"
+
+[[lumen80.tools]]
+name = "lld"
+url = "https://github.com/llvm-mirror/lld"
+branch = "release_80"
+relative_path = "tools/lld"
+
+[[lumen80.tools]]
+name = "compiler-rt"
+url = "https://github.com/llvm-mirror/compiler-rt"
+branch = "release_80"
+relative_path = "projects/compiler-rt"
+
+[[lumen80.tools]]
+name = "lldb"
+url = "https://github.com/llvm-mirror/lldb"
+branch = "release_80"
+relative_path = "tools/lldb"
+
+
+# For old versions of Lumen
 [lumen70]
 url = "https://github.com/llvm-mirror/llvm"
 branch = "release_70"
@@ -74,14 +132,12 @@ option."LLVM_CCACHE_BUILD" = "ON"
 option."LLVM_TOOL_LLD_BUILD" = "ON"
 option."LLVM_TOOL_CLANG_BUILD" = "ON"
 option."LLVM_TOOL_COMPILER_RT_BUILD" = "ON"
-#option."LLVM_TOOL_LLDB_BUILD" = "ON"
 
 # Building the debugserver for LLDB requires codesigning
 # certificates, unless you want this, we just disable it
 # For recent versions of LLVM use this when building LLDB
-#option."LLDB_USE_SYSTEM_DEBUGSERVER" = "ON"
-# For LLVM 7.0 though, use this setting instead
-#option."LLDB_NO_DEBUGSERVER" = "ON"
+option."LLVM_TOOL_LLDB_BUILD" = "OFF"
+option."LLDB_USE_SYSTEM_DEBUGSERVER" = "ON"
 
 [[latest.tools]]
 name = "clang"
@@ -108,8 +164,8 @@ name = "compiler-rt"
 url = "https://github.com/llvm-mirror/compiler-rt"
 relative_path = "projects/compiler-rt"
 
-#[[latest.tools]]
-#name = "lldb"
-#url = "https://github.com/llvm-mirror/lldb"
-#branch = "release_70"
-#relative_path = "tools/lldb"
+[[latest.tools]]
+name = "lldb"
+url = "https://github.com/llvm-mirror/lldb"
+branch = "release_70"
+relative_path = "tools/lldb"
