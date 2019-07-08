@@ -63,6 +63,19 @@ if hash opam 2>/dev/null
   eval (opam config env)
 end
 
+# custom env vars
+
+# Export LLVM_SYS_XX_PREFIX if llvmenv is available and configured
+if test -d ~/.config/llvmenv
+    if which llvmenv >/dev/null
+        set llvm_version (llvmenv current | tr -d '[:alpha:]')
+        set llvm_prefix_var LLVM_SYS_{$llvm_version}_PREFIX
+        set llvm_prefix (llvmenv prefix)
+        set llvm_prefix_var_decl "set -x $llvm_prefix_var $llvm_prefix"
+        eval $llvm_prefix_var_decl
+    end
+end
+
 # expose PATH to graphical apps
 if which launchctl >/dev/null
   launchctl setenv PATH (echo $PATH | sed -e 's| /|:/|g' -e 's| ./|:./|g')
