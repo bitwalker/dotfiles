@@ -15,11 +15,33 @@
 (set-frame-parameter nil 'fullscreen 'maximized)
 
 ;; UI
-(setq-hook! 'minibuffer-setup-hook show-trailing-whitespace nil)
+(defun +bitwalker/setup-ui-common ()
+  "Setup common Emacs UI configuration"
+  (progn
+    (setq-hook! 'minibuffer-setup-hook show-trailing-whitespace nil)
+    (setq doom-font (font-spec :family "Fantasque Sans Mono"
+                               :size 14))
+    ))
 
-(setq doom-font (font-spec :family "Fantasque Sans Mono"
-                           :size 14))
-(setq doom-theme 'doom-city-lights)
+(defun +bitwalker/setup-ui-gui ()
+  "Additional UI setup only for graphical windows"
+  (progn
+    (+bitwalker/setup-ui-common)
+    (setq doom-theme 'doom-city-lights)
+    ))
+
+(defun +bitwalker/setup-ui-terminal ()
+  "Additional UI setup only for terminal windows"
+  (progn
+    (+bitwalker/setup-ui-common)
+    (setq doom-theme 'doom-tomorrow-night)
+    ))
+
+(if (display-graphic-p)
+    ;; running in graphical emacs
+    (+bitwalker/setup-ui-gui)
+    ;; running in terminal emacs
+    (+bitwalker/setup-ui-terminal))
 
 ;; Magit
 (setq magit-repository-directories '(("~/src" . 2))
