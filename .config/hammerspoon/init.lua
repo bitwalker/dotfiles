@@ -1,3 +1,6 @@
+local hyper = {"ctrl", "alt", "cmd"}
+
+-- Set CTRL+~ as terminal "visor" mode
 hs.hotkey.bind({'cmd'}, '`', nil, function()
     app = hs.application.get('kitty')
     if app == nil then
@@ -24,3 +27,15 @@ hs.hotkey.bind({'cmd'}, '`', nil, function()
         app:activate(true)
     end
 end, nil, nil)
+
+-- Set up window management
+hs.loadSpoon("MiroWindowsManager")
+
+hs.window.animationDuration = 0
+spoon.MiroWindowsManager:bindHotkeys({
+    up = {hyper, "up"},
+    right = {hyper, "right"},
+    down = {hyper, "down"},
+    left = {hyper, "left"},
+    fullscreen = {hyper, "f"}
+})
