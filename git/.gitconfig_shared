@@ -4,7 +4,7 @@
 
 [user]
   name  = Paul Schoenfelder
-  email = paulschoenfelder@gmail.com
+  email = paulschoenfelder@fastmail.com
 
 [github]
   user = bitwalker
@@ -136,6 +136,9 @@
 
   # Find commits by commit message
   fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+
+  # Interactive delete of remote branches
+  dbi = !git branch -r | sed -e 's/  origin\\//:/' | xargs -t -n1 -p git push origin
 
   # Remove branches that have already been merged with master
   # a.k.a. ‘delete merged’
