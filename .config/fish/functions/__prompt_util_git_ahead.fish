@@ -3,10 +3,16 @@ function __prompt_util_git_ahead
     __prompt_util_set_default PROMPT_GIT_STATUS_BEHIND ⇣
     __prompt_util_set_default PROMPT_GIT_STATUS_DIVERGED ⇕
 
-    set -l count (command git rev-list --count --left-right "@{upstream}...HEAD")
+    set -l count (command git rev-list --count --left-right "@{upstream}...HEAD" 2>/dev/null)
+    if test $status -ne 0
+        # No upstream
+        echo ""
+        return 0
+    end
+
     switch "$count"
         case "" "0"\t"0"
-            # No upstream, or no outstanding commits
+            # No outstanding commits
             echo ""
         case "*"\t"0"
             # There are upstream commits, but no local commits
