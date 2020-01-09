@@ -6,8 +6,11 @@
 (defvar xdg-cache (getenv "XDG_CACHE_HOME"))
 (defvar xdg-config (getenv "XDG_CONFIG_HOME"))
 
+(defvar +bitwalker/doom-config-dir
+  (expand-file-name "doom" xdg-config))
+
 (setq user-full-name "Paul Schoenfelder"
-      user-mail-address "paulschoenfelder@gmail.com"
+      user-mail-address "paulschoenfelder@fastmail.com"
 
       show-trailing-whitespace t)
 
@@ -15,12 +18,15 @@
 (set-frame-parameter nil 'fullscreen 'maximized)
 
 ;; UI
+(setq default-frame-alist '((ns-transparent-titlebar . t) (ns-appearance . 'nil)))
+
 (defun +bitwalker/setup-ui-common ()
   "Setup common Emacs UI configuration"
   (progn
     (setq-hook! 'minibuffer-setup-hook show-trailing-whitespace nil)
     (setq doom-font (font-spec :family "Fantasque Sans Mono"
                                :size 14))
+    (add-to-list 'custom-theme-load-path (expand-file-name "themes" +bitwalker/doom-config-dir))
     ))
 
 (defun +bitwalker/setup-ui-gui ()
@@ -28,13 +34,14 @@
   (progn
     (+bitwalker/setup-ui-common)
     (setq doom-theme 'doom-city-lights)
+    (exec-path-from-shell-copy-env "PATH")
     ))
 
 (defun +bitwalker/setup-ui-terminal ()
   "Additional UI setup only for terminal windows"
   (progn
     (+bitwalker/setup-ui-common)
-    (setq doom-theme 'doom-tomorrow-night)
+    (setq doom-theme 'bitwalker-laserwave)
     ))
 
 (if (display-graphic-p)
@@ -45,13 +52,23 @@
 
 ;; Magit
 (setq magit-repository-directories '(("~/src" . 2))
+      magit-save-repository-buffers nil
+      
       +magit-hub-features t)
 
-;; Ensure binaries from PATH are found
-;; But only on macOS/Linux
-(def-package! exec-path-from-shell
-  :when (memq window-system '(mac ns x))
-  :config (exec-path-from-shell-copy-env "PATH"))
+;; Projects
+(defvar +bitwalker/project-path
+  "~/src/github.com/bitwalker"
+  "The location of cloned source repositories for projects")
+
+(defun +bitwalker/add-known-projects ()
+  (if (file-directory-p +bitwalker/project-path)
+      (cl-loop for project-name in (directory-files +bitwalker/project-path)
+               do (projectile-add-known-project (expand-file-name project-name +bitwalker/project-path)))
+      (warn! "Project path '%s' has not been created!" (file-relative-name +bitwalker/project-path "~"))))
+
+(after! projectile
+  (+bitwalker/add-known-projects))
 
 (defun +bitwalker/alchemist-iex-send-buffer ()
     "Sends the current buffer to the IEx process and evaluates it"
@@ -105,3 +122,42 @@
       :desc "Change theme" :nv "t" #'counsel-load-theme)
     (:prefix "TAB"
       :desc "Rename workspace" :nv "r" #'+workspace/rename)))
+
+(use-package! clang-format
+    :commands (clang-format-region clang-format-buffer))
+
+(after! cc-mode
+    ; Set up formatter keybindings
+    (map! :map c-mode-map
+          :localleader
+          (:prefix ("f" . "format")
+            "b" #'clang-format-buffer
+            "r" #'clang-format-region))
+    (map! :map cpp-mode-map
+          :localleader
+          (:prefix ("f" . "format")
+            "b" #'clang-format-buffer
+            "r" #'clang-format-region))
+    ; Set up formatter for C/C++ when clang-format is present
+    (when (executable-find "clang-format")
+      (progn
+        ; Handle formatting buffers not backed by a file
+        (defun bitwalker/clang-format-args ()
+          (let ((bufname (buffer-file-name))
+                (filename 
+                  (if (not (eq 'nil bufname))
+                    bufname
+                    (cond ((eq major-mode 'c++-mode) "noname.cpp")
+                          ((eq major-mode 'c-mode) "noname.c")
+                          (t 'nil))))
+                (assumef
+                  (if (not (eq 'nil filename))
+                    ("--assume-filename=%S" filename)
+                     "")))
+            '("clang-format"
+              "--style=file"
+              "--fallback-style=none"
+              assumef)))
+        (set-formatter! 'clang-format 
+                        '(bitwalker/clang-format-args)
+                        :modes '(c-mode c++-mode)))))
