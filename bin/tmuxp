@@ -1,0 +1,198 @@
+#!/usr/bin/env bash
+#-*- bash-mode -*-
+
+set -e
+
+tmuxp_config_dir=""
+if [ -z "$XDG_CONFIG_HOME" ]; then
+    tmuxp_config_dir="$HOME/.config/tmuxp"
+else
+    tmuxp_config_dir="$XDG_CONFIG_HOME/tmuxp"
+fi
+
+function usage() {
+    echo "usage: $(basename "$0") CMD [OPTIONS]"
+    echo ""
+    echo " COMMANDS"
+    echo ""
+    echo "  load NAME               Load a session profile"
+    echo "  profiles                List known session profiles"
+    echo ""
+    echo " OPTIONS"
+    echo ""
+    echo "  --config FILE           The tmux config file to use"
+    echo "  --no-defaults           Disable loading default config files"
+    echo ""
+}
+
+no_defaults=""
+config_file="$HOME/.tmux.conf"
+config_name=""
+command_name=""
+
+if [ $# -lt 1 ]; then
+    echo "error: expected arguments"
+    usage
+    exit 2
+fi
+
+while [ $# -gt 0  ]; do
+    lhs="${1%=*}"
+    rhs="${1#*=}"
+    # Shift once for the flag name if true
+    shift_key="false"
+    # Shift once for the flag value if true
+    shift_value="false"
+    # Shift for the flag value if true, and shift_value=true
+    has_value="false"
+    if [ "$lhs" = "$1"  ]; then
+        # No '=' to split on, so grab the next arg
+        shift
+        rhs="$1"
+        # We already shifted for the name, but not for the value
+        shift_value="true"
+    else
+        # We only need one shift for both key and value
+        shift_key="true"
+    fi
+
+    case $lhs in
+        load)
+            if [ -z "$command_name" ]; then
+                command_name="load"
+                config_name="$rhs"
+                has_value="true"
+            else
+                echo "unknown option: $1"
+                usage
+                exit 2
+            fi
+            ;;
+        profiles)
+            if [ -z "$command_name" ]; then
+                command_name="profiles"
+            else
+                echo "unknown option: $1"
+                usage
+                exit 2
+            fi
+            ;;
+        -no-defaults | --no-defaults)
+            no_defaults="true"
+            ;;
+        -config | --config)
+            config_file="$rhs"
+            has_value="true"
+            ;;
+        -help | --help)
+            usage
+            exit 2
+            ;;
+        *)
+            echo "unknown option: $1"
+            usage
+            exit 2
+            ;;
+    esac
+
+    if [ "$shift_key" = "true" ]; then
+        shift
+    fi
+    if [ "$has_value" = "true" ] && [ "$shift_value" = "true" ]; then
+        shift
+    fi
+done
+
+if [ -z "$command_name" ]; then
+    echo "expected command name, but none was given"
+    usage
+    exit 2
+fi
+
+if [ -n "$config_file" ] && [ ! -f "${config_file}" ]; then
+    echo "the specified config file doesn't exist: ${config_file}"
+    exit 2
+fi
+
+function replace_os_vars() {
+    echo "$1" | awk '
+        function escape(s) {
+            gsub(/'\&'/, "\\\\&", s);
+            return s;
+        }
+        {
+            while(match($0, "[$][a-zA-Z_]+")) {
+                var=substr($0, RSTART+1, RLENGTH-1);
+                gsub("[$]"var, escape(ENVIRON[var]))
+            }
+            if(match($0, "[~]")) {
+                gsub("[~]", escape(ENVIRON["HOME"]))
+            }
+        }1'
+}
+
+function load_session(){
+    session_name="${config_name}"
+    session_config="${tmuxp_config_dir}/${config_name}.txt"
+    start_dir="$(grep 'start_directory:' "${session_config}" | sed -E -e 's/start_directory:[  ]+([^\n]+)/\1/')"
+    config_begin="$(awk '/^config:/ { print NR + 1; exit 0; }' "${session_config}")"
+    # Strip config header, empty lines, and comments from session config
+    # shellcheck disable=SC2086
+    config_contents="$(tail -n+$config_begin "${session_config}" | awk '/^[^# ]+[^\n]+/ { print $0; }')"
+    config_contents="$(replace_os_vars "$config_contents")"
+
+    if ! tmux has-session -t "$session_name" >/dev/null 2>&1; then
+        # Session needs to be started
+        if [ -n "${start_dir}" ] && [ -d "${start_dir}" ]; then
+            tmux new-session -d -s "$session_name" -c "${start_dir}"
+        else
+            tmux new-session -d -s "$session_name"
+        fi
+        # Feed session config instructions to tmux
+        echo "$config_contents" | xargs -L1 tmux
+        # Kill the initial default window if windows have been created
+        num_windows="$(echo "$config_contents" | grep --count 'new-window')"
+        if [ $num_windows -gt 0 ]; then
+            tmux kill-window -t 1
+        fi
+        # Attach to the first window of the newly created session
+        tmux select-window -t 1
+        tmux attach-session -t "$session_name"
+    else
+        # Session already running, just attach to it
+        tmux attach-session -d -t "$session_name"
+    fi
+}
+
+case $command_name in
+    load)
+        if [ -n "$config_name" ] && [ ! -f "${tmuxp_config_dir}/${config_name}.txt" ]; then
+            echo "no such session config '$config_name' at ${tmuxp_config_dir}/${config_name}.txt"
+            exit 2
+        elif [ -z "$config_name" ]; then
+            if [ ! -f "${tmuxp_config_dir}/default.txt" ]; then
+                echo "expected default session config at ${tmuxp_config_dir}/default.txt"
+                exit 2
+            elif [ "$no_defaults" = "true" ]; then
+                echo "expected a session name to be given (defaults: disabled)"
+                exit 2
+            else
+                config_name="default"
+            fi
+        fi
+        load_session
+        ;;
+    profiles)
+        if [ -d "${tmuxp_config_dir}" ]; then
+            for p in "${tmuxp_config_dir}"/*.txt; do
+                [ -f "$p" ] || continue
+                echo "$(basename "$p" ".txt")"
+            done
+        fi
+        exit 0
+        ;;
+    *)
+        echo "unrecognized command name: $command_name"
+        exit 2
+        ;;
+esac
