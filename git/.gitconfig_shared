@@ -93,10 +93,10 @@
   cloneall = clone --recursive
 
   # Pull origin/<current>
-  pu = git pull
+  pu = pull
 
   # Pull and rebase on origin/<current>
-  r = git pull --rebase
+  r = pull --rebase
 
   # Pull in remote changes for the current repository and all its submodules
   pullall = !"git pull; git submodule foreach git pull origin master"
@@ -121,6 +121,9 @@
 
   # Amend the currently staged files to the latest commit
   amend = commit --amend --reuse-message=HEAD
+
+  # Applies staged changes as a fixup to a given commit, then autosquashes
+  fix = "!f() { c=$(git rev-parse $1) && git commit --fixup $c && if grep -qv \"No local changes\" <<<$(git stash); then s=1; fi; git -c core.editor=cat rebase -i --autosquash $c~; if [[ -n "$s" ]]; then git stash pop; fi; }; f"
 
   # Push to origin/master
   pm = push origin master

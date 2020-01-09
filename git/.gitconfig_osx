@@ -1,2 +1,22 @@
 [credential]
   helper = osxkeychain
+
+[diff]
+  tool = ksdiff
+
+[merge]
+  tool = ksdiff
+
+[difftool "ksdiff"]
+  prompt = false
+  cmd = ksdiff --wait $LOCAL $REMOTE
+
+[mergetool "ksdiff"]
+  prompt = false
+  cmd = "!f() { \n\
+    if test -f \"$BASE\"; then \n\
+        ksdiff --wait --merge --output \"$MERGED\" --base \"$BASE\" \"$LOCAL\" \"$REMOTE\" \n\
+    else \n\
+        ksdiff --wait --merge --output \"$MERGED\" \"$LOCAL\" \"$REMOTE\" \n\
+    fi \n\
+  }; f"
