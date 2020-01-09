@@ -9,9 +9,9 @@ function __prompt_section_char -d "Display the prompt character"
     #__prompt_util_set_default PROMPT_CHAR_SYMBOL ❯
     __prompt_util_set_default PROMPT_CHAR_ROOT_SYMBOL ‽
 	__prompt_util_set_default PROMPT_CHAR_COLOR_SUCCESS green
-	__prompt_util_set_default PROMPT_CHAR_COLOR_FAILURE red
+	__prompt_util_set_default PROMPT_CHAR_COLOR_FAILURE $fish_color_error
 	__prompt_util_set_default PROMPT_CHAR_ROOT_COLOR_SUCCESS orange
-	__prompt_util_set_default PROMPT_CHAR_ROOT_COLOR_FAILURE red
+	__prompt_util_set_default PROMPT_CHAR_ROOT_COLOR_FAILURE $fish_color_error
 
     set -l user_id (id -u)
 

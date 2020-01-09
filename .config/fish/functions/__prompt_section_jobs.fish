@@ -3,7 +3,7 @@ function __prompt_section_jobs -d "Show icon, if there's a working jobs in the b
 	__prompt_util_set_default PROMPT_JOBS_PREFIX ""
 	__prompt_util_set_default PROMPT_JOBS_SUFFIX " "
 	__prompt_util_set_default PROMPT_JOBS_SYMBOL ✦
-	__prompt_util_set_default PROMPT_JOBS_COLOR blue
+	__prompt_util_set_default PROMPT_JOBS_COLOR $fish_color_normal
 	__prompt_util_set_default PROMPT_JOBS_AMOUNT_PREFIX ""
 	__prompt_util_set_default PROMPT_JOBS_AMOUNT_SUFFIX ""
 	__prompt_util_set_default PROMPT_JOBS_AMOUNT_THRESHOLD 1

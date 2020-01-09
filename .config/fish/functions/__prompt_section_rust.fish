@@ -13,7 +13,7 @@ function __prompt_section_rust -d "Display the current Rust version"
 	type -q rustc; or return
 
     if type -q cargo
-        if not cargo pkgid --quiet --offline >/dev/null
+        if not cargo pkgid --quiet --offline >/dev/null 2>&1
             return
         end
     else if not test -f Cargo.toml -o (count *.rs) -gt 0

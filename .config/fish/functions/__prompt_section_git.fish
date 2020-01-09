@@ -11,6 +11,8 @@ function __prompt_section_git -d "Display the git branch and status"
 	# Show both git branch and git status:
 	#   prompt_git_branch
 	#   prompt_git_status
+    
+    set -l project_name (basename (pwd))
 
 	[ $PROMPT_GIT_SHOW = false ]; and return
 
@@ -20,7 +22,15 @@ function __prompt_section_git -d "Display the git branch and status"
     end
 
 	set -l git_branch (__prompt_section_git_branch)
-    set -l git_status (__prompt_section_git_status)
+
+    # Special handling for the LLVM repository since it is so huge,
+    # we only show the current branch, nothing more
+    if test "$project_name" = "llvm-project"
+        set -l git_status ""
+    else
+        set -l git_status (__prompt_section_git_status)
+    end
+
 
 	__prompt_lib_section \
 		fff \

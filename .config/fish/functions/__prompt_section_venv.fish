@@ -4,7 +4,7 @@ function __prompt_section_venv -d "Show current virtual Python environment"
 	__prompt_util_set_default PROMPT_VENV_SUFFIX $PROMPT_DEFAULT_SUFFIX
 	__prompt_util_set_default PROMPT_VENV_SYMBOL "·"
 	__prompt_util_set_default PROMPT_VENV_GENERIC_NAMES virtualenv venv .venv
-	__prompt_util_set_default PROMPT_VENV_COLOR blue
+	__prompt_util_set_default PROMPT_VENV_COLOR $fish_color_cwd
 
 	# Show venv python version
 	 test $PROMPT_VENV_SHOW = false; and return

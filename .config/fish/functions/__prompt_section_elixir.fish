@@ -1,8 +1,9 @@
 function __prompt_section_elixir -d "Show current version of Elixir"
 	__prompt_util_set_default PROMPT_ELIXIR_SHOW true
+    __prompt_util_set_default PROMPT_ELIXIR_SHOW_PACKAGE true
 	__prompt_util_set_default PROMPT_ELIXIR_PREFIX $PROMPT_DEFAULT_PREFIX
 	__prompt_util_set_default PROMPT_ELIXIR_SUFFIX $PROMPT_DEFAULT_SUFFIX
-	__prompt_util_set_default PROMPT_ELIXIR_SYMBOL "💧 "
+	__prompt_util_set_default PROMPT_ELIXIR_SYMBOL "💧"
 	__prompt_util_set_default PROMPT_ELIXIR_DEFAULT_VERSION $PROMPT_ELIXIR_DEFAULT_VERSION
 	__prompt_util_set_default PROMPT_ELIXIR_COLOR magenta
 
@@ -43,9 +44,30 @@ function __prompt_section_elixir -d "Show current version of Elixir"
 		set elixir_version "v$elixir_version"
 	end
 
+    # Extract version number of current project
+    set -l project_version
+    set -l project_name
+    if test -f mix.exs
+        set -l mix_exs (cat mix.exs)
+        if test -f VERSION
+            # Custom version file
+            set project_version (cat VERSION)
+        else
+            set project_version (string match --regex '(\d+\.\d+\.\d+(\-[\w.-_]+)?)' $mix_exs)[2]
+        end
+        set project_name (string match --regex 'app:\s+\:([\w_-]+)' $mix_exs)[2]
+    end
+
+    set -l project_banner
+    if test -n "$project_version"
+        set project_banner " $project_name-$project_version "
+        set PROMPT_ELIXIR_PREFIX "in"
+    end
+
 	__prompt_lib_section \
 		$PROMPT_ELIXIR_COLOR \
 		$PROMPT_ELIXIR_PREFIX \
-		"$PROMPT_ELIXIR_SYMBOL""$elixir_version" \
+        "$project_banner" \
+		"using $PROMPT_ELIXIR_SYMBOL""$elixir_version" \
 		$PROMPT_ELIXIR_SUFFIX
 end

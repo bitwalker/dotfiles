@@ -3,8 +3,8 @@ function __prompt_section_host -d "Display the hostname of the current shell, wh
 	__prompt_util_set_default PROMPT_HOST_SHOW true
 	__prompt_util_set_default PROMPT_HOST_PREFIX "at "
 	__prompt_util_set_default PROMPT_HOST_SUFFIX $PROMPT_DEFAULT_SUFFIX
-	__prompt_util_set_default PROMPT_HOST_COLOR blue
-	__prompt_util_set_default PROMPT_HOST_COLOR_SSH green
+	__prompt_util_set_default PROMPT_HOST_COLOR $fish_color_host
+	__prompt_util_set_default PROMPT_HOST_COLOR_SSH orange
 
 	[ "$PROMPT_HOST_SHOW" = false ]; and return
 

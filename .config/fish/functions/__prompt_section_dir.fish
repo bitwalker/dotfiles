@@ -4,12 +4,12 @@ function __prompt_section_dir -d "Display the current (truncated) working direct
 	__prompt_util_set_default PROMPT_DIR_SUFFIX $PROMPT_DEFAULT_SUFFIX
 	__prompt_util_set_default PROMPT_DIR_TRUNC 3
 	__prompt_util_set_default PROMPT_DIR_TRUNC_REPO true
-	__prompt_util_set_default PROMPT_DIR_COLOR blue
+	__prompt_util_set_default PROMPT_DIR_COLOR $fish_color_cwd
 
 	# Write Permissions lock symbol
 	__prompt_util_set_default PROMPT_DIR_LOCK_SHOW true
 	__prompt_util_set_default PROMPT_DIR_LOCK_SYMBOL ""
-	__prompt_util_set_default PROMPT_DIR_LOCK_COLOR red
+	__prompt_util_set_default PROMPT_DIR_LOCK_COLOR $fish_color_error
 
 	[ $PROMPT_DIR_SHOW = false ]; and return
 

@@ -5,7 +5,7 @@ function __prompt_section_time -d "Display the current time!"
 	__prompt_util_set_default PROMPT_TIME_SUFFIX $SPACEFISH_PROMPT_DEFAULT_SUFFIX
 	__prompt_util_set_default PROMPT_TIME_FORMAT false
 	__prompt_util_set_default PROMPT_TIME_12HR false
-	__prompt_util_set_default PROMPT_TIME_COLOR "yellow"
+	__prompt_util_set_default PROMPT_TIME_COLOR $fish_color_autosuggestion
 
 	# ------------------------------------------------------------------------------
 	# Section

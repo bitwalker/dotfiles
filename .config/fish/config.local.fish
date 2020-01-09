@@ -18,6 +18,12 @@ require paths
 # Initialize PATH/MANPATH extensions for GNU coreutils
 require gnu
 
+# Load theme
+set -l theme $XDG_CONFIG_HOME/fish/themes/ayu.fish
+if test -f $theme
+    source $theme
+end
+
 # Initialize third-party plugins (via fundle)
 # These come before my custom plugins in case I want to make
 # use of external helpers in my own plugins (i.e. bass)
