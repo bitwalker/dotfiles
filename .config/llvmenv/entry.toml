@@ -1,7 +1,81 @@
+[lumen90]
+url = "https://git.llvm.org/git/llvm"
+branch = "release_90"
+target = ["X86", "WebAssembly"]
+build_type = "Debug"
+
+# Enable documentation
+option."LLVM_ENABLE_DOXYGEN" = "ON"
+option."LLVM_BUILD_DOCS" = "ON"
+option."CLANG_INCLUDE_DOCS" = "OFF"
+option."CLANG_TOOLS_EXTRA_INCLUDE_DOCS" = "OFF"
+option."LIBCXX_INCLUDE_DOCS" = "OFF"
+option."LLVM_ENABLE_ASSERTIONS" = "ON"
+
+# Enable caching with ccache
+# To use, make sure you have ccache installed
+option."LLVM_CCACHE_BUILD" = "ON"
+
+# Enable various extended tool builds
+option."LLVM_TOOL_LLD_BUILD" = "ON"
+option."LLVM_TOOL_CLANG_BUILD" = "ON"
+option."LLVM_TOOL_COMPILER_RT_BUILD" = "ON"
+
+# Building the debugserver for LLDB requires codesigning
+# certificates, unless you want this, we just disable it
+# For recent versions of LLVM use this when building LLDB
+option."LLVM_TOOL_LLDB_BUILD" = "OFF"
+option."LLDB_USE_SYSTEM_DEBUGSERVER" = "ON"
+
+[[lumen90.tools]]
+name = "clang"
+url = "https://git.llvm.org/git/clang"
+branch = "release_90"
+relative_path = "tools/clang"
+
+[[lumen90.tools]]
+name = "clang-extra"
+url = "https://git.llvm.org/git/clang-tools-extra"
+branch = "release_90"
+relative_path = "tools/clang/tools/extra"
+
+[[lumen90.tools]]
+name = "libcxx"
+url = "https://git.llvm.org/git/libcxx"
+branch = "release_90"
+relative_path = "projects/libcxx"
+
+[[lumen90.tools]]
+name = "lld"
+url = "https://git.llvm.org/git/lld"
+branch = "release_90"
+relative_path = "tools/lld"
+
+[[lumen90.tools]]
+name = "compiler-rt"
+url = "https://git.llvm.org/git/compiler-rt"
+branch = "release_90"
+relative_path = "projects/compiler-rt"
+
+[[lumen90.tools]]
+name = "lldb"
+url = "https://git.llvm.org/git/lldb"
+branch = "release_90"
+relative_path = "tools/lldb"
+
+
 [lumen80]
 url = "https://github.com/llvm-mirror/llvm"
 branch = "release_80"
 target = ["X86", "WebAssembly"]
+build_type = "Debug"
+
+# Enable documentation
+option."LLVM_ENABLE_DOXYGEN" = "ON"
+option."LLVM_BUILD_DOCS" = "ON"
+option."CLANG_INCLUDE_DOCS" = "OFF"
+option."CLANG_TOOLS_EXTRA_INCLUDE_DOCS" = "OFF"
+option."LIBCXX_INCLUDE_DOCS" = "OFF"
 
 # Enable caching with ccache
 # To use, make sure you have ccache installed
@@ -132,12 +206,16 @@ option."LLVM_CCACHE_BUILD" = "ON"
 option."LLVM_TOOL_LLD_BUILD" = "ON"
 option."LLVM_TOOL_CLANG_BUILD" = "ON"
 option."LLVM_TOOL_COMPILER_RT_BUILD" = "ON"
+option."LLVM_ENABLE_ASSERTIONS" = "ON"
 
 # Building the debugserver for LLDB requires codesigning
 # certificates, unless you want this, we just disable it
 # For recent versions of LLVM use this when building LLDB
 option."LLVM_TOOL_LLDB_BUILD" = "OFF"
 option."LLDB_USE_SYSTEM_DEBUGSERVER" = "ON"
+
+# Disable Ocaml/go bindings
+option."LLVM_ENABLE_BINDINGS" = "OFF"
 
 [[latest.tools]]
 name = "clang"
@@ -167,5 +245,9 @@ relative_path = "projects/compiler-rt"
 [[latest.tools]]
 name = "lldb"
 url = "https://github.com/llvm-mirror/lldb"
-branch = "release_70"
 relative_path = "tools/lldb"
+
+[[latest.tools]]
+name = "mlir"
+url = "https://github.com/tensorflow/mlir"
+relative_path = "projects/mlir"
