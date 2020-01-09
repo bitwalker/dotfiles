@@ -133,9 +133,11 @@ try
   "colorscheme nord
 catch
 endtry
+hi Search cterm=None ctermfg=0 ctermbg=10
 set guifont=Fantasque\ Sans\ Mono\ Regular:h14
 " Set extra options when running in GUI mode
 if has("gui_running")
+  hi Search guibg=#000000 guifg=#232b32
   set guioptions-=T
   set guioptions-=e
   set t_Co=256
