@@ -1,0 +1,30 @@
+start_directory: $HOME/src/github.com/bitwalker
+config:
+
+# scratch window
+new-window -n scratch -c ~/src/github.com/bitwalker fish
+split-window -h -c ~/src/github.com/bitwalker fish
+select-layout -E even-horizontal
+
+# dotfiles
+new-window -n dotfiles -c ~/src/github.com/bitwalker/dotfiles fish
+select-layout even-horizontal
+
+# emacs config
+new-window -n emacs.d -c ~/.emacs.d
+split-window -h -c ~/.config/doom fish
+select-layout -E even-horizontal
+
+# emacs
+new-window -n emacs -c ~/src/github.com/bitwalker fish
+send-keys "emacsclient -a '' ." C-m
+
+# lumen
+new-window -n lumen -c ~/src/github.com/bitwalker/lumen fish
+split-window -h -c ~/src/github.com/bitwalker/eir fish
+select-layout -E even-horizontal
+
+# llvm
+new-window -n llvm -c ~/src/github.com/bitwalker/llvm-project fish
+split-window -h -c ~/src/github.com/bitwalker/llvm-project fish
+select-layout -E even-horizontal

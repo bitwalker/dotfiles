@@ -7,26 +7,34 @@ windows:
       layout: even-horizontal
       panes:
           - pane
-    - window_name: emacs
+    - window_name: dotfiles
+      start_directory: ~/src/github.com/bitwalker/dotfiles
+      layout: even-horizontal
+      panes:
+          - pane
+    - window_name: emacs.d
       start_directory: ~/.emacs.d
       layout: even-horizontal
       panes:
           - pane
           - shell_command:
               - cd ~/src/github.com/bitwalker/dotfiles/.config/doom
-    - window_name: oss
+    - window_name: emacs
       start_directory: ~/src/github.com/bitwalker
       layout: even-horizontal
       panes:
-          - pane
-    - window_name: wasm
+          - shell_command:
+              - emacsclient -a '' .
+    - window_name: lumen
       layout: even-horizontal
       start_directory: ~/src/github.com/bitwalker/lumen
       panes:
           - pane
-          - pane
-    - window_name: otp
+          - shell_command:
+              - cd ~/src/github.com/bitwalker/eir
+    - window_name: llvm
       layout: even-horizontal
-      start_directory: ~/src/github.com/bitwalker/otp
+      start_directory: ~/src/github.com/bitwalker/llvm-project
       panes:
+          - pane
           - pane
