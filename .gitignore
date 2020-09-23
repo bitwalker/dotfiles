@@ -1,17 +1,35 @@
-.netrwhist
+# cloned git repos
 .config/emacs
+.config/nvim/pack/minpac/opt/minpac
+.config/nvim/pack/minpac/start
+
+# user-local bins
+bin/ccls
+bin/erlang_ls
+bin/rebar3
+bin/vim
+bin/rust-analyzer
+bin/kitty
+
+# temp/generated files
 .config/beets/*.pickle
+.config/direnv/allow
+.config/pgcli/log
+.vim/init.vim
+.netrwhist
+
+# shell-specific generated files
+# fish
 .config/fish/fish_history
 .config/fish/fishd.*
 .config/fish/fish_variables
-.config/direnv/allow
-.config/brew/API_TOKEN
-.config/pgcli/log
-.vim/bundle
-.vim/init.vim
 .local/share/fish/generated_completions
-.local/share/letsencrypt
-.local/share/fish/fish_history
-*.elc
-.ccls-cache
-_build
+
+# zsh
+.config/zsh/.zsh_history
+.config/zsh/.directory_history
+.config/zsh/.zcompdump
+.config/zsh/.zcompcache
+
+# secrets
+.config/brew/API_TOKEN
