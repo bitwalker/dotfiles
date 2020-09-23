@@ -1,1 +1,0 @@
-/Users/paulschoenfelder/src/github.com/bitwalker/llvm-project/llvm/utils/vim/syntax/tablegen.vim

@@ -1,113 +1,62 @@
-set nocompatible | filetype indent plugin on | syn on
+if &compatible
+  " `:set nocp` has many side effects. Therefore this should be done
+  " only when 'compatible' is set.
+  set nocompatible
+endif
+filetype indent plugin on | syn on
 
-"""""""""""""""""""
-" Vim Addon Manager
-"""""""""""""""""""
-fun! EnsureVamIsOnDisk(plugin_root_dir)
-  " windows users may want to use http://mawercer.de/~marc/vam/index.php
-  " to fetch VAM, VAM-known-repositories and the listed plugins
-  " without having to install curl, 7-zip and git tools first
-  " -> BUG [4] (git-less installation)
-  let vam_autoload_dir = a:plugin_root_dir.'/vim-addon-manager/autoload'
-  if isdirectory(vam_autoload_dir)
-    return 1
-  else
-    call mkdir(a:plugin_root_dir, 'p')
-    execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '.
-	    \  shellescape(a:plugin_root_dir, 1).'/vim-addon-manager'
-    " VAM runs helptags automatically when you install or update 
-    " plugins
-    exec 'helptags '.fnameescape(a:plugin_root_dir.'/vim-addon-manager/doc')
-    return isdirectory(vam_autoload_dir)
-  endif
-endfun
+set packpath^=~/.config/nvim
 
-fun! SetupVAM(plugin_dir)
-  " Set advanced options like this:
-  " let g:vim_addon_manager = {}
-  " let g:vim_addon_manager.key = value
-  "     Pipe all output into a buffer which gets written to disk
-  " let g:vim_addon_manager.log_to_buf =1
+function! PackInit() abort
+  packadd minpac
 
-  " Example: drop git sources unless git is in PATH. Same plugins can
-  " be installed from www.vim.org. Lookup MergeSources to get more control
-  " let g:vim_addon_manager.drop_git_sources = !executable('git')
-  " let g:vim_addon_manager.debug_activation = 1
+  call minpac#init()
 
-  " VAM install location:
-  let c = get(g:, 'vim_addon_manager', {})
-  let g:vim_addon_manager = c
-  let c.plugin_root_dir = expand(a:plugin_dir, 1)
-  if !EnsureVamIsOnDisk(c.plugin_root_dir)
-    echohl ErrorMsg | echomsg "No VAM found!" | echohl NONE
-    return
-  endif
-  let &rtp.=(empty(&rtp)?'':',').c.plugin_root_dir.'/vim-addon-manager'
-
-  " Tell VAM which plugins to fetch & load:
-  " call vam#ActivateAddons([], {'auto_install' : 0})
-  " sample: call vam#ActivateAddons(['pluginA','pluginB', ...], {'auto_install' : 0})
-  " Also See "plugins-per-line" below
-
-  " Addons are put into plugin_root_dir/plugin-name directory
-  " unless those directories exist. Then they are activated.
-  " Activating means adding addon dirs to rtp and do some additional
-  " magic
-
-  " How to find addon names?
-  " - look up source from pool
-  " - (<c-x><c-p> complete plugin names):
-  " You can use name rewritings to point to sources:
-  "    ..ActivateAddons(["github:foo", .. => github://foo/vim-addon-foo
-  "    ..ActivateAddons(["github:user/repo", .. => github://user/repo
-  " Also see section "2.2. names of addons and addon sources" in VAM's documentation
-endfun
-
-""""""""""""""""""""""
-" Plugin Configuration
-""""""""""""""""""""""
-call SetupVAM('~/.vim/bundle')
-
-let g:vim_addon_manager.log_to_buf = 1
-call vam#ActivateAddons([])
+  " minpac must have {'type': 'opt'} so that it can be loaded with `packadd`.
+  call minpac#add('k-takata/minpac', {'type': 'opt'})
 
 " Color Schemes
-" 'blerins/flattown'
-" 'zefei/cake16'
-" 'duythinht/vim-coffee'
-" 'tomasr/molokai'
-" 'altercation/vim-colors-solarized'
-" 'ajh17/Spacegray.vim'
-" 'CruizeMissile/Revolution.vim'
-" 'gertjanreynaert/cobalt2-vim-theme'
-" VAMActivate github:drewtempelmeyer/palenight.vim
-" VAMActivate github:arcticicestudio/nord-vim
-VAMActivate github:ayu-theme/ayu-vim
-call vam#ActivateAddons(['github:daylerees/colour-schemes'], {'runtimepath': 'vim'})
-" General plugins
-VAMActivate github:tpope/vim-surround
-VAMActivate github:kien/ctrlp.vim
-VAMActivate github:scrooloose/nerdtree
-VAMActivate github:nathanaelkane/vim-indent-guides
-VAMActivate github:tpope/vim-fugitive
-" UI plugins
-"call vam#ActivateAddons(['powerline'])
-VAMActivate github:vim-airline/vim-airline-themes
-VAMActivate github:bling/vim-airline
-VAMActivate github:tmux-plugins/vim-tmux-focus-events
-" Language support
-VAMActivate github:othree/html5.vim
-VAMActivate github:pangloss/vim-javascript
-VAMActivate github:tpope/vim-markdown
-VAMActivate github:elixir-lang/vim-elixir
-VAMActivate github:jimenezrick/vimerl
-VAMActivate github:dag/vim-fish
-VAMActivate github:derekwyatt/vim-scala
+" blerins/flattown
+" zefei/cake16
+" duythinht/vim-coffee
+" tomasr/molokai
+" altercation/vim-colors-solarized
+" ajh17/Spacegray.vim
+" CruizeMissile/Revolution.vim
+" gertjanreynaert/cobalt2-vim-theme
+" drewtempelmeyer/palenight.vim
+" arcticicestudio/nord-vim
+" daylerees/colour-schemes, {'subdir': 'vim'}
+  call minpac#add('ayu-theme/ayu-vim')
 
-" Install powerline
-"python3 from powerline.vim import setup as powerline_setup
-"python3 powerline_setup()
-"python3 del powerline_setup
+" UI
+  call minpac#add('vim-airline/vim-airline-themes')
+  call minpac#add('bling/vim-airline')
+  call minpac#add('tmux-plugins/vim-tmux-focus-events')
+
+" General
+  call minpac#add('tpope/vim-surround')
+  call minpac#add('tpope/vim-fugitive')
+  call minpac#add('kien/ctrlp.vim')
+  call minpac#add('scrooloose/nerdtree')
+  call minpac#add('editorconfig/editorconfig-vim')
+
+" Langs
+  call minpac#add('rust-lang/rust.vim')
+  call minpac#add('othree/html5.vim')
+  call minpac#add('pangloss/vim-javascript')
+  call minpac#add('tpope/vim-markdown')
+  call minpac#add('elixir-lang/vim-elixir')
+  call minpac#add('jimenezrick/vimerl')
+  call minpac#add('dag/vim-fish')
+endfunction
+
+packadd! llvm
+packadd! mlir
+
+command! PackUpdate call PackInit() | call minpac#update()
+command! PackClean  call PackInit() | call minpac#clean()
+command! PackStatus call PackInit() | call minpac#status()
 
 """""""""""""""""""""""
 " General Configuration
@@ -145,6 +94,9 @@ if has("gui_running")
 endif
 set lsp=5
 set linespace=0
+
+" fzf for fuzzy finding
+set rtp+=/usr/local/opt/fzf
 
 " In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
