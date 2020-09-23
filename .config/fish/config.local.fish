@@ -8,8 +8,14 @@ else if test "$fish_history" = "fish"
     set fish_history "default"
 end
 
+# Set terminal colors to 24-bit
+set -gx TERM "xterm-24bit"
+
 # My terminal editor is always Vim by default
 set -x EDITOR "vim"
+
+# Need to set XDG_CONFIG_HOME first, as it is used by require
+set -gx XDG_CONFIG_HOME "$HOME/.config"
 
 # Initialize XDG_* environment variables/paths
 require xdg
@@ -47,3 +53,4 @@ require direnv
 require ccache
 require llvmenv
 require launchctl
+require broot
