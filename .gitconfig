@@ -1,3 +1,9 @@
 [include]
   path = ~/git/.gitconfig_shared
   path = ~/git/.gitconfig_osx
+[gpg]
+	program = /usr/local/bin/krgpg
+[commit]
+	gpgSign = true
+[tag]
+	forceSignAnnotated = true

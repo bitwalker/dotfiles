@@ -340,3 +340,6 @@ prompt on
 source ~/.asdf/asdf.sh
 
 export PATH="$HOME/.cargo/bin:$PATH"
+
+# Added by Krypton
+export GPG_TTY=$(tty)
