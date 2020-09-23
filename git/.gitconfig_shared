@@ -47,6 +47,9 @@
   # Prune dead branches on fetch
   prune = true
 
+[pull]
+  ff = only
+
 [rerere]
   enabled = true
 
