@@ -1,0 +1,18 @@
+{
+    "enabled": true,
+    "length": { "max": 80 },
+    "types": [
+        "wip",
+        "feat",
+        "fix",
+        "refactor",
+        "ci",
+        "build",
+        "docs",
+        "perf",
+        "test",
+        "chore",
+        "style",
+        "release"
+    ]
+}
