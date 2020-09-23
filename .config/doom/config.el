@@ -27,13 +27,15 @@
     (setq doom-font (font-spec :family "Fantasque Sans Mono"
                                :size 14))
     (add-to-list 'custom-theme-load-path (expand-file-name "themes" +bitwalker/doom-config-dir))
+    ;(exec-path-from-shell-copy-env "PATH")
+    (exec-path-from-shell-initialize)
     ))
 
 (defun +bitwalker/setup-ui-gui ()
   "Additional UI setup only for graphical windows"
   (progn
     (+bitwalker/setup-ui-common)
-    (setq doom-theme 'doom-city-lights)
+    (setq doom-theme 'doom-tomorrow-night)
     (exec-path-from-shell-copy-env "PATH")
     ))
 
@@ -41,7 +43,7 @@
   "Additional UI setup only for terminal windows"
   (progn
     (+bitwalker/setup-ui-common)
-    (setq doom-theme 'bitwalker-laserwave)
+    (setq doom-theme 'doom-tomorrow-night)
     ))
 
 (if (display-graphic-p)
@@ -70,49 +72,73 @@
 (after! projectile
   (+bitwalker/add-known-projects))
 
-(defun +bitwalker/alchemist-iex-send-buffer ()
-    "Sends the current buffer to the IEx process and evaluates it"
-    (interactive)
-    (alchemist-iex--send-command (alchemist-iex-process) (buffer-string)))
+;; Language-specific
+(map! :map elixir-mode-map
+      :localleader
+      (:prefix "c"
+        :desc "Expand macro once (line)" :nv "m" #'alchemist-macroexpand-once-current-line
+        :desc "Expand macro once (region)" :nv "M" #'alchemist-macroexpand-once-current-region
+        :desc "Compile" :nv "c" #'alchemist-compile
+        :desc "Compile current file" :nv "f" #'alchemist-compile-file
+        :desc "Compile current buffer" :nv "b" #'alchemist-compile-this-buffer)
+      (:prefix "f"
+        :desc "Toggle between file/tests" :nv "t" #'alchemist-project-toggle-file-and-tests
+        :desc "Create file in project" :nv "c" #'alchemist-project-create-file)
+      (:prefix "h"
+        :desc "Search hex" :nv "s" #'alchemist-hex-search
+        :desc "List dependencies" :nv "l" #'alchemist-hex-all-dependencies)
+      (:prefix "i"
+        :desc "iex" :nv "i" #'alchemist-iex-run
+        :desc "iex -S mix" :nv "p" #'alchemist-iex-project-run
+        :desc "Compile buffer in IEx" :nv "b" #'alchemist-iex-compile-this-buffer-and-go
+        :desc "Compile region in IEx" :nv "r" #'alchemist-iex-send-region-and-go)
+      (:prefix "m"
+        :desc "mix" :nv "x" #'alchemist-mix
+        :desc "mix compile" :nv "c" #'alchemist-mix-compile
+        :desc "mix run" :nv "r" #'alchemist-mix-run)
+      (:prefix "p"
+        :desc "Find test" :nv "f" #'alchemist-project-find-test)
+      (:prefix "t"
+        :nv "" nil
+        :desc "mix test" :nv "a" #'alchemist-mix-test
+        :desc "Toggle report" :nv "d" #'alchemist-test-toggle-test-report-display
+        :desc "List tests" :nv "t" #'alchemist-test-mode-list-tests
+        :desc "Run test at point" :nv "." #'alchemist-mix-test-at-point
+        :desc "Rerun last test" :nv "r" #'alchemist-mix-rerun-last-test
+        :desc "Run stale tests" :nv "s" #'alchemist-mix-test-stale
+        :desc "Test current buffer" :nv "b" #'alchemist-mix-test-this-buffer
+        :desc "Test file" :nv "f" #'alchemist-mix-test-file
+        :desc "Run tests for current file" :nv "F" #'alchemist-project-run-tests-for-current-file
+        :desc "Jump to previous test" :nv "[" #'alchemist-test-mode-jump-to-previous-test
+        :desc "Jump to next test" :nv "]" #'alchemist-test-mode-jump-to-next-test
+        :desc "Interrupt test process" :nv "k" #'alchemist-report-interrupt-current-process))
 
-;; Seems to kick in during *any* evil mode, which obviously isn't ideal with SPC as leader
-;;(setq alchemist-key-command-prefix (kbd doom-localleader-key))
-(after! alchemist
-  (map! :map elixir-mode-map
-        :nv "SPC m" alchemist-mode-keymap
-        (:localleader
-          (:prefix "i" :nv "B" #'+bitwalker/alchemist-iex-send-buffer))))
+(after! elixir-mode
+  (add-to-list 'exec-path (expand-file-name "elixir-ls" xdg-data)))
 
 ;; Extend projectile keybindings to provide easy way to kill project buffers
 (after! projectile
-  (when (executable-find "rg")
-    (progn
-      (defconst bitwalker/rg-arguments
-        `("--line-number"  ; line numbers
-          "--smart-case"
-          "--follow"       ; follow symlinks
-          "--mmap")        ; apply memory map optimization when possible
-        "Default rg arguments used in `projectile' project file listings.")
-      (defun bitwalker/advice-projectile-use-rg (vcs)
-        "Always use `rg' for getting a list of all files in the project."
-        (mapconcat 'identity
-                   (append '("\\rg") ; used unaliased version of `rg': \rg
-                            bitwalker/rg-arguments
-                            '("--null" ; output null separated results
-                              "--files")) ; get file names matching the empty regex (all files)
-                   " "))
-      (advice-add 'projectile-get-ext-command :override #'bitwalker/advice-projectile-use-rg)))
   (map! :map projectile-mode-map
         (:leader
           (:prefix "p"
             :desc "Kill project buffers" :nv "k" #'projectile-kill-buffers
-            :desc "Search project with rg" :nv "s" #'counsel-projectile-rg
-            :desc "Switch to project buffer" :nv "b" #'counsel-projectile-switch-to-buffer
-            :desc "Switch to project buffer or file" :nv "SPC" #'counsel-projectile))))
+            :desc "Search project with rg" :nv "s" #'+ivy/project-search
+            :desc "Switch to project buffer" :nv "b" #'+ivy/switch-workspace-buffer
+            :desc "Switch to project buffer or file" :nv "SPC" #'+ivy/switch-buffer))))
 
 
 (after! treemacs
   (treemacs-follow-mode t))
+
+(after! lsp
+  (setq lsp-file-watch-threshold 750))
+
+(after! rustic
+  (setq rustic-lsp-server 'rust-analyzer)
+  (setq lsp-rust-analyzer-cargo-watch-command "clippy"))
+
+(after! rustic-flycheck
+  (delete 'rustic-clippy flycheck-checkers))
 
 ;; Global keybindings
 (map!
