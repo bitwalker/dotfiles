@@ -6,7 +6,7 @@ INSTALLED=$(brew list)
 TAPPED=$(brew tap)
 
 TAPS=$(cat <<EOM
-caskroom/fonts
+homebrew/cask-fonts
 d12frosted/emacs-plus
 neovim/neovim
 EOM
@@ -30,14 +30,18 @@ brew upgrade
 CASKS=$(cat <<EOM
 kitty
 font-fantasque-sans-mono
+docker
+doxygen
+gpg-suite-no-mail
+hammerspoon
 EOM
 )
 
 # Install casks
 IFS=$'\n'
 for cask in $CASKS; do
-  pkgname=$(echo "$cask" | sed -e 's/ .*//')
-  if ! echo "$INSTALLED" | grep "$pkgname" >/dev/null; then
+  pkg=$(echo "$cask" | sed -e 's/ .*//')
+  if ! echo "$INSTALLED" | grep "$pkg" >/dev/null; then
     brew cask install $pkg
   fi
 done
@@ -78,12 +82,7 @@ bash-completion
 fish
 
 # Editors
-emacs-plus \
-    --without-spacemacs-icon \
-    --with-natural-title-bar \
-    --with-dbus \
-    --with-24bit-color
-
+emacs-plus@27
 neovim
 
 # Languages
@@ -101,8 +100,8 @@ PACKAGES=$(echo "$PACKAGES" | sed -e '/#.*$/d' -e '/^$/d')
 IFS=$'\n'
 for pkg in $PACKAGES; do
   pkgname=$(echo "$pkg" | sed -e 's/ .*//')
-  if ! echo "$INSTALLED" | grep "$pkgname" >/dev/null; then
-    brew install $pkg
+  if ! echo "$INSTALLED" | grep "$pkg" >/dev/null; then
+    brew install $pkg;
   fi
 done
 unset IFS

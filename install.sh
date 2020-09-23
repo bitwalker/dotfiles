@@ -6,26 +6,36 @@ cd "$(dirname "${BASH_SOURCE}")"
 
 CWD=$(pwd)
 
-# Create prereqs
-mkdir -p ~/bin
-mkdir -p ~/.config/nvim
-mkdir -p ~/src/github.com/bitwalker
-
 printf "# Syncing to home folder...\n"
+
+mkdir -p $HOME/.terminfo
+tic -x -o $HOME/.terminfo $CWD/terminfo-24bit.src
+
+function syncFile() {
+    local sourceFile="$1"
+    ln -sf "$CWD/${sourceFile}" "$HOME/${sourceFile}"
+}
+
 function doSync() {
-    find . \
-        -maxdepth 1 \
-        \! \( -name ".git" \
-              -or -name ".DS_Store" \
-              -or -name "emacs" \
-              -or -name "init" \
-              -or -name "install.sh" \
-              -or -name "Brewfile" \
-              -or -name "*.txt" \
-              -or -name "*.md" \
-              -or -name "." \
-              -or -name ".#*" \) \
-              -execdir ln -sf "$CWD/{}" "$HOME/{}" \;
+    syncFile ".aliases"
+    syncFile ".bash_profile"
+    syncFile ".bash_prompt"
+    syncFile ".bashrc"
+    syncFile ".config"
+    syncFile ".exports"
+    syncFile ".functions"
+    syncFile ".gdbinit"
+    syncFile ".gemrc"
+    syncFile ".gitmessage.txt"
+    syncFile ".hushlogin"
+    syncFile ".inputrc"
+    syncFile ".tmux.conf"
+    syncFile ".tmux-osx.conf"
+    syncFile ".vim"
+    syncFile ".vimrc"
+    syncFile ".wgetrc"
+    syncFile "bin"
+    syncFile "git"
     ln -sf ~/.vimrc ~/.config/nvim/init.vim
     mkdir -p ~/.config/.vim
     ln -sf ~/.vimrc ~/.config/.vim/init.vim
@@ -46,12 +56,17 @@ else
 fi
 unset doSync
 
-. Brewfile
+# Vim package management
+if [ ! -d ~/.config/nvim/pack/minpac/opt/minpac ]; then
+    printf "Installing minpac for vim package management.."
+    git clone https://github.com/k-takata/minpac.git ~/.config/nvim/pack/minpac/opt/minpac
+    printf "done!\n"
+fi
 
-if [ ! -d ~/.emacs.d ]; then
+if [ ! -d ~/.config/emacs ]; then
     printf "Installing Emacs config.."
-    git clone git@github.com:bitwalker/doom-emacs ~/.emacs.d
-    pushd ~/.emacs.d
+    git clone git@github.com:bitwalker/doom-emacs ~/.config/emacs
+    pushd ~/.config/emacs
     git remote add hlissner git@github.com:hlissner/doom-emacs.git
     popd
     printf "done!\n"
@@ -68,16 +83,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     mkdir -p ~/.tmux/plugins
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi;
-
-# XCode
-if which xcode-select >/dev/null; then
-    read -p "Install XCode Command Line Tools? (y/n) " -n 1
-    echo ""
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo "Running installer.."
-        xcode-select --install
-    fi
-fi
 
 # Homebrew
 if which brew >/dev/null; then
@@ -99,25 +104,6 @@ if which emacs >/dev/null; then
     echo "Emacs is ready!"
 else
     echo "Skipping Emacs configuration, 'which emacs' failed with non-zero exit"
-fi
-
-# iTerm
-read -p "Install iTerm2 preferences? (y/n) " -n 1;
-echo "";
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    if [ ! -d ~/src/iTerm2-Color-Schemes ]; then
-        git clone https://github.com/mbadolato/iTerm2-Color-Schemes ~/src/iTerm2-Color-Schemes
-    else
-        pushd ~/src/iTerm2-Color-Schemes
-        git pull origin master
-        popd
-    fi
-    open ~/src/iTerm2-Color-Schemes/schemes/Glacier.itermcolors
-    open ~/src/iTerm2-Color-Schemes/schemes/Hybrid.itermcolors
-    open ~/src/iTerm2-Color-Schemes/schemes/Hardcore.itermcolors
-    if which defaults >/dev/null; then
-        defaults read $CWD/com.googlecode.iterm2.plist
-    fi
 fi
 
 # ASDF
@@ -144,9 +130,6 @@ fi
 
 echo "Installing Python-based utilities.."
 pip install -r $CWD/requirements.txt
-
-# Update shell environment based on profile
-source ~/.bash_profile
 
 echo ""
 echo "All done!"

@@ -1,4 +1,3 @@
-neovim
 powerline-status
 beets
 discogs-client
@@ -6,4 +5,3 @@ pyechonest
 requests
 pylast
 pyacoustid
-tmuxp
