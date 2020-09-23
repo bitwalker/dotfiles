@@ -2,29 +2,32 @@ start_directory: $HOME/src/github.com/bitwalker
 config:
 
 # scratch window
-new-window -n scratch -c ~/src/github.com/bitwalker fish
-split-window -h -c ~/src/github.com/bitwalker fish
+new-window -n scratch -c ~/src/github.com/bitwalker zsh
+split-window -h -c ~/src/github.com/bitwalker zsh
 select-layout -E even-horizontal
 
 # dotfiles
-new-window -n dotfiles -c ~/src/github.com/bitwalker/dotfiles fish
+new-window -n dotfiles -c ~/src/github.com/bitwalker/dotfiles zsh
 select-layout even-horizontal
 
 # emacs config
-new-window -n emacs.d -c ~/.emacs.d
-split-window -h -c ~/.config/doom fish
+new-window -n emacs.d -c ~/.config/emacs
+split-window -h -c ~/.config/doom zsh
 select-layout -E even-horizontal
 
 # emacs
-new-window -n emacs -c ~/src/github.com/bitwalker fish
+new-window -n emacs -c ~/src/github.com/bitwalker zsh
 send-keys "emacsclient -a '' ." C-m
 
 # lumen
-new-window -n lumen -c ~/src/github.com/bitwalker/lumen fish
-split-window -h -c ~/src/github.com/bitwalker/eir fish
+new-window -n lumen -c ~/src/github.com/bitwalker/lumen zsh
+split-window -h -c ~/src/github.com/bitwalker/lumen zsh
 select-layout -E even-horizontal
 
 # llvm
-new-window -n llvm -c ~/src/github.com/bitwalker/llvm-project fish
-split-window -h -c ~/src/github.com/bitwalker/llvm-project fish
+new-window -n llvm -c ~/src/github.com/bitwalker/llvm-project zsh
+split-window -h -c ~/src/github.com/bitwalker/llvm-project zsh
 select-layout -E even-horizontal
+
+# docker
+new-window -n docker -c ~/src/github.com/bitwalker zsh
