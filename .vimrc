@@ -49,6 +49,7 @@ function! PackInit() abort
   call minpac#add('elixir-lang/vim-elixir')
   call minpac#add('jimenezrick/vimerl')
   call minpac#add('dag/vim-fish')
+  call minpac#add('keith/swift.vim')
 endfunction
 
 packadd! llvm
