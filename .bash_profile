@@ -343,3 +343,5 @@ export PATH="$HOME/.cargo/bin:$PATH"
 
 # Added by Krypton
 export GPG_TTY=$(tty)
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
