@@ -28,7 +28,10 @@ setopt ignore_eof
 # Disable sound
 unsetopt beep
 
-typeset -gx TERM=xterm-24bit
+typeset -gx TERM=xterm-kitty
+typeset -gx EMACSDIR="$XDG_CONFIG_HOME/emacs"
+typeset -gx DOOMDIR="$XDG_CONFIG_HOME/doom"
+typeset -gx DOOMLOCALDIR="$XDG_DATA_HOME/doom"
 
 [[ -d $HOME/bin ]] || mkdir -p $HOME/bin
 
@@ -51,6 +54,30 @@ path=("$HOME/bin" $path)
 # Use directory-sensitive history
 source $XDG_CONFIG_HOME/zsh/plugins/directory-history.zsh
 
+# Add fuzzy finding support for completions, search, etc
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Initialize ASDF
+if [[ -f ~/.asdf/asdf.sh ]]; then
+    source ~/.asdf/asdf.sh
+fi
+
+# Initialize completions
+autoload -U compinit
+compinit
+
+# Load kubectl completions
+[[ $commands[kubectl] ]] && source <(kubectl completion zsh)
+
+# Load argocd completions
+[[ $commands[argocd] ]] && source <(argocd completion zsh)
+
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f $XDG_CONFIG_HOME/zsh/.p10k.zsh ]] || source $XDG_CONFIG_HOME/zsh/.p10k.zsh
+
+# Load theme
+source $XDG_DATA_HOME/powerlevel10k/powerlevel10k.zsh-theme
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block, everything else may go below.
@@ -58,26 +85,23 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Initialize completions
-autoload -U compinit
-compinit
-
-# Load theme
-source $XDG_DATA_HOME/powerlevel10k/powerlevel10k.zsh-theme
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 # Homebrew
 typeset -gx HOMEBREW_NO_ANALYTICS=1
 if [[ -f "$XDG_CONFIG_HOME/brew/API_TOKEN" ]]; then
     typeset -gx HOMEBREW_GITHUB_API_TOKEN="$(cat "$XDG_CONFIG_HOME/brew/API_TOKEN")"
 fi
 
-# Initialize ASDF
-if [[ -f ~/.asdf/asdf.sh ]]; then
-    source ~/.asdf/asdf.sh
+# Start gpg-agent if it's not running
+if [[ -z "$(ps ax | grep 'gpg-agent' | grep -v 'grep' 2> /dev/null)" ]]; then
+    gpg-agent --homedir $HOME/.gnupg --daemon --sh --enable-ssh-support > $HOME/.gnupg/env
 fi
+
+# Import various environment variables from the agent.
+if [[ -f "$HOME/.gnupg/env" ]]; then
+    source $HOME/.gnupg/env
+fi
+
+typeset -gx GPG_TTY=`tty`
 
 # When available, make use of ccache
 if type -p ccache >/dev/null; then
@@ -92,22 +116,29 @@ typeset -gx ERL_AFLAGS="-kernel shell_history enabled"
 typeset -gx GOPATH=$HOME
 
 # Java
-_java=`asdf current java 2>&1 >/dev/null`
+_java=`asdf which java 2>&1 >/dev/null`
 if [[ $? -eq 0 ]]; then
     typeset -gx JAVA_HOME=$(asdf where java)
 fi
 if [[ -z "$JAVA_HOME" ]] && [[ -f /usr/libexec/java_home ]]; then
-    typeset -gx JAVA_HOME="$(/usr/libexec/java_home)"
+    if _java_home=`/usr/libexec/java_home 2>&1 >/dev/null`; then
+        typeset -gx JAVA_HOME="${_java_home}"
+    fi
 fi
 
 # Rust
-if [[ -d "$HOME/.cargo/bin" ]]; then
+if [ -d "$HOME/.cargo/bin" ]; then
     path=($HOME/.cargo/bin $path)
 fi
 
 # direnv
 if ! type -p _direnv_hook >/dev/null; then
     eval "$(direnv hook zsh)";
+fi
+
+# kubebuilder
+if [ -d /usr/local/kubebuilder ]; then
+    path+=(/usr/local/kubebuilder/bin)
 fi
 
 # Ensure PATH is exposed to GUI apps
@@ -143,11 +174,18 @@ if [[ -z ${chpwd_functions[(r)_tool_versions_hook]} ]]; then
     chpwd_functions+=_tool_versions_hook;
 fi
 
+alias vim='nvim'
+alias ff='find * -type f | fzf > selected'
+
 _kill_emacs() {
     ps -cx | grep '[Ee]macs' | sed -e 's/^[ ]*//' | head -n1 | cut -d' ' -f1 | xargs kill
 }
 alias killemacs='_kill_emacs'
-alias vim='nvim'
+
+_unfuck_emacs() {
+    ps -cx | grep '[Ee]macs' | sed -e 's/^[ ]*//' | head -n1 | cut -d' ' -f1 | xargs kill -USR2
+}
+alias unfuck_emacs='_unfuck_emacs'
 
 # Allow alt+w to delete path segments on the command line
 backward-kill-dir () {
