@@ -3,13 +3,14 @@
 .config/nvim/pack/minpac/opt/minpac
 .config/nvim/pack/minpac/start
 
+# package-manager installed files
+.config/gcloud
+.config/helm
+.config/octant
+.config/gh/hosts.yml
+
 # user-local bins
-bin/ccls
-bin/erlang_ls
-bin/rebar3
-bin/vim
-bin/rust-analyzer
-bin/kitty
+bin/*
 
 # temp/generated files
 .config/beets/*.pickle

@@ -2,8 +2,13 @@
   path = ~/git/.gitconfig_shared
   path = ~/git/.gitconfig_osx
 [gpg]
-	program = /usr/local/bin/krgpg
+	program = gpg
+[user]
+    signingkey = A6CDECAE
 [commit]
-	gpgSign = true
+    gpsign = true
+	gpgsign = true
 [tag]
 	forceSignAnnotated = true
+[init]
+	defaultBranch = main

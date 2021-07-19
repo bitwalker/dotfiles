@@ -1,8 +1,33 @@
+[gpg]
+  program = /usr/local/MacGPG2/bin/gpg2
+
 [credential]
   helper = osxkeychain
 
+[core]
+  pager = delta
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  syntax-theme = Sublime Snazzy
+  minus-style = strike red
+  minus-non-emph-style = strike red
+  minus-emph-style = bold red 52
+  minus-empty-line-marker-style = normal "#3f0001"
+  plus-style = green
+  plus-non-emph-style = green
+  plus-emph-style = bold green 22
+  plus-empty-line-marker-style = normal "#002800"
+  line-numbers = true
+  line-numbers-minus-style = red
+  line-numbers-plus-style = green
+  line-numbers-left-style = "#444444"
+  line-numbers-right-style = "#444444"
+
 [diff]
-  tool = ksdiff
+  colorMoved = default
 
 [merge]
   tool = ksdiff
