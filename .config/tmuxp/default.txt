@@ -17,17 +17,20 @@ select-layout -E even-horizontal
 
 # emacs
 new-window -n emacs -c ~/src/github.com/bitwalker zsh
-send-keys "emacsclient -a '' ." C-m
+#send-keys "emacsclient -a '' ." C-m
 
 # lumen
 new-window -n lumen -c ~/src/github.com/bitwalker/lumen zsh
 split-window -h -c ~/src/github.com/bitwalker/lumen zsh
 select-layout -E even-horizontal
+select-pane -L
+split-window -v -c ~/src/github.com/bitwalker/llvm-project zsh
+select-pane -R
 
 # llvm
 new-window -n llvm -c ~/src/github.com/bitwalker/llvm-project zsh
 split-window -h -c ~/src/github.com/bitwalker/llvm-project zsh
 select-layout -E even-horizontal
 
-# docker
-new-window -n docker -c ~/src/github.com/bitwalker zsh
+# distru
+new-window -n distru -c ~/src/github.com/distruapp/distru zsh
