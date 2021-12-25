@@ -32,5 +32,5 @@ new-window -n llvm -c ~/src/github.com/bitwalker/llvm-project zsh
 split-window -h -c ~/src/github.com/bitwalker/llvm-project zsh
 select-layout -E even-horizontal
 
-# distru
-new-window -n distru -c ~/src/github.com/distruapp/distru zsh
+# timescale
+new-window -n timescale -c ~/src/github.com/timescale zsh
