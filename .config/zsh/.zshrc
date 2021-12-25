@@ -18,6 +18,8 @@ setopt hist_find_no_dups
 setopt hist_save_no_dups
 setopt hist_no_store
 setopt hist_ignore_space
+setopt hist_fcntl_lock
+setopt hist_no_functions
 
 # Enable comments in the prompt
 setopt interactive_comments
@@ -51,7 +53,7 @@ fi
 # Put personal bin directory before all others
 path=("$HOME/bin" $path)
 
-# Use directory-sensitive history
+# Load plugins
 source $XDG_CONFIG_HOME/zsh/plugins/directory-history.zsh
 
 # Add fuzzy finding support for completions, search, etc
@@ -68,9 +70,6 @@ compinit
 
 # Load kubectl completions
 [[ $commands[kubectl] ]] && source <(kubectl completion zsh)
-
-# Load argocd completions
-[[ $commands[argocd] ]] && source <(argocd completion zsh)
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f $XDG_CONFIG_HOME/zsh/.p10k.zsh ]] || source $XDG_CONFIG_HOME/zsh/.p10k.zsh
@@ -141,6 +140,13 @@ if [ -d /usr/local/kubebuilder ]; then
     path+=(/usr/local/kubebuilder/bin)
 fi
 
+# minikube
+typeset -gx MINIKUBE_HOME="${XDG_DATA_HOME}/minikube"
+typeset -gx MINIKUBE_WANTUPDATENOTIFICATION=false
+if type -p minikube >/dev/null; then
+    eval "$(minikube docker-env --shell=zsh)";
+fi
+
 # Ensure PATH is exposed to GUI apps
 if type -p launchctl >/dev/null; then
     launchctl setenv PATH "$(echo "$PATH" | sed -e 's| /|:/|g' -e 's| ./|:./|g')"
@@ -174,8 +180,11 @@ if [[ -z ${chpwd_functions[(r)_tool_versions_hook]} ]]; then
     chpwd_functions+=_tool_versions_hook;
 fi
 
+alias history='fc -l 1'
+alias vi='nvim'
 alias vim='nvim'
 alias ff='find * -type f | fzf > selected'
+alias gp='graphite'
 
 _kill_emacs() {
     ps -cx | grep '[Ee]macs' | sed -e 's/^[ ]*//' | head -n1 | cut -d' ' -f1 | xargs kill
