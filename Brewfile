@@ -1,110 +1,94 @@
-#!/usr/bin/env bash
+tap "homebrew/cask"
+tap "homebrew/cask-fonts"
+tap "d12frosted/emacs-plus"
 
-set -x
+cask_args appdir: "~/Applications"
 
-INSTALLED=$(brew list)
-TAPPED=$(brew tap)
-
-TAPS=$(cat <<EOM
-homebrew/cask-fonts
-d12frosted/emacs-plus
-neovim/neovim
-EOM
-)
-
-# Install missing taps
-IFS=$'\n'
-for tap in $TAPS; do
-  if ! echo "$TAPPED" | grep "$tap" >/dev/null; then
-    brew tap $tap;
-  fi
-done
-unset IFS
-
-# Update metadata
-brew update
-
-# Upgrade already installed packages
-brew upgrade
-
-CASKS=$(cat <<EOM
-kitty
-font-fantasque-sans-mono
-docker
-doxygen
-gpg-suite-no-mail
-hammerspoon
-EOM
-)
-
-# Install casks
-IFS=$'\n'
-for cask in $CASKS; do
-  pkg=$(echo "$cask" | sed -e 's/ .*//')
-  if ! echo "$INSTALLED" | grep "$pkg" >/dev/null; then
-    brew cask install $pkg
-  fi
-done
-unset IFS
-
-# Desired packages
-PACKAGES=$(cat <<EOM
+brew amethyst
+brew docker
+brew doxygen
+brew font-fantasque-sans-mono
+brew font-fantasquesansmono-nerd-font
+brew gpg-suite-no-mail
+brew hammerspoon
+brew kitty
+brew suspicious-package
+brew transmission
+brew vlc
 
 # Utilities
-coreutils
-moreutils
-findutils
-wget --with-iri
-the_silver_searcher
-ripgrep
-git
-tree
-dtrx
-p7zip
-jq
-direnv
+brew argocd
+brew binutils
+brew coreutils
+brew direnv
+brew dnsmasq
+brew dtrx
+brew editorconfig
+brew fd
+brew findutils
+brew fzf
+brew git
+brew git-delta
+brew git-filter-repo
+brew gh
+brew gnu-sed --with-default-names
+brew graphviz
+brew helm
+brew imagemagick
+brew jansson
+brew jq
+brew moreutils
+brew ncdu
+brew openjdk
+brew openssl
+brew p7zip
+brew pandoc
+brew pinentry
+brew pinentry-mac
+brew ripgrep
+brew shellcheck
+brew terminal-notifier
+brew terraform
+brew tree
+brew the_silver_searcher
+brew unixodbc
+brew watch
+brew wget --with-iri
+brew youtube-dl
+brew yubico-piv-tool
+brew yq
 
-# Ncurses disk usage utility
-ncdu
-
-# Use gnu-sed rather than builtin sed
-gnu-sed --with-default-names
-
-# Build tools and common dependencies
-autoconf
-automake
-openssl
-unixodbc
+# Build Tools
+brew autoconf
+brew automake
+brew ccache
+brew ninja
+brew pipenv
+brew pkg-config
 
 # Shells
-bash
-bash-completion
-fish
+brew bash
+brew bash-completion
+brew fish
 
 # Editors
-emacs-plus@27
+emacs-plus@28
 neovim
 
 # Languages
-python
-python3
+gcc
+node
 
 # Tmux
 tmux
 reattach-to-user-namespace
 
+# Databases
+postgresql
+postgis
+redis
+sqlite
+
+# Libraries
+tree-sitter
 EOM
-)
-PACKAGES=$(echo "$PACKAGES" | sed -e '/#.*$/d' -e '/^$/d')
-
-IFS=$'\n'
-for pkg in $PACKAGES; do
-  pkgname=$(echo "$pkg" | sed -e 's/ .*//')
-  if ! echo "$INSTALLED" | grep "$pkg" >/dev/null; then
-    brew install $pkg;
-  fi
-done
-unset IFS
-
-# Cleanup post-install
-brew cleanup

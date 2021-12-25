@@ -59,6 +59,7 @@ unset doSync
 # Vim package management
 if [ ! -d ~/.config/nvim/pack/minpac/opt/minpac ]; then
     printf "Installing minpac for vim package management.."
+    mkdir -p ~/.config/nvim/pack/minpac/opt
     git clone https://github.com/k-takata/minpac.git ~/.config/nvim/pack/minpac/opt/minpac
     printf "done!\n"
 fi
@@ -89,7 +90,7 @@ if which brew >/dev/null; then
     read -p "Install Homebrew packages? (y/n) " -n 1
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        . $CWD/Brewfile
+        brew bundle --file "$CWD/Brewfile"
     fi
 else
     printf "\nHomebrew not installed! Skipping package installation..\n\n"
@@ -98,10 +99,13 @@ fi
 # Emacs
 if which emacs >/dev/null; then
     echo "Compiling Emacs configuration.."
-    pushd ~/.emacs.d
-    make
+    pushd ~/.config/emacs
+    if ! bin/doom sync: then
+        echo "ERROR: Issue installing emacs, continuing with rest of installation, but make sure you revisit this after install"
+    else
+        echo "Emacs is ready!"
+    fi
     popd
-    echo "Emacs is ready!"
 else
     echo "Skipping Emacs configuration, 'which emacs' failed with non-zero exit"
 fi
@@ -122,14 +126,12 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     git checkout $__latest_asdf
     popd
     source ~/.asdf/asdf.sh
-    echo "Adding Erlang, Elixir, Go plugins"
-    asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
-    asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
+    echo "Adding language plugins to asdf.."
+    asdf plugin-add erlang
+    asdf plugin-add elixir
+    asdf plugin-add nodejs
     asdf plugin-add golang https://github.com/kennyp/asdf-golang.git
 fi
-
-echo "Installing Python-based utilities.."
-pip install -r $CWD/requirements.txt
 
 echo ""
 echo "All done!"
