@@ -114,7 +114,7 @@
   l = log --pretty=oneline -n 20 --graph --abbrev-commit
 
   # View abbreviated SHA, description, relative date, and compact graph of the entire repo's history
-  ll = log --graph --abbrev-commit --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+  ll = log --graph --abbrev-commit --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
 
   # Same as ll, but with full message body printed
   lll = log --graph --date=relative --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n%w(0,4,4)%-b%n%n%-N'
@@ -264,6 +264,8 @@
 #######################
 
 [diff]
+  # Prefer a more reviewable diff by default
+  algorithm = histogram
   # Detect copies as well as renames
   renames = copies
   renameLimit = 5000
