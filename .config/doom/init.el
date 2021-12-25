@@ -23,6 +23,7 @@
        (company +childframe)           ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
+       vertico           ; the search engine of the future
        (ivy +fuzzy +prescient +icons)  ; a search engine for love and life
 
        :ui
@@ -32,7 +33,7 @@
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
        ;;(emoji +unicode)  ; 🙂
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       hydra
+       ;;hydra
        ;;indent-guides     ; highlighted indent columns
        ;;ligatures         ; ligatures and symbols to make your code pretty again
        ;;minimap           ; show a map of the code on the side
@@ -119,6 +120,7 @@
        ;;csharp            ; unity, .NET, and mono shenanigans
        data              ; config/data formats
        ;;(dart +flutter)   ; paint ui and not much else
+       ;;dhall
        (elixir +lsp)            ; erlang done right
        ;;elm               ; care for a cup of TEA?
        emacs-lisp        ; drown in parentheses
@@ -130,11 +132,11 @@
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
        ;;gdscript          ; the language you waited for
        (go +lsp)           ; the hipster dialect
-       ;;(haskell +dante)  ; a language that's lazier than I am
+       ;;(haskell +lsp)    ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
        json              ; At least it ain't XML
-       (java +meghanada) ; the poster child for carpal tunnel syndrome
+       ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
        javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
@@ -156,10 +158,10 @@
        ;;raku              ; the artist formerly known as perl6
        ;;rest              ; Emacs as a REST client
        rst               ; ReST in peace
-       ruby              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-       (rust +lsp)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       scala             ; java, but good
-       scheme            ; a fully conniving family of lisps
+       ;;(ruby +rails)   ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+       (rust +lsp)     ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       ;;scala           ; java, but good
+       ;;(scheme +guile) ; a fully conniving family of lisps
        sh                ; she sells {ba,z,fi}sh shells on the C xor
        ;;sml
        ;;solidity          ; do you need a blockchain? No.
@@ -170,7 +172,7 @@
        ;;zig               ; C, but simpler
 
        :email
-       ;;(mu4e +gmail)
+       ;;(mu4e +org +gmail)
        ;;notmuch
        ;;(wanderlust +gmail)
 
