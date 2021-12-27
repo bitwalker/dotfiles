@@ -37,17 +37,23 @@ typeset -gx DOOMLOCALDIR="$XDG_DATA_HOME/doom"
 
 [[ -d $HOME/bin ]] || mkdir -p $HOME/bin
 
-path=('/usr/local/bin' $path)
-typeset -TUxg MANPATH manpath=('/usr/local/share/man' '/usr/share/man')
-typeset -TUxg INFOPATH infopath
+typeset -TUxg MANPATH manpath=('/usr/share/man' $manpath)
+typeset -TUxg INFOPATH infopath=($infopath)
 
-# Add GNU coreutils to PATH if present
-if [[ -d /usr/local/opt/coreutils/libexec/gnubin ]]; then
-    path=('/usr/local/opt/coreutils/libexec/gnubin' $path)
+# Ensure Homebrew is initialized when present, unless already initialized
+if [ -z "$HOMEBREW_PREFIX" ]; then
+    if [[ -f /opt/homebrew/bin/brew ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
 fi
-if [[ -d /usr/local/opt/coreutils/libexec/gnuman ]]; then
-    manpath=('/usr/local/opt/coreutils/libexec/gnuman' $manpath)
-    manpath=('/usr/local/opt/coreutils/share/man' $manpath)
+
+# Prefer GNU coreutils when available
+if [[ -d "$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin" ]]; then
+    path=("$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin" $path)
+fi
+if [[ -d "$HOMEBREW_PREFIX/opt/coreutils/libexec/gnuman" ]]; then
+    manpath=("$HOMEBREW_PREFIX/opt/coreutils/libexec/gnuman" $manpath)
+    manpath=("$HOMEBREW_PREFIX/opt/coreutils/share/man" $manpath)
 fi
 
 # Put personal bin directory before all others
@@ -91,16 +97,15 @@ if [[ -f "$XDG_CONFIG_HOME/brew/API_TOKEN" ]]; then
 fi
 
 # Start gpg-agent if it's not running
-if [[ -z "$(ps ax | grep 'gpg-agent' | grep -v 'grep' 2> /dev/null)" ]]; then
-    gpg-agent --homedir $HOME/.gnupg --daemon --sh --enable-ssh-support > $HOME/.gnupg/env
+if [ -z "$GPG_TTY" ]; then
+    typeset -gx GPG_TTY="$(tty)"
 fi
 
-# Import various environment variables from the agent.
-if [[ -f "$HOME/.gnupg/env" ]]; then
-    source $HOME/.gnupg/env
+if ! pgrep gpg-agent >/dev/null; then
+    unset SSH_AUTH_SOCK
+    typeset -gx SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+    gpgconf --launch gpg-agent
 fi
-
-typeset -gx GPG_TTY=`tty`
 
 # When available, make use of ccache
 if type -p ccache >/dev/null; then
@@ -108,7 +113,7 @@ if type -p ccache >/dev/null; then
 fi
 
 # Set common flags for Elixir/Erlang
-typeset -gx ELIXIR_EDITOR="emacsclient -a 'vim' +__LINE__ __FILE__"
+typeset -gx ELIXIR_EDITOR="vim +__LINE__ __FILE__"
 typeset -gx ERL_AFLAGS="-kernel shell_history enabled"
 
 # Set GOPATH
@@ -187,12 +192,12 @@ alias ff='find * -type f | fzf > selected'
 alias gp='graphite'
 
 _kill_emacs() {
-    ps -cx | grep '[Ee]macs' | sed -e 's/^[ ]*//' | head -n1 | cut -d' ' -f1 | xargs kill
+    pgrep emacs | xargs kill
 }
 alias killemacs='_kill_emacs'
 
 _unfuck_emacs() {
-    ps -cx | grep '[Ee]macs' | sed -e 's/^[ ]*//' | head -n1 | cut -d' ' -f1 | xargs kill -USR2
+    pgrep emacs | xargs kill -USR2
 }
 alias unfuck_emacs='_unfuck_emacs'
 

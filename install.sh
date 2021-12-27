@@ -26,14 +26,15 @@ function doSync() {
     syncFile ".functions"
     syncFile ".gdbinit"
     syncFile ".gemrc"
+    syncFile ".gitconfig"
     syncFile ".gitmessage.txt"
     syncFile ".hushlogin"
     syncFile ".inputrc"
     syncFile ".tmux.conf"
     syncFile ".tmux-osx.conf"
-    syncFile ".vim"
     syncFile ".vimrc"
     syncFile ".wgetrc"
+    syncFile ".zshenv"
     syncFile "bin"
     syncFile "git"
     ln -sf ~/.vimrc ~/.config/nvim/init.vim
@@ -50,8 +51,7 @@ else
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 	    doSync
     else
-        printf "Aborted.\n\n"
-        exit 0
+        printf "Skipped.\n\n"
 	fi
 fi
 unset doSync
@@ -68,6 +68,7 @@ if [ ! -d ~/.config/emacs ]; then
     printf "Installing Emacs config.."
     git clone git@github.com:bitwalker/doom-emacs ~/.config/emacs
     pushd ~/.config/emacs
+    git checkout develop
     git remote add hlissner git@github.com:hlissner/doom-emacs.git
     popd
     printf "done!\n"
@@ -80,7 +81,7 @@ read -p "Install tmux plugins? (y/n) " -n 1;
 echo "";
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Installing tmux plugins.."
-    sudo pip install powerline-status
+    sudo pip3 install powerline-status
     mkdir -p ~/.tmux/plugins
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi;
@@ -100,7 +101,7 @@ fi
 if which emacs >/dev/null; then
     echo "Compiling Emacs configuration.."
     pushd ~/.config/emacs
-    if ! bin/doom sync: then
+    if ! bin/doom sync; then
         echo "ERROR: Issue installing emacs, continuing with rest of installation, but make sure you revisit this after install"
     else
         echo "Emacs is ready!"

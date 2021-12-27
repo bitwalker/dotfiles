@@ -12,5 +12,3 @@ typeset -gx ZDOTDIR=$XDG_CONFIG_HOME/zsh
 typeset -gx FZF_DEFAULT_COMMAND="fd --follow"
 typeset -gx FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 typeset -gx FZF_DEFAULT_OPTS='--height 40%'
-
-path=('/usr/local/bin' '/usr/local/sbin' $path)

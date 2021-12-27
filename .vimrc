@@ -97,7 +97,7 @@ set lsp=5
 set linespace=0
 
 " fzf for fuzzy finding
-set rtp+=/usr/local/opt/fzf
+set rtp+=/opt/homebrew/opt/fzf
 
 " In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
