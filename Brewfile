@@ -1,22 +1,42 @@
+# Taps
 tap "homebrew/cask"
 tap "homebrew/cask-fonts"
 tap "d12frosted/emacs-plus"
 
+# Install Mac App Store support tooling
+brew "mas"
+
+# Apps
+
+mas "Bitwarden", id: 1352778147
+mas "Drafts", id: 1435957248
+mas "Pixelmator Pro", id: 1289583905
+mas "Reeder 5", 1529448980
+mas "Tot", id: 1491071483
+
+# Casks
 cask_args appdir: "~/Applications"
 
 cask "amethyst"
+cask "choosy"
 cask "dash"
 cask "doxygen"
 cask "fantastical"
+cask "firefox"
 cask "font-fantasque-sans-mono"
 cask "font-fantasque-sans-mono-nerd-font"
 cask "gpg-suite-no-mail"
 cask "hammerspoon"
+cask "slack"
 cask "suspicious-package"
 cask "transmission"
+cask "vivaldi"
 cask "vlc"
 
 # Utilities
+brew "docker"
+brew "docker-compose"
+brew "colima" args: ["HEAD"]
 brew "romkatv/powerlevel10k/powerlevel10k"
 brew "binutils"
 brew "coreutils"
