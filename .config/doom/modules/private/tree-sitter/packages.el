@@ -3,7 +3,7 @@
 
 (package! tree-sitter
   :ignore (null (bound-and-true-p module-file-suffix))
-  :pin "7f5d0938002092ec08830a73f64961021303e1e9")
+  :pin "48b06796a3b2e76ce004972d929de38146eafaa0")
 (package! tree-sitter-langs
   :ignore (null (bound-and-true-p module-file-suffix))
-  :pin "5d362ce98dcf656d7a55fcad6ae21c0a2caca861")
+  :pin "e537b90bbca6b4deb62042240ed12461251b3f0c")
