@@ -101,9 +101,9 @@ if [ -z "$GPG_TTY" ]; then
     typeset -gx GPG_TTY="$(tty)"
 fi
 
+unset SSH_AUTH_SOCK
+typeset -gx SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 if ! pgrep gpg-agent >/dev/null; then
-    unset SSH_AUTH_SOCK
-    typeset -gx SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
     gpgconf --launch gpg-agent
 fi
 
