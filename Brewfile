@@ -11,7 +11,7 @@ brew "mas"
 mas "Bitwarden", id: 1352778147
 mas "Drafts", id: 1435957248
 mas "Pixelmator Pro", id: 1289583905
-mas "Reeder 5", 1529448980
+mas "Reeder 5", id: 1529448980
 mas "Tot", id: 1491071483
 
 # Casks
@@ -36,7 +36,7 @@ cask "vlc"
 # Utilities
 brew "docker"
 brew "docker-compose"
-brew "colima" args: ["HEAD"]
+brew "colima", args: ["HEAD"]
 brew "romkatv/powerlevel10k/powerlevel10k"
 brew "binutils"
 brew "coreutils"
