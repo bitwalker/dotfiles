@@ -31,6 +31,3 @@ select-pane -R
 new-window -n llvm -c ~/src/github.com/bitwalker/llvm-project zsh
 split-window -h -c ~/src/github.com/bitwalker/llvm-project zsh
 select-layout -E even-horizontal
-
-# timescale
-new-window -n timescale -c ~/src/github.com/timescale zsh
