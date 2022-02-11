@@ -40,16 +40,25 @@ typeset -gx DOOMLOCALDIR="$XDG_DATA_HOME/doom"
 typeset -TUxg MANPATH manpath=('/usr/share/man' $manpath)
 typeset -TUxg INFOPATH infopath=($infopath)
 
+# Reset PATH to known-good default
+path=(/usr/local/bin /usr/local/sbin /usr/bin /usr/sbin /bin /sbin)
+
 # Ensure Homebrew is initialized when present, unless already initialized
 if [ -z "$HOMEBREW_PREFIX" ]; then
     if [[ -f /opt/homebrew/bin/brew ]]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
+else
+    # Already initialized, but we need to re-add it to PATH
+    path=("$HOMEBREW_PREFIX/bin" $path)
 fi
 
 # Prefer GNU coreutils when available
 if [[ -d "$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin" ]]; then
     path=("$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin" $path)
+fi
+if [[ -d "$HOMEBREW_PREFIX/opt/grep/libexec/gnubin" ]]; then
+    path=("$HOMEBREW_PREFIX/opt/grep/libexec/gnubin" $path)
 fi
 if [[ -d "$HOMEBREW_PREFIX/opt/coreutils/libexec/gnuman" ]]; then
     manpath=("$HOMEBREW_PREFIX/opt/coreutils/libexec/gnuman" $manpath)
@@ -81,7 +90,7 @@ compinit
 [[ ! -f $XDG_CONFIG_HOME/zsh/.p10k.zsh ]] || source $XDG_CONFIG_HOME/zsh/.p10k.zsh
 
 # Load theme
-source $XDG_DATA_HOME/powerlevel10k/powerlevel10k.zsh-theme
+source /opt/homebrew/opt/powerlevel10k/powerlevel10k.zsh-theme
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -101,6 +110,14 @@ if [ -z "$GPG_TTY" ]; then
     typeset -gx GPG_TTY="$(tty)"
 fi
 
+# If gpgconf is unavailable, use MacGPG install, if exists
+if ! type -p gpgconf >/dev/null; then
+    if [[ -d /usr/local/MacGPG2/bin ]]; then
+        path+=(/usr/local/MacGPG2/bin)
+    fi
+fi
+
+# Do not use default SSH listener, recreate using gpg-agent configuration
 unset SSH_AUTH_SOCK
 typeset -gx SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 if ! pgrep gpg-agent >/dev/null; then
@@ -151,6 +168,9 @@ typeset -gx MINIKUBE_WANTUPDATENOTIFICATION=false
 if type -p minikube >/dev/null; then
     eval "$(minikube docker-env --shell=zsh)";
 fi
+
+# docker
+typeset -gx DOCKER_HOST="ssh://paulschoenfelder@windy"
 
 # Ensure PATH is exposed to GUI apps
 if type -p launchctl >/dev/null; then
