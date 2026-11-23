@@ -1,8 +1,10 @@
 zmodload zsh/datetime
 
+alias _dirhist=${0:a:h}/dirhist
+
 # Generates a new history for the current directory
 function generate_history() {
-  history_dir=("${(@ps.\0\n.)$(dirhist -a -d $PWD)}")
+  history_dir=("${(@ps.\0\n.)$(_dirhist -a -d $PWD)}")
   MAX_INDEX_HISTORY=$#history_dir
   (( INDEX_HISTORY = $#history_dir + 1 ))
 
@@ -10,20 +12,14 @@ function generate_history() {
   refresh_substring_search_matches
 }
 
-last_command=""
 # Append to history file
 function log_command() {
-  [[ "${1}" = \ * ]] && [[ "$HISTCONTROL" =~ "ignorespace" ]] && return
-  if [[ "${1}" != ${~HISTORY_IGNORE} ]]; then
-    [[ "${1}" == "$last_command" ]] && [[ "$HISTCONTROL" =~ "ignoredups" ]] && return
-    echo -n ": ${EPOCHSECONDS}:0;${PWD};${1}\0\n" >> "${XDG_CONFIG_HOME}/zsh/.directory_history"
-  fi
-  last_command="${1}"
+  echo -n ": ${EPOCHSECONDS}:0;${PWD};${1}\0\n" >> "$XDG_CONFIG_HOME/zsh/.directory_history"
 }
 
 # Refresh substring search
 function refresh_substring_search_matches() {
-  _history_substring_search_matches=("${(@f)$(dirhist -s "${_history_substring_search_query_escaped}" -d $PWD)}")
+  _history_substring_search_matches=("${(@f)$(_dirhist -s "${_history_substring_search_query_escaped}" -d $PWD)}")
 }
 
 # Reset $_history_substring_search_result after every command
@@ -47,10 +43,9 @@ preexec_functions=(${preexec_functions[@]} "generate_history")
 preexec_functions=(${preexec_functions[@]} "reset_substring_search")
 
 # generate_history() gets executed after the following so we have to generate it here to get access to $history_dir
-history_dir=("${(@ps.\0\n.)$(dirhist -a -d $PWD)}")
-last_command="$history_dir[${#history_dir[@]}]"
+history_dir=("${(@ps.\0\n.)$(_dirhist -a -d $PWD)}")
 
-function directory-history-search-forward() {
+directory-history-search-forward() {
   # Go forward as long as possible; Last command is at $history_dir[1]
   if [[ $INDEX_HISTORY -ne 1 ]] && (( INDEX_HISTORY-- ))
 
@@ -61,7 +56,7 @@ function directory-history-search-forward() {
   zle end-of-line
 }
 
-function directory-history-search-backward() {
+directory-history-search-backward() {
   # Go back as long as possible; First command is at $history_dir[$MAX_INDEX_HISTORY]
   if [[ $INDEX_HISTORY -ne (( $MAX_INDEX_HISTORY + 1 )) ]] && (( INDEX_HISTORY++ ))
 
@@ -297,7 +292,7 @@ function _history-substring-search-begin() {
     #      options. They can be turned off by (ON).
     #
     #_history_substring_search_matches=(${(kon)history[(R)(#$HISTORY_SUBSTRING_SEARCH_GLOBBING_FLAGS)*${_history_substring_search_query_escaped}*]})
-    _history_substring_search_matches=("${(@f)$(dirhist -s "${_history_substring_search_query_escaped}" -d $PWD)}")
+    _history_substring_search_matches=("${(@f)$(_dirhist -s "${_history_substring_search_query_escaped}" -d $PWD)}")
     if [[ $#_history_substring_search_matches -eq 0 || $_history_substring_search_matches[1] == "NONE" ]]; then
       _history_substring_search_matches=()
     fi
@@ -653,5 +648,4 @@ function _history-substring-search-down-search() {
     _history-substring-search-not-found
   fi
 }
-
 

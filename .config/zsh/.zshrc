@@ -52,6 +52,9 @@ else
     # Already initialized, but we need to re-add it to PATH
     path=("$HOMEBREW_PREFIX/bin" $path)
 fi
+if [[ -d "$HOMEBREW_PREFIX/opt/sqlite/bin" ]]; then
+    path=("$HOMEBREW_PREFIX/opt/sqlite/bin" $path)
+fi
 
 # Prefer GNU coreutils when available
 if [[ -d "$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin" ]]; then
@@ -65,23 +68,31 @@ if [[ -d "$HOMEBREW_PREFIX/opt/coreutils/libexec/gnuman" ]]; then
     manpath=("$HOMEBREW_PREFIX/opt/coreutils/share/man" $manpath)
 fi
 
+# uv places binaries in ~/.local/bin
+path=("$HOME/.local/bin" $path)
+
 # Put personal bin directory before all others
 path=("$HOME/bin" $path)
-
-# Load plugins
-source $XDG_CONFIG_HOME/zsh/plugins/directory-history.zsh
-
-# Add fuzzy finding support for completions, search, etc
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# Initialize ASDF
-if [[ -f ~/.asdf/asdf.sh ]]; then
-    source ~/.asdf/asdf.sh
-fi
 
 # Initialize completions
 autoload -U compinit
 compinit
+
+# Load plugins
+#source $XDG_CONFIG_HOME/zsh/plugins/directory-history.zsh
+
+# Add fuzzy finding support for completions, search, etc
+#[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Terminal history
+[[ $commands[atuin] ]] && source <(atuin init zsh --disable-up-arrow)
+
+# Initialize mise
+[[ $commands[mise] ]] && source <(mise activate zsh)
+
+# Load jj completions
+[[ $commands[jj] ]] && source <(COMPLETE=zsh jj)
+[[ $commands[jj-stack] ]] && source <(jj-stack completion zsh --jj-alias stack)
 
 # Load kubectl completions
 [[ $commands[kubectl] ]] && source <(kubectl completion zsh)
@@ -90,7 +101,7 @@ compinit
 [[ ! -f $XDG_CONFIG_HOME/zsh/.p10k.zsh ]] || source $XDG_CONFIG_HOME/zsh/.p10k.zsh
 
 # Load theme
-source /opt/homebrew/opt/powerlevel10k/powerlevel10k.zsh-theme
+source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -137,9 +148,9 @@ typeset -gx ERL_AFLAGS="-kernel shell_history enabled"
 typeset -gx GOPATH=$HOME
 
 # Java
-_java=`asdf which java 2>&1 >/dev/null`
+_java=`mise which java 2>&1 >/dev/null`
 if [[ $? -eq 0 ]]; then
-    typeset -gx JAVA_HOME=$(asdf where java)
+    typeset -gx JAVA_HOME=$(mise where java)
 fi
 if [[ -z "$JAVA_HOME" ]] && [[ -f /usr/libexec/java_home ]]; then
     if _java_home=`/usr/libexec/java_home 2>&1 >/dev/null`; then
@@ -170,7 +181,7 @@ if type -p minikube >/dev/null; then
 fi
 
 # docker
-typeset -gx DOCKER_HOST="ssh://paulschoenfelder@windy"
+#typeset -gx DOCKER_HOST="ssh://paulschoenfelder@windy"
 
 # Ensure PATH is exposed to GUI apps
 if type -p launchctl >/dev/null; then
@@ -191,8 +202,8 @@ _node_modules_hook() {
 # When changing to a directory with .tool-versions, update JAVA_HOME
 _tool_versions_hook() {
     if [[ -f .tool-versions ]]; then
-        if asdf current java 2>&1 > /dev/null; then
-            typeset -gx JAVA_HOME=$(asdf where java)
+        if mise which java 2>&1 > /dev/null; then
+            typeset -gx JAVA_HOME=$(mise which java)
         fi
     fi
 }
@@ -210,6 +221,17 @@ alias vi='nvim'
 alias vim='nvim'
 alias ff='find * -type f | fzf > selected'
 alias gp='graphite'
+
+make_ringtone() {
+    # $1 = input file
+    # $2 = output file
+    if [[ ! -f "$1" ]]; then
+        echo "Must pass a valid filename as argument, got: '$1'"
+        exit 2
+    fi
+    local tone="$(basename "$1")"
+    afconvert "$1" "${tone}.m4r" -f m4af
+}
 
 _kill_emacs() {
     pgrep emacs | xargs kill
@@ -230,8 +252,8 @@ zle -N backward-kill-dir
 bindkey '^[w' backward-kill-dir
 
 # Bind up/down arrow keys to navigate through history
-bindkey '^[[B' directory-history-search-backward
-bindkey '^[[A' directory-history-search-forward
+#bindkey '^[[B' directory-history-search-backward
+#bindkey '^[[A' directory-history-search-forward
 
 # Bind CTRL+k and CTRL+j to substring search
 bindkey '^j' history-substring-search-up
