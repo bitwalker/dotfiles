@@ -85,8 +85,8 @@
     (require 'dap-gdb-lldb)
     (dap-gdb-lldb-setup)
     ;; Enable various language modes if flagged with support
-    (when (featurep! :lang go +lsp)
+    (when (modulep! :lang go +lsp)
         (require 'dap-go))
-    (when (featurep! :lang elixir +lsp)
+    (when (modulep! :lang elixir +lsp)
         ;;(ensure-elixir-ls)
         (require 'dap-elixir)))

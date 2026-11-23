@@ -12,17 +12,14 @@
 (setq user-full-name "Paul Schoenfelder"
       user-mail-address "paulschoenfelder@fastmail.com"
 
+      deft-directory "~/.local/share/deft"
+      deft-default-extension "md"
+
       show-trailing-whitespace t
       ;; Line numbers are pretty slow, better to not use them by default
       display-line-numbers-type nil
       ;; Require completion to be initiated manually
-      company-idle-delay nil
-      ;; lsp-ui-sideline is redundant with eldoc and much more invasive, so disable by default
-      lsp-ui-sideline-enable nil
-      lsp-enable-symbol-highlighting nil
-      +lsp-prompt-to-install-server nil
-
-      treemacs-width 32)
+      company-idle-delay nil)
 
 ;; Maximize first frame
 (set-frame-parameter nil 'fullscreen 'maximized)
@@ -46,7 +43,6 @@
     (add-to-list 'custom-theme-load-path (expand-file-name "themes" +bitwalker/doom-config-dir))
     ;(exec-path-from-shell-copy-env "PATH")
     (exec-path-from-shell-initialize)
-    (setq +treemacs-git-mode 'deferred)
     ))
 
 (defun +bitwalker/setup-ui-gui ()
@@ -59,7 +55,9 @@
     (setq doom-theme 
           'doom-ayu-mirage)
           ;'doom-snazzy)
+    (setq doom-themes-treemacs-theme "doom-atom")
     (exec-path-from-shell-copy-env "PATH")
+    (doom-themes-treemacs-config)
     ))
 
 (defun +bitwalker/setup-ui-terminal ()
@@ -67,6 +65,8 @@
   (progn
     (+bitwalker/setup-ui-common)
     (setq doom-theme 'doom-ayu-mirage)
+    (setq doom-themes-treemacs-theme "doom-atom")
+    (doom-themes-treemacs-config)
     ))
 
 (if (display-graphic-p)
@@ -92,9 +92,9 @@
                do (projectile-add-known-project (expand-file-name project-name +bitwalker/project-path)))
       (warn! "Project path '%s' has not been created!" (file-relative-name +bitwalker/project-path "~"))))
 
-(after! ivy
-  ;; I prefer search matching to be ordered; it's more precise
-  (add-to-list 'ivy-re-builders-alist '(counsel-projectile-find-file . ivy--regex-plus)))
+(after! treemacs
+  (setq +treemacs-git-mode 'deferred
+        treemacs-width 32))
 
 (after! projectile
   (+bitwalker/add-known-projects))
@@ -139,13 +139,15 @@
   (map! :map projectile-mode-map
         (:leader
           (:prefix "p"
-            :desc "Kill project buffers" :nv "k" #'projectile-kill-buffers
-            :desc "Search project with rg" :nv "s" #'+ivy/project-search
-            :desc "Switch to project buffer" :nv "b" #'+ivy/switch-workspace-buffer
-            :desc "Switch to project buffer or file" :nv "SPC" #'+ivy/switch-buffer))))
+            :desc "Kill project buffers" :nv "k" #'projectile-kill-buffers))))
 
 (after! lsp
-  (setq lsp-file-watch-threshold 1000
+  (setq +lsp-prompt-to-install-server nil
+        ;; lsp-ui-sideline is redundant with eldoc and much more invasive, so disable by default
+        lsp-ui-sideline-enable nil
+        lsp-enable-symbol-highlighting nil
+        lsp-file-watch-threshold 1000
+        lsp-rust-unstable-features t
         lsp-rust-server 'rust-analyzer))
 
 (after! rustic
@@ -164,34 +166,12 @@
     (:prefix "TAB"
       :desc "Rename workspace" :nv "r" #'+workspace/rename)))
 
-(use-package! clang-format
-    :commands (clang-format-region clang-format-buffer))
-
-(after! cc-mode
-    ; Set up formatter keybindings
-    (map! :map (c-mode-map c++-mode-map)
-          (:localleader
-            :desc "Format buffer" "bf" #'clang-format-buffer))
-    ; Set up formatter for C/C++ when clang-format is present
-    (when (executable-find "clang-format")
-      (progn
-        ; Handle formatting buffers not backed by a file
-        (defun bitwalker/clang-format-args ()
-          (let ((bufname (buffer-file-name))
-                (filename 
-                  (if (not (eq 'nil bufname))
-                    bufname
-                    (cond ((eq major-mode 'c++-mode) "noname.cpp")
-                          ((eq major-mode 'c-mode) "noname.c")
-                          (t 'nil))))
-                (assumef
-                  (if (not (eq 'nil filename))
-                    ("--assume-filename=%S" filename)
-                     "")))
-            '("clang-format"
-              "--style=file"
-              "--fallback-style=none"
-              assumef)))
-        (set-formatter! 'clang-format 
-                        '(bitwalker/clang-format-args)
-                        :modes '(c-mode c++-mode)))))
+(after! lsp-clangd
+        (setq lsp-clients-clangd-args
+              '("-j=3"
+                "--background-index"
+                "--clang-tidy"
+                "--completion-style=detail"
+                "--header-insertion=never"
+                "--header-insertion-decorators=0"))
+        (set-lsp-priority! 'clangd 2))
