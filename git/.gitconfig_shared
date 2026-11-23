@@ -102,7 +102,7 @@
   r = pull --rebase
 
   # Pull in remote changes for the current repository and all its submodules
-  pullall = !"git pull; git submodule foreach git pull origin master"
+  pullall = !"git pull; git submodule foreach git pull origin"
 
   # Show the diff between the latest commit and the current state
   diffcwd = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
@@ -202,6 +202,17 @@
         git merge --log -m \"$msg\" pr/$pr && \
         git branch -D pr/$pr \n\
     fi \n\
+  }; f"
+
+  # Interactive --fixup
+  fixup = "!f() { \n\
+    if [ -z \"$1\" ]; then \n\
+        exit 1 \n\
+    fi\n\
+    if ! commit=$(git log $(git merge-base \"$1\" HEAD)..HEAD --oneline | fzf | cut -d' ' -f1); then\n\
+        exit 2 \n\
+    fi\n\
+    git commit --fixup \"$commit\" \n\
   }; f"
 
 #################
