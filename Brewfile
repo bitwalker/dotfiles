@@ -1,7 +1,7 @@
 # Taps
 tap "homebrew/cask"
 tap "homebrew/cask-fonts"
-tap "d12frosted/emacs-plus"
+tap "romkatv/powerlevel10k"
 
 # Install Mac App Store support tooling
 brew "mas"
@@ -20,7 +20,6 @@ cask_args appdir: "~/Applications"
 cask "amethyst"
 cask "choosy"
 cask "dash"
-cask "doxygen"
 cask "fantastical"
 cask "firefox"
 cask "font-fantasque-sans-mono"
