@@ -1,0 +1,82 @@
+"$schema" = "https://jj-vcs.github.io/jj/latest/config-schema.json"
+
+[user]
+name = "Paul Schoenfelder"
+email = "paulschoenfelder@fastmail.com"
+
+[signing]
+behavior = "force"
+backend = "gpg"
+key = "A6CDECAE"
+#backend = "ssh"
+#key = "~/.ssh/id_ed25519_local.pub"
+
+[ui]
+default-command = ["log"]
+
+[remotes.origin]
+auto-track-bookmarks = "glob:*"
+
+[aliases]
+# checkout-pr NUM
+#
+# Check out a branch corresponding to a GitHub PR, from the submitter's remote
+checkout-pr = ['util', 'exec', '--', 'bash', '-c', '''
+    set -euo pipefail
+    PR_INFO=$(gh pr view "$1" --json 'isCrossRepository,headRepositoryOwner,headRepository,headRefName' -t '{{.headRepositoryOwner.login}} {{.headRepository.nameWithOwner}} {{.isCrossRepository}} {{.headRefName}}')
+    OWNER_NAME=$(echo "${PR_INFO}" | awk '{ printf "%s", $1 }')
+    OWNER_NAME_AND_REPO=$(echo "${PR_INFO}" | awk '{ printf "%s", $2 }')
+    IS_CROSS=$(echo "${PR_INFO}" | awk '{ printf "%s", $3 }')
+    BRANCH_NAME=$(echo "${PR_INFO}" | awk '{ printf "%s", $4 }')
+    if [ "$IS_CROSS" == "true" ]; then
+        echo "PR was opened from a third-party repo - adding new remote $OWNER_NAME.."
+        jj git remote add "$OWNER_NAME" "git@github.com:${OWNER_NAME_AND_REPO}.git"
+        echo "Fetching PR branch from remote.."
+        jj git fetch --remote "$OWNER_NAME" -b "$BRANCH_NAME" && jj new "${BRANCH_NAME}@${OWNER_NAME}"
+    else
+        echo "Refreshing upstream state to get latest changes.."
+        jj git fetch && jj new "$BRANCH_NAME"
+    fi
+''', '']
+# cleanup-pr-checkout NUM
+#
+# Clean up the artifacts produced by checkout-pr
+cleanup-pr-checkout = ['util', 'exec', '--', 'bash', '-c', '''
+    set -euo pipefail
+    PR_INFO=$(gh pr view "$1" --json 'isCrossRepository,headRepositoryOwner' -t '{{.headRepositoryOwner.login}} {{.isCrossRepository}}')
+    OWNER_NAME=$(echo "${PR_INFO}" | awk '{ printf "%s", $1 }')
+    IS_CROSS=$(echo "${PR_INFO}" | awk '{ printf "%s", $2 }')
+    if [ "$IS_CROSS" == "true" ]; then
+        jj git remote remove "$OWNER_NAME"
+    fi
+''', '']
+# Collapse the current branch into one commit
+collapse = ["squash", "-f", "branch_start(@)+::@", "-t", "branch_start(@)"]
+log-branch = ["log", "-r", "slice()"]
+s = ["status"]
+stack = ['util', 'exec', '--', 'jj-stack']
+
+[templates]
+git_push_bookmark = '"bitwalker/" + change_id.short()'
+
+[revset-aliases]
+#'immutable_heads()' = "builtin_immutable_heads() | main@origin | (trunk().. & ~mine())"
+'immutable_heads()' = 'builtin_immutable_heads() | (trunk().. & ~mine())'
+# View the entire branch being worked on
+'slice()' = 'slice(@)'
+'slice(from)' = 'ancestors(reachable(from, mutable()), 2)'
+'branch_start(to)' = 'heads(::to & trunk())+ & ::to'
+
+[jj-stack]
+branch_prefix = "bitwalker/stacks"
+
+[[--scope]]
+--when.commands = ["diff", "show"]
+[--scope.ui]
+pager = "delta"
+diff-formatter = ":git"
+
+[[--scope]]
+--when.repositories = ["~/src/github.com/0xpolygon"]
+[[--scope.revset-aliases]]
+"trunk()" = "next@origin"
