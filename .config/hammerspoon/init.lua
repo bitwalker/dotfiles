@@ -29,13 +29,13 @@ hs.hotkey.bind({'cmd'}, '`', nil, function()
 end, nil, nil)
 
 -- Set up window management
-hs.loadSpoon("MiroWindowsManager")
+--hs.loadSpoon("MiroWindowsManager")
 
-hs.window.animationDuration = 0
-spoon.MiroWindowsManager:bindHotkeys({
-    up = {hyper, "up"},
-    right = {hyper, "right"},
-    down = {hyper, "down"},
-    left = {hyper, "left"},
-    fullscreen = {hyper, "f"}
-})
+--hs.window.animationDuration = 0
+--spoon.MiroWindowsManager:bindHotkeys({
+    --up = {hyper, "up"},
+    --right = {hyper, "right"},
+    --down = {hyper, "down"},
+    --left = {hyper, "left"},
+    --fullscreen = {hyper, "f"}
+--})
