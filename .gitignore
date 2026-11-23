@@ -35,3 +35,6 @@ bin/*
 
 # secrets
 .config/brew/API_TOKEN
+
+# zed
+.config/zed/.tmp*
